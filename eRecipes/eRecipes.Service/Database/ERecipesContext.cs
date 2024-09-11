@@ -1,0 +1,195 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+
+namespace eRecipes.Service.Database;
+
+public partial class ERecipesContext : DbContext
+{
+    public ERecipesContext()
+    {
+    }
+
+    public ERecipesContext(DbContextOptions<ERecipesContext> options)
+        : base(options)
+    {
+    }
+
+    public virtual DbSet<Izvjestaj> Izvjestajs { get; set; }
+
+    public virtual DbSet<Kategorija> Kategorijas { get; set; }
+
+    public virtual DbSet<Korisnik> Korisniks { get; set; }
+
+    public virtual DbSet<Lajkovi> Lajkovis { get; set; }
+
+    public virtual DbSet<Obavijest> Obavijests { get; set; }
+
+    public virtual DbSet<OmiljeniRecept> OmiljeniRecepts { get; set; }
+
+    public virtual DbSet<Recept> Recepts { get; set; }
+
+    public virtual DbSet<ReceptSastojak> ReceptSastojaks { get; set; }
+
+    public virtual DbSet<Sastojak> Sastojaks { get; set; }
+
+    public virtual DbSet<Uloga> Ulogas { get; set; }
+
+    public virtual DbSet<VrstaJela> VrstaJelas { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=localhost, 1434; Initial Catalog=eRecipes; user=sa; Password=ismi123; TrustServerCertificate=True");
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Izvjestaj>(entity =>
+        {
+            entity.HasKey(e => e.IzvjestajId).HasName("PK__Izvjesta__0892A342CA505386");
+
+            entity.ToTable("Izvjestaj");
+
+            entity.Property(e => e.BrojKupovina).HasDefaultValue(0);
+            entity.Property(e => e.BrojLajkova).HasDefaultValue(0);
+            entity.Property(e => e.BrojPregleda).HasDefaultValue(0);
+
+            entity.HasOne(d => d.Recept).WithMany(p => p.Izvjestajs)
+                .HasForeignKey(d => d.ReceptId)
+                .HasConstraintName("FK__Izvjestaj__Recep__5AEE82B9");
+        });
+
+        modelBuilder.Entity<Kategorija>(entity =>
+        {
+            entity.HasKey(e => e.KategorijaId).HasName("PK__Kategori__6C3B8FEE3289E171");
+
+            entity.ToTable("Kategorija");
+        });
+
+        modelBuilder.Entity<Korisnik>(entity =>
+        {
+            entity.HasKey(e => e.KorisnikId).HasName("PK__Korisnik__80B06D41D7ACDDFA");
+
+            entity.ToTable("Korisnik");
+
+            entity.Property(e => e.DatumRodjenja).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Uloga).WithMany(p => p.Korisniks)
+                .HasForeignKey(d => d.UlogaId)
+                .HasConstraintName("FK__Korisnik__UlogaI__3B75D760");
+        });
+
+        modelBuilder.Entity<Lajkovi>(entity =>
+        {
+            entity.HasKey(e => e.LajkoviId).HasName("PK__Lajkovi__3D31B5F90CF0D288");
+
+            entity.ToTable("Lajkovi");
+
+            entity.Property(e => e.DatumLajka).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.Lajkovis)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK__Lajkovi__Korisni__5165187F");
+
+            entity.HasOne(d => d.Recept).WithMany(p => p.Lajkovis)
+                .HasForeignKey(d => d.ReceptId)
+                .HasConstraintName("FK__Lajkovi__ReceptI__52593CB8");
+        });
+
+        modelBuilder.Entity<Obavijest>(entity =>
+        {
+            entity.HasKey(e => e.ObavijestId).HasName("PK__Obavijes__99D330E060F35F2E");
+
+            entity.ToTable("Obavijest");
+
+            entity.Property(e => e.Sadrzaj).HasColumnType("text");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.Obavijests)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK__Obavijest__Koris__5535A963");
+        });
+
+        modelBuilder.Entity<OmiljeniRecept>(entity =>
+        {
+            entity.HasKey(e => e.OmiljeniReceptId).HasName("PK__Omiljeni__1A663C0C67EC8029");
+
+            entity.ToTable("OmiljeniRecept");
+
+            entity.Property(e => e.DatumDodavanja).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.OmiljeniRecepts)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK__OmiljeniR__Koris__4D94879B");
+
+            entity.HasOne(d => d.Recept).WithMany(p => p.OmiljeniRecepts)
+                .HasForeignKey(d => d.ReceptId)
+                .HasConstraintName("FK__OmiljeniR__Recep__4E88ABD4");
+        });
+
+        modelBuilder.Entity<Recept>(entity =>
+        {
+            entity.HasKey(e => e.ReceptId).HasName("PK__Recept__AFE1E3C31D4046F6");
+
+            entity.ToTable("Recept");
+
+            entity.Property(e => e.DatumObjave).HasColumnType("datetime");
+            entity.Property(e => e.OpisRecepta).HasColumnType("text");
+            entity.Property(e => e.Premium).HasDefaultValue(false);
+
+            entity.HasOne(d => d.Kategorija).WithMany(p => p.Recepts)
+                .HasForeignKey(d => d.KategorijaId)
+                .HasConstraintName("FK__Recept__Kategori__440B1D61");
+
+            entity.HasOne(d => d.Korisnik).WithMany(p => p.Recepts)
+                .HasForeignKey(d => d.KorisnikId)
+                .HasConstraintName("FK__Recept__Korisnik__4222D4EF");
+
+            entity.HasOne(d => d.VrstaJela).WithMany(p => p.Recepts)
+                .HasForeignKey(d => d.VrstaJelaId)
+                .HasConstraintName("FK__Recept__VrstaJel__4316F928");
+        });
+
+        modelBuilder.Entity<ReceptSastojak>(entity =>
+        {
+            entity.HasKey(e => e.ReceptSastojakId).HasName("PK__ReceptSa__865053CE4B489A4C");
+
+            entity.ToTable("ReceptSastojak");
+
+            entity.Property(e => e.Kolicina).HasColumnType("decimal(5, 2)");
+
+            entity.HasOne(d => d.Recept).WithMany(p => p.ReceptSastojaks)
+                .HasForeignKey(d => d.ReceptId)
+                .HasConstraintName("FK__ReceptSas__Recep__48CFD27E");
+
+            entity.HasOne(d => d.Sastojak).WithMany(p => p.ReceptSastojaks)
+                .HasForeignKey(d => d.SastojakId)
+                .HasConstraintName("FK__ReceptSas__Sasto__49C3F6B7");
+        });
+
+        modelBuilder.Entity<Sastojak>(entity =>
+        {
+            entity.HasKey(e => e.SastojakId).HasName("PK__Sastojak__114FC27F752B273E");
+
+            entity.ToTable("Sastojak");
+        });
+
+        modelBuilder.Entity<Uloga>(entity =>
+        {
+            entity.HasKey(e => e.UlogaId).HasName("PK__Uloga__DCAB23CB082C1978");
+
+            entity.ToTable("Uloga");
+        });
+
+        modelBuilder.Entity<VrstaJela>(entity =>
+        {
+            entity.HasKey(e => e.VrstaJelaId).HasName("PK__VrstaJel__E76FF56D3647DED0");
+
+            entity.ToTable("VrstaJela");
+
+            entity.Property(e => e.Naziv).HasMaxLength(100);
+        });
+
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+}
