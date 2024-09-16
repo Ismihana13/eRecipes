@@ -21,7 +21,7 @@ public partial class Korisnik
 
     public string LozinkaHash { get; set; } = null!;
 
-    public string LozinkaSait { get; set; } = null!;
+    public string LozinkaSalt { get; set; } = null!;
 
     public bool? Status { get; set; }
 

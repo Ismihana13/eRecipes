@@ -1,11 +1,26 @@
+using eRecipes.Service;
+using eRecipes.Service.Database;
+
+//using eRecipes.Service.Database;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+//Add services to the container.
+//builder.Services.AddSingleton<IProizvodiService, DummyProizvodiService>();
+builder.Services.AddTransient<IReceptService, ReceptService>();
+builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionString = builder.Configuration.GetConnectionString("eRecipesConnection");
+builder.Services.AddDbContext<ERecipesContext>(options =>
+  options.UseSqlServer(connectionString));
+
+builder.Services.AddMapster();
 
 var app = builder.Build();
 
