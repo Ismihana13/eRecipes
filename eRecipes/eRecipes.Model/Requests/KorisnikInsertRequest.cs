@@ -6,7 +6,7 @@ namespace eRecipes.Model.Requests
 {
     public class KorisnikInsertRequest
     {
-   
+
 
         public string Ime { get; set; } = null!;
 
@@ -24,6 +24,6 @@ namespace eRecipes.Model.Requests
 
         public bool? Status { get; set; }
 
-        //public int? UlogaId { get; set; }
+       
     }
 }

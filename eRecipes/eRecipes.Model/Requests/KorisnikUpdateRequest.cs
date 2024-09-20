@@ -18,6 +18,6 @@ namespace eRecipes.Model.Requests
 
         public bool? Status { get; set; }
 
-        //public int? UlogaId { get; set; }
+       
     }
 }

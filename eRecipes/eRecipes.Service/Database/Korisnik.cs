@@ -25,7 +25,7 @@ public partial class Korisnik
 
     public bool? Status { get; set; }
 
-    public int? UlogaId { get; set; }
+    public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
 
     public virtual ICollection<Lajkovi> Lajkovis { get; set; } = new List<Lajkovi>();
 
@@ -34,6 +34,4 @@ public partial class Korisnik
     public virtual ICollection<OmiljeniRecept> OmiljeniRecepts { get; set; } = new List<OmiljeniRecept>();
 
     public virtual ICollection<Recept> Recepts { get; set; } = new List<Recept>();
-
-    public virtual Uloga? Uloga { get; set; }
 }

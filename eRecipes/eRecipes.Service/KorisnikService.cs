@@ -1,7 +1,9 @@
 ﻿using eRecipes.Model;
 using eRecipes.Model.Requests;
+using eRecipes.Model.SearchObjects;
 using eRecipes.Service.Database;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
 namespace eRecipes.Service
 {
     public class KorisnikService : IKorisnikService
@@ -21,11 +24,61 @@ namespace eRecipes.Service
             Context = context;
             Mapper = mapper;
         }
-        public virtual List<Model.Korisnik> GetList()
+        public virtual Model.PagedResult<Model.Korisnik> GetList(KorisnikSearchObject searchObject)
         {
             List<Model.Korisnik> result = new List<Model.Korisnik>();
 
-            var list = Context.Korisniks.ToList();
+            var query = Context.Korisniks.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchObject?.ImeGTE))
+            {
+                query = query.Where(x => x.Ime.StartsWith(searchObject.ImeGTE));
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.PrezimeGTE))
+            {
+                query = query.Where(x => x.Prezime.StartsWith(searchObject.PrezimeGTE));
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.Email))
+            {
+                query = query.Where(x => x.Email == searchObject.Email);
+            }
+            if (!string.IsNullOrWhiteSpace(searchObject?.KorisnickoIme))
+            {
+                query = query.Where(x => x.KorisnickoIme == searchObject.KorisnickoIme);
+            }
+            if (searchObject.isKorisnikUlogeIncluded == true)
+            {
+                query = query.Include(x => x.KorisnikUlogas).ThenInclude(xu => xu.Uloga);
+            }
+            int count =query.Count();
+            if (!string.IsNullOrWhiteSpace(searchObject.OrderBy))
+            {
+                //    query=query.OrderBy(searchObject.OrderBy);
+            }
+                if (searchObject?.Page.HasValue==true && searchObject?.PageSize.HasValue == true)
+            {
+                query=query.Skip(searchObject.Page.Value * searchObject.PageSize.Value).Take(searchObject.PageSize.Value);
+            }
+            //if(!string.IsNullOrWhiteSpace(searchObject.OrderBy))
+            //{
+            //    switch (searchObject.OrderBy)
+            //    {
+            //        case "KorisnickoIme ASC":
+            //            query = query.OrderBy(x => x.KorisnickoIme);
+            //                break;
+            //        case "KorisnickoIme DESC":
+            //            query = query.OrderByDescending(x => x.KorisnickoIme);
+            //            break;
+            //        case "Ime ASC":
+            //            query = query.OrderBy(x => x.Ime);
+            //            break;
+            //        case "Ime DESC":
+            //            query = query.OrderByDescending(x => x.Ime );
+            //            break;
+            //    }     
+            //}
+
+            var list = query.ToList();
             //list.ForEach(k => result.Add(new Model.Korisnik()
             //{
             //    KorisnikId=k.KorisnikId,
@@ -37,8 +90,12 @@ namespace eRecipes.Service
             //    KorisnickoIme=k.KorisnickoIme,
             //    Status=k.Status,
             //}));
-            result = Mapper.Map(list, result);
-            return result;
+            var resultLista = Mapper.Map(list, result);
+            Model.PagedResult<Model.Korisnik> response = new Model.PagedResult<Model.Korisnik>(); 
+            response.ResultList=resultLista;
+            response.Count = count;
+
+            return response;
         }
 
         public Model.Korisnik Insert(KorisnikInsertRequest request)
@@ -52,7 +109,7 @@ namespace eRecipes.Service
 
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
-            entity.UlogaId = 1;
+
 
             Context.Add(entity);
             Context.SaveChanges();
@@ -84,7 +141,7 @@ namespace eRecipes.Service
 
         public Model.Korisnik Update(int id, KorisnikUpdateRequest request)
         {
-            var entity= Context.Korisniks.Find(id);
+            var entity = Context.Korisniks.Find(id);
 
             Mapper.Map(request, entity);
 
