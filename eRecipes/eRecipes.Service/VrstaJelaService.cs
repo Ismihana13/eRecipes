@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class ReceptService : IReceptService
+    public class VrstaJelaService : IVrstaJelaService
     {
         public ERecipesContext Context { get; set; }
         public IMapper Mapper { get; set; }
 
-        public ReceptService(ERecipesContext context, IMapper mapper)
+        public VrstaJelaService(ERecipesContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
         }
-        public virtual List<Model.Recept> GetList(ReceptSearchObject searchObject)
+        public virtual List<Model.VrstaJela> GetList(VrstaJelaSearchObject searchObject)
         {
-            List<Model.Recept> result = new List<Model.Recept>();
+            List<Model.VrstaJela> result = new List<Model.VrstaJela>();
 
-            var query = Context.Recepts.AsQueryable();
+            var query = Context.VrstaJelas.AsQueryable();
 
 
-            if (!string.IsNullOrWhiteSpace(searchObject?.FTS))
+            if (!string.IsNullOrWhiteSpace(searchObject?.NazivGTE))
             {
-                query = query.Where(x => x.Naziv.Contains(searchObject.FTS) || x.OpisRecepta.Contains(searchObject.FTS));
+                query = query.Where(x => x.Naziv.Contains(searchObject.NazivGTE));
             }
             if (searchObject?.Page.HasValue == true && searchObject?.PageSize.HasValue == true)
             {
@@ -43,5 +43,6 @@ namespace eRecipes.Service
             return result;
         }
 
+       
     }
 }

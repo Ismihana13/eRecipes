@@ -11,7 +11,7 @@ public partial class Recept
 
     public string? OpisRecepta { get; set; }
 
-    public string? Slika { get; set; }
+    public byte[]? Slika { get; set; }
 
     public int? VrijemePripreme { get; set; }
 

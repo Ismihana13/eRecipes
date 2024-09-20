@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IReceptService
+    public interface IVrstaJelaService
     {
-        List<Recept> GetList(ReceptSearchObject searchObject);
+        List<VrstaJela> GetList(VrstaJelaSearchObject searchObject);
     }
 }

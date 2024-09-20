@@ -1,5 +1,6 @@
 ﻿using eRecipes.Model;
 using eRecipes.Model.Requests;
+using eRecipes.Model.SearchObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace eRecipes.Service
     public interface IKorisnikService
 
     {
-        List<Korisnik> GetList();
+        PagedResult<Korisnik> GetList(KorisnikSearchObject searchObject);
         Korisnik Insert(KorisnikInsertRequest request);
-        Korisnik Update(int id,KorisnikUpdateRequest request);
+        Korisnik Update(int id, KorisnikUpdateRequest request);
     }
 }
