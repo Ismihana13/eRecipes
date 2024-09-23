@@ -4,9 +4,9 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class VrstaJelaSearchObject:BaseSearchObject
+    public class BaseSearchObject
     {
-        public string? NazivGTE {  get; set; }
-      
+        public int? Page { get; set; }
+        public int? PageSize { get; set; }
     }
 }

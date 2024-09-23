@@ -7,17 +7,13 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ReceptController : ControllerBase
+    public class ReceptController : BaseController<Recept,ReceptSearchObject>
     {
-        protected IReceptService _service;
-        public ReceptController(IReceptService service)
+       
+        public ReceptController(IReceptService service):base(service)
         {
-            _service = service;
+           
         }
-        [HttpGet]
-        public List<Recept> GetList([FromQuery] ReceptSearchObject searchObject)
-        {
-            return _service.GetList(searchObject);
-        }
+        
     }
 }

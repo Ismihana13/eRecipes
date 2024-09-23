@@ -10,38 +10,22 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class ReceptService : IReceptService
+    public class ReceptService :BaseService<Model.Recept, ReceptSearchObject, Database.Recept>, IReceptService
     {
-        public ERecipesContext Context { get; set; }
-        public IMapper Mapper { get; set; }
+   
+        public ReceptService(ERecipesContext context, IMapper mapper):base (context, mapper) { }
 
-        public ReceptService(ERecipesContext context, IMapper mapper)
+        public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
         {
-            Context = context;
-            Mapper = mapper;
-        }
-        public virtual List<Model.Recept> GetList(ReceptSearchObject searchObject)
-        {
-            List<Model.Recept> result = new List<Model.Recept>();
-
-            var query = Context.Recepts.AsQueryable();
-
-
-            if (!string.IsNullOrWhiteSpace(searchObject?.FTS))
+            var filteredQuery= base.AddFilter(search,query);
+            if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                query = query.Where(x => x.Naziv.Contains(searchObject.FTS) || x.OpisRecepta.Contains(searchObject.FTS));
+                filteredQuery=filteredQuery.Where(x=>x.Naziv.Contains(search.FTS));
             }
-            if (searchObject?.Page.HasValue == true && searchObject?.PageSize.HasValue == true)
-            {
-                query = query.Skip(searchObject.Page.Value * searchObject.PageSize.Value).Take(searchObject.PageSize.Value);
-            }
-
-
-            var list = query.ToList();
-
-            result = Mapper.Map(list, result);
-            return result;
+            return filteredQuery;
         }
+
+
 
     }
 }

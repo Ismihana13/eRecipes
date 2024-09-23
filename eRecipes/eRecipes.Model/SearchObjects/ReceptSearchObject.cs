@@ -4,10 +4,9 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class ReceptSearchObject
+    public class ReceptSearchObject: BaseSearchObject
     {
         public string? FTS { get; set; }
-        public int? Page { get; set; }
-        public int? PageSize { get; set; } 
+        
     }
 }
