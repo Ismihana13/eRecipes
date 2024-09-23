@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IReceptService
+    public interface IReceptService:IService<Recept,ReceptSearchObject>
     {
-        List<Recept> GetList(ReceptSearchObject searchObject);
+        
     }
 }
