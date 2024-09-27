@@ -1,4 +1,5 @@
 ﻿using eRecipes.Model;
+using eRecipes.Model;
 using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using System;
@@ -9,11 +10,8 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IKorisnikService
-
+    public interface IKorisnikService:ICRUDService<Korisnik,KorisnikSearchObject,KorisnikInsertRequest,KorisnikUpdateRequest>
     {
-        PagedResult<Korisnik> GetList(KorisnikSearchObject searchObject);
-        Korisnik Insert(KorisnikInsertRequest request);
-        Korisnik Update(int id, KorisnikUpdateRequest request);
+      
     }
 }

@@ -1,0 +1,60 @@
+﻿using eRecipes.Model.Requests;
+using eRecipes.Model.SearchObjects;
+using eRecipes.Service.Database;
+using MapsterMapper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace eRecipes.Service
+{
+    public abstract class BaseCRUDService<TModel, TSearch, TDbEntity,TInsert,TUpdate> : BaseService<TModel, TSearch, TDbEntity> where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
+    {
+        public BaseCRUDService(ERecipesContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
+        public TModel Insert(TInsert request)
+        {
+           TDbEntity entity= Mapper.Map<TDbEntity>(request);
+            //if (request.Lozinka != request.LozinkaPotvrda)
+            //{
+            //    throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste");
+            //} 
+            //entity.LozinkaSalt = GenerateSalt();
+            //entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
+
+            BeforeInsert(request, entity);
+
+            Context.Add(entity);
+            Context.SaveChanges();
+
+            return Mapper.Map<TModel>(entity);
+
+
+        }
+        public virtual void BeforeInsert(TInsert request, TDbEntity entity)
+        {
+        }
+       public  TModel Update(int id,TUpdate request)
+        {
+            var set= Context.Set<TDbEntity>();
+
+            var entity =  set.Find(id);
+
+            Mapper.Map(request,entity);
+
+            BeforeUpdate(request, entity);
+
+            Context.SaveChanges();
+
+            return Mapper.Map<TModel>(entity);
+        }
+        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity)
+        {
+        }
+
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using eRecipes.Model;
+using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IReceptService:IService<Recept,ReceptSearchObject>
+    public interface IReceptService:ICRUDService<Recept,ReceptSearchObject, ReceptInsertRequest,ReceptUpdateRequest>
     {
         
     }
