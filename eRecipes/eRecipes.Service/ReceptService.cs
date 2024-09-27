@@ -1,4 +1,5 @@
-﻿using eRecipes.Model.SearchObjects;
+﻿using eRecipes.Model.Requests;
+using eRecipes.Model.SearchObjects;
 using eRecipes.Service.Database;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class ReceptService :BaseService<Model.Recept, ReceptSearchObject, Database.Recept>, IReceptService
+    public class ReceptService :BaseCRUDService<Model.Recept, ReceptSearchObject, Database.Recept, ReceptInsertRequest,ReceptUpdateRequest>, IReceptService
     {
    
         public ReceptService(ERecipesContext context, IMapper mapper):base (context, mapper) { }
@@ -25,7 +26,10 @@ namespace eRecipes.Service
             return filteredQuery;
         }
 
-
+        public override void BeforeInsert(ReceptInsertRequest request, Recept entity)
+        {
+            base.BeforeInsert(request, entity);
+        }
 
     }
 }

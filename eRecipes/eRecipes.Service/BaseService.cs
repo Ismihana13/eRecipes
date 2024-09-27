@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
+    public  abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
         public ERecipesContext Context { get; set; }
         public IMapper Mapper { get; set; }
