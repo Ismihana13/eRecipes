@@ -11,6 +11,6 @@ namespace eRecipes.Service
 {
     public interface IReceptService:ICRUDService<Recept,ReceptSearchObject, ReceptInsertRequest,ReceptUpdateRequest>
     {
-        
+        public Recept Acivate(int id);
     }
 }

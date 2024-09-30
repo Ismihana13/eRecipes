@@ -1,0 +1,52 @@
+﻿using eRecipes.Model.Requests;
+using eRecipes.Service.Database;
+using MapsterMapper;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace eRecipes.Service.ReceptStateMachine
+{
+    public class BaseReceptState
+    {
+        public ERecipesContext Context { get; set; }
+        public IMapper Mapper { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
+        public BaseReceptState(ERecipesContext context, IMapper mapper, IServiceProvider serviceProvider)
+        {
+            Context = context;
+            Mapper = mapper;
+            ServiceProvider = serviceProvider;
+        }
+
+        public virtual Model.Recept Insert(ReceptInsertRequest request)
+        {
+            throw new Exception("Method not allowed");
+        }
+        public virtual Model.Recept Update(int id, ReceptUpdateRequest request)
+        {
+            throw new Exception("Method not allowed");
+        }
+        public virtual Model.Recept Activate(int id)
+        {
+            throw new Exception("Method not allowed");
+        }
+        public virtual Model.Recept Hide(int id)
+        {
+            throw new Exception("Method not allowed");
+        }
+
+        public BaseReceptState CreateState(string stateName)
+        {
+            switch (stateName)
+            {
+                case "initial":
+                    return ServiceProvider.GetService<InitialReceptState>();
+                case "draft":
+                    return ServiceProvider.GetService<DraftReceptState>();
+                case "active":
+                    return ServiceProvider.GetService<ActiveReceptState>();
+                default: throw new Exception("State not recognized");
+            }
+        }
+    }
+}
+//initial, draft, active, hidden, active

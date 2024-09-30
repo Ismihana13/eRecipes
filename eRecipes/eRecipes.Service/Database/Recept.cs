@@ -25,6 +25,10 @@ public partial class Recept
 
     public int? KategorijaId { get; set; }
 
+    public bool? Status { get; set; }
+
+    public string? StateMachine { get; set; }
+
     public virtual ICollection<Izvjestaj> Izvjestajs { get; set; } = new List<Izvjestaj>();
 
     public virtual Kategorija? Kategorija { get; set; }

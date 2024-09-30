@@ -1,5 +1,6 @@
 using eRecipes.Service;
 using eRecipes.Service.Database;
+using eRecipes.Service.ReceptStateMachine;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IReceptService, ReceptService>();
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
+
+builder.Services.AddTransient<BaseReceptState>();
+builder.Services.AddTransient<InitialReceptState>();
+builder.Services.AddTransient<DraftReceptState>();
+builder.Services.AddTransient<ActiveReceptState>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public  abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
+    public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
         public ERecipesContext Context { get; set; }
         public IMapper Mapper { get; set; }
@@ -50,26 +50,26 @@ namespace eRecipes.Service
         {
             return query;
         }
-        
+
 
         public TModel GetById(int id)
         {
             var entity = Context.Set<TDbEntity>().Find(id);
 
-          if (entity != null)
+            if (entity != null)
             {
                 return Mapper.Map<TModel>(entity);
             }
             else
             {
-                return null; 
+                return null;
             }
-                
-            
-           
+
+
+
 
         }
 
-       
+
     }
 }
