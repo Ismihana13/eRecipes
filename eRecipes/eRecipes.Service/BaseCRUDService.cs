@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public abstract class BaseCRUDService<TModel, TSearch, TDbEntity,TInsert,TUpdate> : BaseService<TModel, TSearch, TDbEntity> where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
+    public abstract class BaseCRUDService<TModel, TSearch, TDbEntity, TInsert, TUpdate> : BaseService<TModel, TSearch, TDbEntity> where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
         public BaseCRUDService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
-        public TModel Insert(TInsert request)
+        public virtual TModel Insert(TInsert request)
         {
-           TDbEntity entity= Mapper.Map<TDbEntity>(request);
+            TDbEntity entity = Mapper.Map<TDbEntity>(request);
             //if (request.Lozinka != request.LozinkaPotvrda)
             //{
             //    throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste");
@@ -38,13 +38,13 @@ namespace eRecipes.Service
         public virtual void BeforeInsert(TInsert request, TDbEntity entity)
         {
         }
-       public  TModel Update(int id,TUpdate request)
+        public virtual TModel Update(int id, TUpdate request)
         {
-            var set= Context.Set<TDbEntity>();
+            var set = Context.Set<TDbEntity>();
 
-            var entity =  set.Find(id);
+            var entity = set.Find(id);
 
-            Mapper.Map(request,entity);
+            Mapper.Map(request, entity);
 
             BeforeUpdate(request, entity);
 

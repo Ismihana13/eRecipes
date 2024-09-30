@@ -15,6 +15,11 @@ namespace eRecipes.API.Controllers
         {
            
         }
+        [HttpPut("{id}/activate")]
+        public Recept Activate(int id)
+        {
+            return (_service as IReceptService).Acivate(id);
+        }
         
     }
 }

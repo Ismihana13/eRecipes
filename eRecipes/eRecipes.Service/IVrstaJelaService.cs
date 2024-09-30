@@ -1,4 +1,5 @@
 ﻿using eRecipes.Model;
+using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IVrstaJelaService: IService<VrstaJela,VrstaJelaSearchObject>
+    public interface IVrstaJelaService: ICRUDService<VrstaJela,VrstaJelaSearchObject,VrsteJelaUpsertRequest, VrsteJelaUpsertRequest>
     {
         
     }

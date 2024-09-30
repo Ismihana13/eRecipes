@@ -10,7 +10,7 @@ namespace eRecipes.API.Controllers
         protected new ICRUDService<TModel, TSearch, TInsert, TUpdate> _service;
         public BaseCURDController(ICRUDService<TModel, TSearch, TInsert, TUpdate> service) : base(service)
         {
-             
+             _service = service;
         }
 
         [HttpPost]

@@ -8,11 +8,11 @@ namespace eRecipes.Model
     {
         public int ReceptId { get; set; }
 
-        public string Naziv { get; set; } = null!;
+        public string Naziv { get; set; }
 
         public string? OpisRecepta { get; set; }
 
-        public string? Slika { get; set; }
+       // public string? Slika { get; set; }
 
         public int? VrijemePripreme { get; set; }
 
@@ -21,6 +21,7 @@ namespace eRecipes.Model
         public DateTime? DatumObjave { get; set; }
 
         public bool? Premium { get; set; }
+        public string? StateMachine { get; set; }
 
     }
 }
