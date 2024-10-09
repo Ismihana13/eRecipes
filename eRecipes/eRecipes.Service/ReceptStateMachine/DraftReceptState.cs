@@ -36,5 +36,21 @@ namespace eRecipes.Service.ReceptStateMachine
             Context.SaveChanges();
             return Mapper.Map<Model.Recept>(entity);
         }
+        public override Model.Recept Hide(int id)
+        {
+            var set = Context.Set<Database.Recept>();
+
+            var entity = set.Find(id);
+
+            entity.StateMachine = "hidden";
+
+            Context.SaveChanges();
+            return Mapper.Map<Model.Recept>(entity);
+        }
+        public override List<string> AllowedActions(Database.Recept entity)
+        {
+            return new List<string>() { nameof(Activate), nameof(Update), nameof(Hide) };
+        }
+
     }
 }

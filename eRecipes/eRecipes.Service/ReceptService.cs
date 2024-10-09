@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,6 +54,35 @@ namespace eRecipes.Service
             var entity = GetById(id);
             var state = BaseReceptState.CreateState(entity.StateMachine);
             return state.Activate(id);
+        }
+
+        public Model.Recept Edit(int id)
+        {
+            var entity = GetById(id);
+            var state = BaseReceptState.CreateState(entity.StateMachine);
+            return state.Edit(id);
+        }
+
+        public Model.Recept Hide(int id)
+        {
+            var entity = GetById(id);
+            var state = BaseReceptState.CreateState(entity.StateMachine);
+            return state.Hide(id);
+        }
+
+        public List<string> AllowedActions(int id)
+        {
+            if(id<=0)
+            {
+                var state = BaseReceptState.CreateState("initial");
+                return state.AllowedActions(null);
+            }
+            else
+            {
+                var entity = Context.Recepts.Find(id);
+                var state = BaseReceptState.CreateState(entity.StateMachine);
+                return state.AllowedActions(entity);
+            }
         }
     }
 }

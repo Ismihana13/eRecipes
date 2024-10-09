@@ -33,7 +33,14 @@ namespace eRecipes.Service.ReceptStateMachine
         {
             throw new Exception("Method not allowed");
         }
-
+        public virtual Model.Recept Edit(int id)
+        {
+            throw new Exception("Method not allowed");
+        }
+        public virtual  List<string> AllowedActions(Database.Recept entity)
+        {
+            throw new Exception("Method not allowed");
+        }
         public BaseReceptState CreateState(string stateName)
         {
             switch (stateName)
@@ -44,6 +51,8 @@ namespace eRecipes.Service.ReceptStateMachine
                     return ServiceProvider.GetService<DraftReceptState>();
                 case "active":
                     return ServiceProvider.GetService<ActiveReceptState>();
+                case "hidden":
+                    return ServiceProvider.GetService<HiddenReceptState>();
                 default: throw new Exception("State not recognized");
             }
         }

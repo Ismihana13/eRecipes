@@ -1,3 +1,4 @@
+using eRecipes.API.Filters;
 using eRecipes.Service;
 using eRecipes.Service.Database;
 using eRecipes.Service.ReceptStateMachine;
@@ -16,8 +17,12 @@ builder.Services.AddTransient<BaseReceptState>();
 builder.Services.AddTransient<InitialReceptState>();
 builder.Services.AddTransient<DraftReceptState>();
 builder.Services.AddTransient<ActiveReceptState>();
+builder.Services.AddTransient<HiddenReceptState>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(x =>
+{
+    x.Filters.Add<ExceptionFilter>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

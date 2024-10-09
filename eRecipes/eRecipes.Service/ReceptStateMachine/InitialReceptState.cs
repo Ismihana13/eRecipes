@@ -25,6 +25,10 @@ namespace eRecipes.Service.ReceptStateMachine
 
             return Mapper.Map<Recept>(entity);
         }
-        
+        public override List<string> AllowedActions(Database.Recept entity)
+        {
+            return new List<string>() { nameof(Insert) };
+        }
+
     }
 }

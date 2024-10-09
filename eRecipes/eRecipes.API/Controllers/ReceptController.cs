@@ -20,6 +20,21 @@ namespace eRecipes.API.Controllers
         {
             return (_service as IReceptService).Acivate(id);
         }
-        
+        [HttpPut("{id}/edit")]
+        public Recept Edit(int id)
+        {
+            return (_service as IReceptService).Edit(id);
+        }
+        [HttpPut("{id}/hide")]
+        public Recept Hide(int id)
+        {
+            return (_service as IReceptService).Hide(id);
+        }
+        [HttpGet("{id}/allowedActions")]
+        public List<string> AllowedActions(int id)
+        {
+            return (_service as IReceptService).AllowedActions(id);
+        }
+
     }
 }
