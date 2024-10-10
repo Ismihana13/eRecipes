@@ -1,4 +1,5 @@
-﻿using eRecipes.Model.Requests;
+﻿using eRecipes.Model;
+using eRecipes.Model.Requests;
 using eRecipes.Service.Database;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,27 +20,27 @@ namespace eRecipes.Service.ReceptStateMachine
 
         public virtual Model.Recept Insert(ReceptInsertRequest request)
         {
-            throw new Exception("Method not allowed");
+            throw new UserException("Metoda nije dozvoljena.");
         }
         public virtual Model.Recept Update(int id, ReceptUpdateRequest request)
         {
-            throw new Exception("Method not allowed");
+            throw new UserException("Metoda nije dozvoljena.");
         }
         public virtual Model.Recept Activate(int id)
         {
-            throw new Exception("Method not allowed");
+            throw new UserException("Metoda nije dozvoljena.");
         }
         public virtual Model.Recept Hide(int id)
         {
-            throw new Exception("Method not allowed");
+            throw new UserException("Metoda nije dozvoljena.");
         }
         public virtual Model.Recept Edit(int id)
         {
-            throw new Exception("Method not allowed");
+            throw new UserException("Metoda nije dozvoljena.");
         }
         public virtual  List<string> AllowedActions(Database.Recept entity)
         {
-            throw new Exception("Method not allowed");
+            throw new UserException("Metoda nije dozvoljena.");
         }
         public BaseReceptState CreateState(string stateName)
         {

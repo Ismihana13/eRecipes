@@ -4,6 +4,7 @@ using eRecipes.Service.Database;
 using eRecipes.Service.ReceptStateMachine;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace eRecipes.Service
 {
     public class ReceptService : BaseCRUDService<Model.Recept, ReceptSearchObject, Database.Recept, ReceptInsertRequest, ReceptUpdateRequest>, IReceptService
     {
+        ILogger<ReceptService> _logger;
         public BaseReceptState BaseReceptState { get; set; }
-
-        public ReceptService(ERecipesContext context, IMapper mapper, BaseReceptState baseReceptState) : base(context, mapper) {
+       
+        public ReceptService(ERecipesContext context, IMapper mapper, BaseReceptState baseReceptState, ILogger<ReceptService> logger) : base(context, mapper) {
             BaseReceptState = baseReceptState;
+            _logger = logger;
         }
 
         public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
@@ -72,6 +75,7 @@ namespace eRecipes.Service
 
         public List<string> AllowedActions(int id)
         {
+            _logger.LogInformation($"Allowed actions called for: {id}");
             if(id<=0)
             {
                 var state = BaseReceptState.CreateState("initial");

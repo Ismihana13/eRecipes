@@ -7,8 +7,13 @@ namespace eRecipes.API.Filters
 {
     public class ExceptionFilter:ExceptionFilterAttribute
     {
+        ILogger<ExceptionFilter> _logger;
+        public ExceptionFilter(ILogger<ExceptionFilter> logger) { 
+            _logger = logger;
+        }
         public override void OnException(ExceptionContext context)
         {
+            _logger.LogError(context.Exception, context.Exception.Message);
             if (context.Exception is UserException)
             {
                 context.ModelState.AddModelError("userError", context.Exception.Message);
