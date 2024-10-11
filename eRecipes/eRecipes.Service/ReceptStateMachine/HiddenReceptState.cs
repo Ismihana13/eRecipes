@@ -8,25 +8,26 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service.ReceptStateMachine
 {
-    public class ActiveReceptState : BaseReceptState
+    public class HiddenReceptState : BaseReceptState
     {
-        public ActiveReceptState(ERecipesContext context, IMapper mapper, IServiceProvider serviceProvider) : base(context, mapper, serviceProvider)
+        public HiddenReceptState(ERecipesContext context, IMapper mapper, IServiceProvider serviceProvider) : base(context, mapper, serviceProvider)
         {
         }
-        public override Model.Recept Hide(int id)
+        public override Model.Recept Edit(int id)
         {
             var set = Context.Set<Database.Recept>();
 
             var entity = set.Find(id);
 
-            entity.StateMachine = "hidden";
+            entity.StateMachine = "draft";
 
             Context.SaveChanges();
             return Mapper.Map<Model.Recept>(entity);
         }
         public override List<string> AllowedActions(Database.Recept entity)
         {
-            return new List<string>() { nameof(Hide) };
+            return new List<string>() { nameof(Edit) };
         }
+
     }
 }

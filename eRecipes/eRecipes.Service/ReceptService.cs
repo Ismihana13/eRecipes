@@ -4,9 +4,11 @@ using eRecipes.Service.Database;
 using eRecipes.Service.ReceptStateMachine;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,10 +16,12 @@ namespace eRecipes.Service
 {
     public class ReceptService : BaseCRUDService<Model.Recept, ReceptSearchObject, Database.Recept, ReceptInsertRequest, ReceptUpdateRequest>, IReceptService
     {
+        ILogger<ReceptService> _logger;
         public BaseReceptState BaseReceptState { get; set; }
-
-        public ReceptService(ERecipesContext context, IMapper mapper, BaseReceptState baseReceptState) : base(context, mapper) {
+       
+        public ReceptService(ERecipesContext context, IMapper mapper, BaseReceptState baseReceptState, ILogger<ReceptService> logger) : base(context, mapper) {
             BaseReceptState = baseReceptState;
+            _logger = logger;
         }
 
         public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
@@ -53,6 +57,36 @@ namespace eRecipes.Service
             var entity = GetById(id);
             var state = BaseReceptState.CreateState(entity.StateMachine);
             return state.Activate(id);
+        }
+
+        public Model.Recept Edit(int id)
+        {
+            var entity = GetById(id);
+            var state = BaseReceptState.CreateState(entity.StateMachine);
+            return state.Edit(id);
+        }
+
+        public Model.Recept Hide(int id)
+        {
+            var entity = GetById(id);
+            var state = BaseReceptState.CreateState(entity.StateMachine);
+            return state.Hide(id);
+        }
+
+        public List<string> AllowedActions(int id)
+        {
+            _logger.LogInformation($"Allowed actions called for: {id}");
+            if(id<=0)
+            {
+                var state = BaseReceptState.CreateState("initial");
+                return state.AllowedActions(null);
+            }
+            else
+            {
+                var entity = Context.Recepts.Find(id);
+                var state = BaseReceptState.CreateState(entity.StateMachine);
+                return state.AllowedActions(entity);
+            }
         }
     }
 }

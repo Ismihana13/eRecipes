@@ -13,12 +13,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
+using Microsoft.Extensions.Logging;
 namespace eRecipes.Service
 {
     public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
-        public KorisnikService(ERecipesContext context, IMapper mapper) : base(context, mapper)
+        ILogger<KorisnikService> _logger;
+        public KorisnikService(ERecipesContext context, IMapper mapper,ILogger<KorisnikService> logger) : base(context, mapper)
         {
+            _logger = logger;
         }
 
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject searchObject, IQueryable<Database.Korisnik> query)
@@ -55,6 +58,7 @@ namespace eRecipes.Service
 
         public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
         {
+            _logger.LogInformation($"Adding user: {entity.KorisnickoIme}");
             if (request.Lozinka != request.LozinkaPotvrda)
             {
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste");
@@ -99,6 +103,21 @@ namespace eRecipes.Service
                 entity.LozinkaSalt = GenerateSalt();
                 entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
+        }
+
+        public Model.Korisnik Login(string username, string password)
+        {
+            var entity = Context.Korisniks.FirstOrDefault(x => x.KorisnickoIme == username);
+            if (entity == null) 
+            {
+                return null;
+            }
+            var hash = GenerateHash(entity.LozinkaSalt, password);
+            if(hash != entity.LozinkaHash)
+            {
+                return null;
+            }
+            return this.Mapper.Map<Model.Korisnik>(entity);
         }
     }
 }
