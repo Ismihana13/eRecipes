@@ -1,6 +1,7 @@
 ﻿using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using eRecipes.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eRecipes.API.Controllers
@@ -14,13 +15,12 @@ namespace eRecipes.API.Controllers
         }
 
         [HttpPost]
-        public TModel Insert(TInsert request)
+        public virtual TModel Insert(TInsert request)
         {
-
             return _service.Insert(request);
         }
         [HttpPut("{id}")]
-        public TModel Update(int id, TUpdate request)
+        public virtual TModel Update(int id, TUpdate request)
         {
             return _service.Update(id, request);
         }

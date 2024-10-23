@@ -43,7 +43,10 @@ namespace eRecipes.API
                     new Claim(ClaimTypes.Name, user.Ime),
                     new Claim(ClaimTypes.NameIdentifier, user.KorisnickoIme)
                 };
-
+                foreach(var role in user.KorisnikUlogas)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role,role.Uloga.Naziv));
+                }
                 var identity = new ClaimsIdentity(claims, Scheme.Name);
 
                 var principal = new ClaimsPrincipal(identity);

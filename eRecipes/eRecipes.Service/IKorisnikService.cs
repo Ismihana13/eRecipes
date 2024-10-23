@@ -1,5 +1,4 @@
 ﻿using eRecipes.Model;
-using eRecipes.Model;
 using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using System;
