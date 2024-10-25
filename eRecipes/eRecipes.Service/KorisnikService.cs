@@ -107,7 +107,7 @@ namespace eRecipes.Service
 
         public Model.Korisnik Login(string username, string password)
         {
-            var entity = Context.Korisniks.FirstOrDefault(x => x.KorisnickoIme == username);
+            var entity = Context.Korisniks.Include(x=>x.KorisnikUlogas).ThenInclude(y=>y.Uloga).FirstOrDefault(x => x.KorisnickoIme == username);
             if (entity == null) 
             {
                 return null;

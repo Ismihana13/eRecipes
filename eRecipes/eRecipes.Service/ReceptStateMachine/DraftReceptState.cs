@@ -1,4 +1,6 @@
 ﻿using Azure.Core;
+using EasyNetQ;
+using eRecipes.Model.Messages;
 using eRecipes.Model.Requests;
 using eRecipes.Service.Database;
 using MapsterMapper;
@@ -34,7 +36,13 @@ namespace eRecipes.Service.ReceptStateMachine
             entity.StateMachine = "active";
 
             Context.SaveChanges();
-            return Mapper.Map<Model.Recept>(entity);
+            var bus = RabbitHutch.CreateBus("host=localhost:5672");
+            var mappedEntity=Mapper.Map<Model.Recept>(entity);
+            ReceptActivated message= new ReceptActivated {Recept=mappedEntity};
+            bus.PubSub.Publish(message);
+
+            return mappedEntity;
+          
         }
         public override Model.Recept Hide(int id)
         {
