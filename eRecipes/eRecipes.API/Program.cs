@@ -49,6 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("eRecipesConnection");
+Console.WriteLine($"con {connectionString}");
 builder.Services.AddDbContext<ERecipesContext>(options =>
   options.UseSqlServer(connectionString));
 
@@ -70,5 +71,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope=app.Services.CreateScope())
+{
+    var dataContext=scope.ServiceProvider.GetRequiredService<ERecipesContext>();
+   // dataContext.Database.EnsureCreated();
+    dataContext.Database.Migrate();
+}
 
 app.Run();

@@ -6,10 +6,10 @@ services:
     restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=ismi123
+      - SA_PASSWORD=ismi123!
       - MSSQL_PID=Developer
     ports:
-      - 1434:1433
+      - 1401:1433
     expose:
       - 1433
     networks:
@@ -20,7 +20,7 @@ services:
     build:
       context: .
     environment:
-      - ConnectionStrings:eRecipesConnection=Server=erecipes-sql,1433;Database=eRecipes;User=sa;Password=ismi123;ConnectRetryCount=0; TrustServerCertificate=True
+      - ConnectionStrings:eRecipesConnection=Server=erecipes-sql,1433;Database=eRecipes3;User=sa;Password=ismi123!;ConnectRetryCount=0; TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - 5089:5089
