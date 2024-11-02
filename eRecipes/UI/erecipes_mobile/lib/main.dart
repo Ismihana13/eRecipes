@@ -1,4 +1,8 @@
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +35,42 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+
+      home: LayputExamples(),
+    );
+  }
+}
+class LayputExamples extends StatelessWidget {
+  const LayputExamples({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+      Container(
+        height: 200,
+        color: Colors.red,
+        child: Center(child:Container(
+          height: 100,
+          width: 50,
+          color: Colors.blue,
+          child: Text("Sample text"),
+      ),
+      ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text("Item1"),
+          Text("Item3")
+        ],
+      ),
+      Container(
+        height:150,
+        color:Colors.red,
+        child:Center(child: Text("Cointainer")),
+      )
+      ],
     );
   }
 }
