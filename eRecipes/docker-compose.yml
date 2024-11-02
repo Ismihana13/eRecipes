@@ -1,0 +1,36 @@
+version: '3'
+services:
+#mssql docker
+  erecipes-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=ismi123!
+      - MSSQL_PID=Developer
+    ports:
+      - 1401:1433
+    expose:
+      - 1433
+    networks:
+      - erecipes2
+
+  erecipes-api:
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      - ConnectionStrings:eRecipesConnection=Server=erecipes-sql,1433;Database=eRecipes3;User=sa;Password=ismi123!;ConnectRetryCount=0; TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 5089:5089
+    networks:
+      - erecipes2
+    links:
+      - erecipes-sql
+    depends_on:
+      - erecipes-sql
+      
+networks:
+  erecipes2:
+    driver: bridge      
