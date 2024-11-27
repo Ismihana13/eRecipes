@@ -1,11 +1,19 @@
 
-import 'package:flutter/cupertino.dart';
+import 'package:erecipes_desktop/providers/auth_provider.dart';
+import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
+import 'package:erecipes_desktop/providers/recipe_provider.dart';
+import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<RecipeProvider>(create: (_)=> LoggedRecipeProvider()),
+    ],
+    child: const MyApp(),));
 }
 
 class MyApp extends StatelessWidget {
@@ -41,8 +49,9 @@ class MyApp extends StatelessWidget {
   }
 }
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
+   LoginPage({super.key});
+TextEditingController _usernameController=new TextEditingController();
+TextEditingController _passwordController=new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,19 +59,31 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: Center(
           child:Container (
-            constraints: BoxConstraints(maxHeight:400 ,maxWidth: 400),
+            constraints:const BoxConstraints(maxHeight:400 ,maxWidth: 400),
             child: Card(
               child: Column(
                children: [
-                  Image.network("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAABSlBMVEX////cSVUAAAD24IDn7PHYLzzG0NrszWGQm6VmaWvs8vfiS1fM1uDaPkptcnc8FBfGKzeAi5V7KS/d4+pERET31mXv0mmEkJrq6upfZ201Oj7eMD7z8/P85YPZ2dmDg4MmKSzExMTQ0NDl5eWvr69fX19KSkqjo6N1dXUiJSg5OTmUlJS3t7cUFBQuLi6OmaNVVVWzJzI8DRGIiIjZNkMdHR2cnJzTh5GCHCRGDxPBKjbRRlGRMDhxJSxUHCDcyHLKuGmajFAXCAm+P0l2gIqmN0BgFRu2PEYgCgymJC6VICl+ckFYUC7s13vcv1uslkcsKBe2pl+DcjY+OSCPgkqJLTUmBwlcHiNVAADbGiz5zM/olZrVCiIzBAmJHiZwGR9hWDK3n0qWgj1dVTHw4qf88sn9+ekYFgyomVdFPByvmEibh0C8q2KiaHC32/lbAAANcUlEQVR4nO2d6VvbuBaHIZSGNJStCUnAcRpnJRtbw21L2ZeWspZ1mLkdUu7cKUx7//+v144WO7Zky8G27D7+Pf1QgpPoRUdH5xzJ8sCAFxJzrUikXM8Lnnyb9xJiEaRELl/g3RwLFURRTNt8TyLSo0TVt5TScg01sp5nf1ssYlS72rD7d3JdQl3XyBrjsBIJgF01q0U/9eUKsZFlhmGVoxEqalWLohfNt1QhQW9kzcLgWuCymRkqZYk/Zd6sG7oGl2vQLLYAAUdGRnYzLeonVLkabMMKEHRFjjis4F8nM9LV/G5mpkl+f91zLn0bu1qfuvpwtbZOo6zFGnqDg8NwdwRrfjKTIFEuc6EbwGYm69PearyrwcGPV+M0ynaspy/L3RebqZEeyZTGcWljBnJUaA6MfFDQoBROmXKbhhmrQMo0+LmVSqXmR3SSKds9FsAHEE0T14svB3slQ65+vFqnUTZjFVFAJr6QmpQlU+oxJ8cSc/gtXFyqAL98e2J2ePjNSxLlztUNrSvnSgvgP2OTWIa+nJ8cgxZb4UGIuvC9DAj0hkA5uPOB6n26mkxNaqWnnARXcXGncAb7jAGplHGZ8ppG2FoY2zVQqpi74KoVDoAoqHz3dnFi1ppS7ssbOmV5bDdFpoS2LHEg1ITb20tvF4etKGXMwdUPa1RrnStnZH+T0lO+Br/lkSBXdS1censwPGxNGV/dW6P2ZbOckS1WSwmNdIEDIDGl6FrssDXlzt4aNSyYS2gpx8CLXIIaYY7cwneLOkaaxZpRzmR2uxabAnEPl2EoIy5TAuX3ekITyim6xXYp4XTILetP53M1Y9v2USfO6twPZVxOUfsyAgETvAC7KuRz5d5m/XZ72+U72H93d/DeQEkM8aZMwwKO6ROUkF/WpPrLv/8x+O/b2wPw0/j+5/ezTJRXVMpWjH+uLytfBxbb6s5dv//xVWu4nydY+tIs9YqUKj6gFKR6DMXIgq6B23JfMlKuf6JRxlZEHxXHCT7oev+zPvihJiU0ynZpRfIJJaWGs/3uz8VZxkCW1pXN8gqfGVInaaFNa6JMyRLIykkJtS8jCV/0pViMUcuE+wxJCQjxbqjup7yc578EIBSKVVpfboPUyzIsGDQL18s5H1AOpItVSogXiXyVkxJGSqrFtuh1Zw9VaFQJ7hVo/O7AOGESLNY0XM/5YdGq0MhR1znkEI/FYk1Tr0TODz423Vimep+vbJSDJuF6i0tZziDBhHL7jjHE26OFeA3eeFBpQ1Ki6vqOLcRTkpJt49tjPnA7UGmpvkCjfEpS0vKBz1ElSCtU7/Ppho1ycEdPyQtRyFcqFdIELa2UqRPm/p96ix0mUcY/aqvrbS6GWkTjLlEhfL+cepWowY+R8g0pXF/9gIOCkvd8eW1xrlkkXiOIKyWqxbKE6/FVXHP2fNZY1jU4Rr1SrFApI0uWlPE9dK3HdqovkVvUscViiTphWqyUYMSqV2xd6TcVsbRALFbplHf0pCQ+xaETybufGFbn5dSLBtldKSFTwljHy5GIJrzm5ebG5tYZaiPbm9ON6msa5fWdsh6ko0R2WnYXSisJtqdznM0Oyf8O4c/sAWQhX6WGBUvG1GsJ/Ma7aR/unDkagsp2wAv2Fs3kQJZOuX+gCX5m34JXvUulYOa7kUWIx9+B0dr2BWZJybWaei2CVzxbG4fF4SMMOJSFdtpfFTtfp28XBNX1CfBDzmEQquDeoC0N4ZcnmpFZUnItJyXb3f95NiNCwh/TmHD6mwMDRU5KqJQRLoTnyWhUgZyejibvHSDsSqpQ02gPrVQAidFZVNURaIIzW0elygJ5yd27dUcYSZ8mIV8SGmnLsW8QxErMmHp5V7CpwG/8BhCTJ+5YUaGi2/zv3e7iNPrK+2gymYyeutiCQrGELdbLPZtqctg573xH/6eniE+TWIwpMcacp2vGxPKEm2FjoeHSrVQFkWx5pPSJ19bm/iUugxHQqhMoJY6OziEVtMWVqtEAC70LT20/LKHYUtHaBCuaX9f9U3dnlLEOQyoX5qutZqQ5FwucgRp70MSRuNZ5QtpF31wgAHq6dCA0YjU5+K2Vii59KU5iHrceti6wu3HnywjSjhFX8gkJfvjFRlbRJqql2QvKBEFI92XCom5Nx4V5FpY0L45BEp+FVRgbyUuhUgW3dPWx3dl4g6DzjgyGurjQlN0ELzBGvoW6Zqq0ndJ5ES3BQtN/NGWYR/ASi9EVepdh7OYDghcRLxyGDxrCS/CSdXCf1t/OffbXf/8Gn8p2szO+l/isc9jBxXSHsxY4EP7RFJruGQmN82hH+Tv99beguGcGZ4wzz4ch2ccNfUGZmbOJE+zDU1BnkvmiyXO27zHej392rK2nzll2I4oEN5CTgz87e4MGHIedpFpoYhqHQk8s/v3ocOvhC7J01BdWPgPOxF/0To5x0YdVcLCfYECmQlNaU55/fABTKR7KeERZeH7Y8xoXAKt4zvoaOB8+YsIzBlMRVMDOpooG27mFf2nai9B8LrOGdzqbnKE59/EkmYwmkydMMQ1eejgz8Ck6xIhmgxkGxD/UD5j+h828bQqXnTs/Tu+P0A+mLhsv7R4OEfjUlQ3znTHQld5Hp7GT++FGH1IWsc26EG9zfyDyKYgbyNuYTRrQeFQnx+rG7Yp0qx55xwyQgIJlKqAW0cTi4GBWnVwUvsdhQNIxJaark6h+ukUHVBDhVU3L78VOLglXl13YEVXRAZr1II5EDs0AZcSf8Dr6pgo0Po5OFENNRjvW3d63RO0qV4kwBgVRyjeKjbxUwF1oyjekLhW3BtKi1CgW85LhnCacfJ9/+/btHHlx55Z8eiQh/5gzDnOpXlaTADQT/jTvQlkoCGvhJLdZq/b0T987dfpUWsoTbmQpkHZEyYPHElA782tV0swFJCfn2coo5KPtarLuQrxpw6Cy2kvGj/d446V+TyLWmTWfOhIJ/YiHut5CvN2xJ1Lu+I5YOlJIuEl9v+phpZ4839tyM6lSjLTJQjiUNfkENSxsIJeaMJ2lnFePhR4dPmwq2jq8YO5C1InfO5c/lff+vOxoB2ZN9WppUZ6JJK8PzdIEOo8Px1msoY2tS7YeVBCVizVvPt7UDM0W3wUetQcf9QlSlpQwURl7L5YhVUZOxysBqWPwwQ4PE/MGXjpway8Ag/BqzcWGw3wKopoh87uRC5WZjsgZ7pMZcbTD60g+FEwducKnRfRwr7NW6LwBpsClT0T7e6mdFPKjJ9Mu6pGjP0VVintNldh5oe1xPDbmwJniwk0+terE4SYulHmfutqFUVx28j6ygX7mLOm2zt3yNcTDk3ypWq6fQVqk3u3pS1FudaQrbbJz3Kcq21qIIm8O8rtsRHb6s5GCInZvS79/1d9injLV3TkLsSBIvaeG1aUiL7P87EUw9AwFyIwZCHIzjRfPgqIXaKWSzdnAcLMaHEAZEdbE2WZFWDwbDRQhXLthW8uAnnT0Fe9m29CrUTveFBE+Hx19FQyNym21Qwit9HmwZMdK4VL27ijvRtvQKDxsma3qiBZci8FBHEWFacbtJygtnB81kfbzuWsetpi1XIUr9a3MGE2p54hxtLFLvcobqQ93YU4STZ6bo6oIAVMsF3sj9rOWmdLD18BAnrvdbBuykSBKLJ/3r67+53KrbcjWPj6J4QNvb2dnZ28X3W43s+xu4zN91JaiO3DGyOxXqwu9UR+7a9KVkkm5bfsOnRIzQT0I2DM1S5U+90MDn7o0QZJ6Fs4s8ffeCBzC0/959ZBw2L8KCUNCQDj+0r8at0eY1kmAhIP+FSQU9E0n0Ek56tlT/ickqKU7TVk0O6gokISyypogh/yQ0aATau4ksAjQgkuIQjn9LQa/ECGo21gmg0Em7KaMeCltJqNXOyCEbUPL8SNAS2oXtib1D9EcgQ988z/ha2PTJ9HkV0CjkHBRoAlR4+WRCI2U0IMBJ5xEZgrGWpt0TbAJRyAZvHsxYXyWbcAJ51OwJgoJZ5SH9Ok1HxjCeUPbZRzoTwcARbP3+aDw+ZlzASGcI7YeVJla6MSDDOGiQBOmMgAshhYpmrvGq4JMmNqFhcIi3v/UzPxS4zCDKqGCNrNozejUDAhhU99wNZtXsgvBapul/wnpAidtG49g+nUI4TYwyhP+fgFCvHFaMjXU4BJqilGCWSEjqIS53u2m6SL1iXBBJKxV2U4eDExFmAUmJPSpQsKQMCTkr5AwJAwJ+SskDAlDQv4KCUPCkJC/QsKQMCTkr5AwJAwJ+SskDAlDQv4KCUPCkJC/QsKQMCTkr5AwJAwJ+SskDAlDQv4KCa1UDghh/48VAHfpX6/y5qBq9brbwoW+CeGRmT4mBA3s/9lP8A7avThvEorie6CB/T8cSQIfcONbwnXQwCc8rBN8QGTHn4jxHdi+/gHRQBz3KeH4U4ehegzmlB8R41OwdU963mrJv4gY8GmP9sAPj7xZ9RdjfHU94kQXah87OLUT9492pnC76k8D7D1jf31tyg9aW9e0yYHHzzAdZspN/QfdqgSzM6R4a8GZx+tQHzLKXaZPrrcjyZ+WWnPy0eoN/5nqgtMP8UoXc4m29fd6onYix3aLqKL/A2owqb4Ho7jMAAAAAElFTkSuQmCC",height: 100,width: 100,),
+                  //Image.network("",height: 100,width: 100,),
+                  Image.asset("assets/images/logo.png",height: 100,width: 100,),
+                  const SizedBox(height: 10,),
+                  TextField(controller: _usernameController, decoration: InputDecoration(labelText: "Username",prefixIcon: Icon(Icons.email) ),),
                   SizedBox(height: 10,),
-                  TextField(decoration: InputDecoration(labelText: "Username",prefixIcon: Icon(Icons.email) ),),
-                  SizedBox(height: 10,),
-                  TextField(decoration: InputDecoration(labelText: "Password",prefixIcon: Icon(Icons.password) ),),
+                  TextField(controller: _passwordController, decoration: InputDecoration(labelText: "Password",prefixIcon: Icon(Icons.password) ),),
                   ElevatedButton(
+                    onPressed: () async{
+                      RecipeProvider provider= new RecipeProvider();
+                     // provider.get();
+                     print("credentials ${_usernameController.text}: ${_passwordController.text}");
+                     AuthProvider.username=_usernameController.text;
+                     AuthProvider.password=_passwordController.text;
+                    try{
+                          var data =await provider.get();
+                          //print(" authentficated");
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> RecipeListScreen()));
+                    }on Exception catch(e){
+                      showDialog(context:context,builder:(context)=>AlertDialog(title: Text("Error"),actions: [TextButton(onPressed:()=> Navigator.pop(context), child: Text("OK"))], content: Text(e.toString()),));
+                    }
                     
-                    onPressed: (){
-                     print("Login attempt");
                   }, 
                   child: Text("Login"))
                 ],),
