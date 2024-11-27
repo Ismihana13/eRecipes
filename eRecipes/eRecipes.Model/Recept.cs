@@ -12,7 +12,7 @@ namespace eRecipes.Model
 
         public string? OpisRecepta { get; set; }
 
-       // public string? Slika { get; set; }
+        public byte[]? Slika { get; set; }
 
         public int? VrijemePripreme { get; set; }
 
@@ -21,6 +21,7 @@ namespace eRecipes.Model
         public DateTime? DatumObjave { get; set; }
 
         public bool? Premium { get; set; }
+        public bool? Status { get; set; }
         public string? StateMachine { get; set; }
 
     }
