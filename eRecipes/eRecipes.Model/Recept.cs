@@ -13,7 +13,9 @@ namespace eRecipes.Model
         public string? OpisRecepta { get; set; }
 
         public byte[]? Slika { get; set; }
+        public int VrstaJelaId { get; set; }
 
+        public int KategorijaId { get; set; }
         public int? VrijemePripreme { get; set; }
 
         public int? KorisnikId { get; set; }

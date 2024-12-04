@@ -3,6 +3,7 @@ import 'package:erecipes_desktop/models/recept.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
 import 'package:erecipes_desktop/providers/utils.dart';
+import 'package:erecipes_desktop/screens/recipe_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +66,7 @@ TextEditingController _ftsEditingController= TextEditingController();
         }, child: Text("Pretraga")),
         SizedBox(width: 8 ,),
          ElevatedButton(onPressed: ()async{
-
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> RecipeDetailsScreen()));
         }, child: Text("Dodaj ")) 
       ],
     ),
@@ -74,6 +75,8 @@ TextEditingController _ftsEditingController= TextEditingController();
 
   Widget _buildResultView(){
     return Expanded(
+      child:Container(
+         width: double.infinity,
       child: SingleChildScrollView(
         child: DataTable(
           columns: [
@@ -82,13 +85,21 @@ TextEditingController _ftsEditingController= TextEditingController();
               DataColumn(label: Text("Slika")),
           ],
           rows: result?.result.map((e)=> 
-          DataRow(cells: [
+          DataRow(
+            onSelectChanged: (selected)=>{
+              if(selected==true){
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> RecipeDetailsScreen(recept: e,)))
+              }
+              
+            },
+            cells: [
               DataCell(Text(e.receptId.toString())),
               DataCell(Text(e.naziv?? "")),
               DataCell(e.slika!=null? Container(width: 100,height: 100,
               child: imageFromString(e.slika!),):Text("")),
           ])
           ).toList().cast<DataRow>()?? [],
+        ),
         ),
       ),
     );

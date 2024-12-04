@@ -9,7 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    
+    [AllowAnonymous]
     public class VrstaJelaController : BaseCURDController<VrstaJela,VrstaJelaSearchObject,VrsteJelaUpsertRequest,VrsteJelaUpsertRequest>
     {
         public VrstaJelaController(IVrstaJelaService service) : base(service) { }
