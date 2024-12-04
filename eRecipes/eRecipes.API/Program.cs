@@ -22,7 +22,11 @@ builder.Services.AddTransient<InitialReceptState>();
 builder.Services.AddTransient<DraftReceptState>();
 builder.Services.AddTransient<ActiveReceptState>();
 builder.Services.AddTransient<HiddenReceptState>();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add<ExceptionFilter>();
@@ -72,7 +76,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors("AllowAllOrigins");
 using (var scope=app.Services.CreateScope())
 {
     var dataContext=scope.ServiceProvider.GetRequiredService<ERecipesContext>();
