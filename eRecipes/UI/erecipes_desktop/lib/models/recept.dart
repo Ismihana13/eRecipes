@@ -7,9 +7,12 @@ class Recept{
   int? receptId;
   String? naziv; 
   String? slika;
-  int? vrstaId;
+  int? vrstaJelaId;
+  int? kategorijaId;
+  int? vrijemePripreme;
   int? korisnikId;
-
+  String? opisRecepta;
+  DateTime? datumObjave;
   Recept({this.receptId, this.naziv});
 
   factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);

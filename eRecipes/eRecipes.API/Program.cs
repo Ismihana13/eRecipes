@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IReceptService, ReceptService>();
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
+builder.Services.AddTransient<IKategorijaService, KategorijaService >();
 
 builder.Services.AddTransient<BaseReceptState>();
 builder.Services.AddTransient<InitialReceptState>();

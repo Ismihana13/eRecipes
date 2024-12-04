@@ -10,13 +10,13 @@ namespace eRecipes.Model.Requests
 
         public string? OpisRecepta { get; set; }
 
-        //public byte[]? Slika { get; set; }
+        public byte[]? Slika { get; set; }
 
         public int? VrijemePripreme { get; set; }
 
-        public int? KorisnikId { get; set; }
+       // public int? KorisnikId { get; set; }
 
-        public DateTime? DatumObjave { get; set; }
+       // public DateTime? DatumObjave { get; set; }
 
         //public bool? Premium { get; set; }
 

@@ -1,7 +1,9 @@
 
 import 'package:erecipes_desktop/providers/auth_provider.dart';
+import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
+import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,8 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<RecipeProvider>(create: (_)=> LoggedRecipeProvider()),
+      ChangeNotifierProvider<KategorijaProvider>(create: (_)=> KategorijaProvider()),
+       ChangeNotifierProvider<VrstaJelaProvider>(create: (_)=> VrstaJelaProvider()),
     ],
     child: const MyApp(),));
 }
