@@ -1,9 +1,9 @@
 import 'package:erecipes_mobile/layouts/master_screen.dart';
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/search_result.dart';
+import 'package:erecipes_mobile/providers/like_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
-import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,93 +15,111 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
-
-  late RecipeProvider provider;
+  RecipeProvider? _recipeProvider=null;
+  SearchResult<Recept>? data=null;
+  TextEditingController _searchController= TextEditingController();
+  LikeProvider? _likeProvider=null;
 
   @override
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-
-    provider=context.read<RecipeProvider>();
+  void initState(){
+    super.initState();
+    _recipeProvider=context.read<RecipeProvider>();
+    _likeProvider = context.read<LikeProvider>();
+    loadData();
   }
-
+ void loadData() async {
+    var tmpData= await _recipeProvider?.get();
+    setState(() {
+      data=tmpData;
+    });
+  }
   SearchResult<Recept>? result=null;
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Lista recepata", 
-        Container(
-          child: Column(
-            children: [
-              _buildSearch(),
-              _buildResultView()
-            ],
-            ),
-        )
-      );
-  }
-
-TextEditingController _ftsEditingController= TextEditingController();
-//TextEditingController _sifraEditingController= TextEditingController();
-  Widget _buildSearch(){
-    return Padding(
-      padding: const EdgeInsets.all(8.0), 
-      child: Row(
-      children: [
-        Expanded(child: TextField(controller: _ftsEditingController, decoration: InputDecoration(labelText: "Naziv ili sifra"),)),
-      //  SizedBox(width: 8,),
-       // Expanded(child: TextField(controller: _sifraEditingController, decoration: InputDecoration(labelText: "Sifra"),)),
-
-        ElevatedButton(onPressed: ()async{
-           
-           var filter= {
-              'fts': _ftsEditingController.text,
-             // 'sifra':_sifraEditingController
-           };
-          
-           result= await provider.get(filter:filter);
-          setState(() {
-          
-          });
-
-        }, child: Text("Pretraga")),
-        SizedBox(width: 8 ,),
-         ElevatedButton(onPressed: ()async{
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> RecipeDetailsScreen()));
-        }, child: Text("Dodaj ")) 
-      ],
-    ),
-    ) ;
-  }
-
-  Widget _buildResultView(){
-    return Expanded(
-      child:Container(
-         width: double.infinity,
-      child: SingleChildScrollView(
-        child: DataTable(
-          columns: [
-            DataColumn(label: Text("ID"), numeric: true),
-             DataColumn(label: Text("Naziv")),
-              DataColumn(label: Text("Slika")),
+    return MasterScreen("Recepti", 
+    SingleChildScrollView(
+      child: Container(
+        child:  Column(
+          children: [
+            _buildRecipeSearch(),
+            Container(
+              height: 500,
+              child: GridView(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 4/3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 30,
+                ),
+                scrollDirection: Axis.vertical,
+                children: _buildRecipeCardList(),
+              ),
+            )
           ],
-          rows: result?.result.map((e)=> 
-          DataRow(
-            onSelectChanged: (selected)=>{
-              if(selected==true){
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> RecipeDetailsScreen(recept: e,)))
-              }
-              
-            },
-            cells: [
-              DataCell(Text(e.receptId.toString())),
-              DataCell(Text(e.naziv?? "")),
-              DataCell(e.slika!=null? Container(width: 100,height: 100,
-              child: imageFromString(e.slika!),):Text("")),
-          ])
-          ).toList().cast<DataRow>()?? [],
-        ),
         ),
       ),
+    ));
+  }
+
+   Widget _buildRecipeSearch() {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onSubmitted: (value) async{
+                var tmpData= await _recipeProvider?.get(filter: {'fts':_searchController.text});
+                setState(() {
+                  data=tmpData;
+                });
+              },
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: "Search",
+              prefix: Icon(Icons.search)
+            ),
+                    ),
+          )),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 8),
+            child: IconButton(
+              icon: Icon(Icons.filter_list), 
+              onPressed: ()async { 
+                var tmpData= await _recipeProvider?.get(filter: {'fts':_searchController.text});
+                setState(() {
+                  data=tmpData;
+                });
+               },
+            ),
+          )
+      ],
     );
   }
+  
+  List<Widget> _buildRecipeCardList() {
+    if(data?.result?.length==0){
+      return [Text("Loading..")];
+    }
+    List<Widget> list= data!.result.map((e) => Container(
+      child: Column(
+        children: [
+          Container(
+            height: 100,
+            width: 100,
+            child: e.slika==null ? Placeholder() : imageFromString(e.slika!),
+          ),
+          Text(e.naziv ?? ""),
+          Text(e.opisRecepta ?? ""),
+          IconButton(onPressed: () {
+  print("Pozivam addToCart");
+  _likeProvider?.addToCart(e);
 }
+, icon:Icon(Icons.shopping_cart))
+        ],
+      ),
+    )).cast<Widget>().toList();
+    return list;
+  }
+}
+  

@@ -1,6 +1,7 @@
 
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
+import 'package:erecipes_mobile/providers/like_provider.dart';
 import 'package:erecipes_mobile/providers/logged_recipe_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
@@ -16,6 +17,7 @@ void main() {
       ChangeNotifierProvider<RecipeProvider>(create: (_)=> LoggedRecipeProvider()),
       ChangeNotifierProvider<KategorijaProvider>(create: (_)=> KategorijaProvider()),
        ChangeNotifierProvider<VrstaJelaProvider>(create: (_)=> VrstaJelaProvider()),
+       ChangeNotifierProvider<LikeProvider>(create: (_) => LikeProvider()),
     ],
     child: const MyApp(),));
 }
@@ -106,14 +108,19 @@ TextEditingController _passwordController=new TextEditingController();
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Username",
-                        hintStyle: TextStyle(color: Colors.grey[350])
+                    Container(
+                      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey!))),
+                      child: TextField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Username",
+                          hintStyle: TextStyle(color: Colors.grey[350])
+                        ),
                       ),
                     ),
                       TextField(
+                        controller: _passwordController,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "Password",
@@ -138,8 +145,19 @@ TextEditingController _passwordController=new TextEditingController();
                     )
                 ),
                 child: InkWell(
-                  onTap: (){
-                    
+                  onTap: () async{
+                    RecipeProvider provider= new RecipeProvider();
+                    AuthProvider.username=_usernameController.text;
+                    AuthProvider.password =_passwordController.text;
+                    if(_usernameController.text==""){
+
+                    }
+                    try {
+                      var data= await provider.get();
+                       Navigator.of(context).push(MaterialPageRoute(builder:  (context) => RecipeListScreen()));
+                    }on Exception catch (e) {
+                      showDialog(context: context, builder: (context) => AlertDialog(title: Text("Error"), actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text("OK"))], content: Text(e.toString()),));
+                    }
                   },
                   child: Center(child: Text("Login",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
                 ),

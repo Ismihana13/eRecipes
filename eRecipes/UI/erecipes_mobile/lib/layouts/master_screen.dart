@@ -1,7 +1,10 @@
+import 'package:erecipes_mobile/providers/like_provider.dart';
+import 'package:erecipes_mobile/screens/like_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/user_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class MasterScreen extends StatefulWidget {
    MasterScreen(this.title,this.child,{super.key});
@@ -13,8 +16,13 @@ class MasterScreen extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MasterScreen> {
+  LikeProvider? _likeProvider;
+
   @override
   Widget build(BuildContext context) {
+    _likeProvider = context.watch<LikeProvider>();
+
+
     return  Scaffold(
       appBar: AppBar(title: Text(widget.title),),
       drawer: Drawer(
@@ -25,6 +33,13 @@ class _MyWidgetState extends State<MasterScreen> {
               onTap: () => {
                 Navigator.pop(context),
                 Navigator.pop(context)
+              },
+            ),
+            ListTile(
+             title: Text("in like ${_likeProvider?.like?.items?.length ?? 0}"),
+
+              onTap: () => {
+               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> LikeScreen()))
               },
             ),
             ListTile(
