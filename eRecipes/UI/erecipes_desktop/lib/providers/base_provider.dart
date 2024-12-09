@@ -1,20 +1,31 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/providers/auth_provider.dart';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:http/io_client.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint = "";
+  String? fullUrl;
+  
+  HttpClient client = HttpClient();
+  IOClient? http;
 
   BaseProvider(String endpoint) {
-    _endpoint = endpoint;
-    _baseUrl = const String.fromEnvironment("baseUrl",
+        _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://localhost:5089/");
+    if (_baseUrl!.endsWith("/") == false) {
+      _baseUrl = _baseUrl! + "/";
+    }
+
+    _endpoint = endpoint;
+
+    client.badCertificateCallback = (cert, host, port) => true;
+    http = IOClient(client);
+    fullUrl = "$_baseUrl$_endpoint";
   }
 
   Future<SearchResult<T>> get({dynamic filter}) async {
@@ -28,7 +39,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
-    var response = await http.get(uri, headers: headers);
+    var response = await http!.get(uri, headers: headers);
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
@@ -43,9 +54,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
       return result;
     } else {
-      throw new Exception("Unknown error");
+      throw new Exception("Wrong username or password");
     }
-    // print("response: ${response.request} ${response.statusCode}, ${response.body}");
   }
 
   Future<T> insert(dynamic request) async {
@@ -54,7 +64,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
-    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    var response = await http!.post(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
@@ -70,7 +80,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
-    var response = await http.put(uri, headers: headers, body: jsonRequest);
+    var response = await http!.put(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
