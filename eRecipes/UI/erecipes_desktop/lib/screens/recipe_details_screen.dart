@@ -55,8 +55,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     initForm();
   }
   Future initForm() async{
-    vrstaJelaResult= await vrstaJelaProvider.get();
-    kategorijaResult= await kategorijaProvider.get();
+   // vrstaJelaResult= await vrstaJelaProvider.Get();
+    //kategorijaResult= await kategorijaProvider.get();
     print("vrtsa:${kategorijaResult?.result.length}");
     setState(() {
       isLoading=false;

@@ -7,18 +7,18 @@ part 'korisnik.g.dart';
 class Korisnik{
   int? korisnikId;
   String? ime; 
-  String? Prezime; 
+  String? prezime; 
   DateTime? datumRodjenja;
    String? email; 
   String? telefon; 
   String? korisnickoIme; 
   String? lozinka; 
-  Uloga? uloga;
+  Uloga? uloga; 
   String? uloge;
-
+//List<KorisnikUloga> korisnikUlogas;
    Korisnik({
     this.ime,
-    this.Prezime,
+    this.prezime,
     this.datumRodjenja,
     this.email,
     this.telefon,

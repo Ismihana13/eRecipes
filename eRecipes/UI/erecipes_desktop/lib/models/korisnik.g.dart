@@ -8,7 +8,7 @@ part of 'korisnik.dart';
 
 Korisnik _$KorisnikFromJson(Map<String, dynamic> json) => Korisnik(
       ime: json['ime'] as String?,
-      Prezime: json['Prezime'] as String?,
+      prezime: json['prezime'] as String?,
       datumRodjenja: json['datumRodjenja'] == null
           ? null
           : DateTime.parse(json['datumRodjenja'] as String),
@@ -25,7 +25,7 @@ Korisnik _$KorisnikFromJson(Map<String, dynamic> json) => Korisnik(
 Map<String, dynamic> _$KorisnikToJson(Korisnik instance) => <String, dynamic>{
       'korisnikId': instance.korisnikId,
       'ime': instance.ime,
-      'Prezime': instance.Prezime,
+      'prezime': instance.prezime,
       'datumRodjenja': instance.datumRodjenja?.toIso8601String(),
       'email': instance.email,
       'telefon': instance.telefon,

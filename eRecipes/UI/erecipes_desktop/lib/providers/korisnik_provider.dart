@@ -7,19 +7,22 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
   KorisnikProvider() : super("Korisnik");
 
   @override
-  Korisnik fromJson(x) {
-    return Korisnik.FromJson(x);
+  Korisnik fromJson(data) {
+    return Korisnik.FromJson(data);
+    
   }
 
   Future<Korisnik> Authenticate() async {
      var url = "$fullUrl/Authenticate";
     var uri = Uri.parse(url);
 
-    var headers = createHeaders();
+    var headers = getHeaders();
     var response = await http!.get(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
+      
       Korisnik user = fromJson(data) as Korisnik;
+      notifyListeners();
       return user;
     } else {
       throw Exception("Wrong username or password");

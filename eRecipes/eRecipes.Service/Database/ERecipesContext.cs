@@ -208,6 +208,13 @@ public partial class ERecipesContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Data Source=localhost,1434;Initial Catalog=eRecipes;User ID=sa;Password=ismi123;TrustServerCertificate=True");
+        }
+    }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

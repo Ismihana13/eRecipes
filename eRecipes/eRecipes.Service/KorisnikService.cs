@@ -44,7 +44,7 @@ namespace eRecipes.Service
 
             if (!string.IsNullOrWhiteSpace(searchObject?.KorisnickoIme))
             {
-                query = query.Where(x => x.KorisnickoIme == searchObject.KorisnickoIme);
+                query = query.Where(x => x.KorisnickoIme.StartsWith( searchObject.KorisnickoIme));
             }
 
             if (searchObject.isKorisnikUlogeIncluded == true)
@@ -63,9 +63,14 @@ namespace eRecipes.Service
             {
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste");
             }
-
+            
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.KorisnikUlogas.Add(new Database.KorisnikUloga
+            {
+                UlogaId = 2,  
+                DatumIzmjene = DateTime.Now
+            });
             base.BeforeInsert(request, entity);
         }
 
@@ -103,6 +108,7 @@ namespace eRecipes.Service
                 entity.LozinkaSalt = GenerateSalt();
                 entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
+
         }
 
         public Model.Korisnik Login(string username, string password)

@@ -1,0 +1,227 @@
+import 'package:erecipes_desktop/models/korisnik.dart';
+import 'package:erecipes_desktop/models/search_result.dart';
+import 'package:erecipes_desktop/models/uloga.dart';
+import 'package:erecipes_desktop/providers/uloga_provider.dart';
+import 'package:flutter/material.dart';
+
+class EditUserModal extends StatefulWidget {
+  final VoidCallback onCancelPressed;
+  final void Function(int, dynamic) onUpdatePressed;
+  final Korisnik? korisnikToEdit;
+
+  const EditUserModal({
+    required this.onCancelPressed,
+    required this.onUpdatePressed,
+    required this.korisnikToEdit,
+  });
+
+  @override
+  _EditUserModalState createState() => _EditUserModalState();
+}
+
+class _EditUserModalState extends State<EditUserModal> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController telephoneController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController ulogaController = TextEditingController();
+
+  UlogaProvider ulogaProvider = UlogaProvider();
+  late Korisnik? _korisnikToEdit;
+  SearchResult<Uloga>? ulogaList;
+  var selectedUloga;
+
+  Future<void> loadData() async {
+    try {
+      ulogaList = await ulogaProvider.get();
+      if (_korisnikToEdit != null) {
+        setState(() {
+          selectedUloga = _korisnikToEdit!.uloge;
+          ulogaController.text = selectedUloga != null ? selectedUloga : '';
+        });
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  Future<void> _editUser() async {
+    final name = nameController.text;
+    final surname = surnameController.text;
+    final email = emailController.text;
+    final telephone = telephoneController.text;
+    final userName = userNameController.text;
+    final uloga = ulogaController.text;
+
+    if (_korisnikToEdit != null) {
+      widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
+        'ime': name,
+        'prezime': surname,
+        'email': email,
+        'telefon': telephone,
+        'korisnickoIme': userName,
+      });
+      await loadData();
+      Navigator.pop(context);
+    } else {
+      print("Error: User to edit is null!");
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    surnameController.dispose();
+    emailController.dispose();
+    telephoneController.dispose();
+    userNameController.dispose();
+    ulogaController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _korisnikToEdit = widget.korisnikToEdit;
+
+    if (_korisnikToEdit != null) {
+      nameController.text = _korisnikToEdit!.ime ?? '';
+      surnameController.text = _korisnikToEdit!.prezime ?? '';
+      emailController.text = _korisnikToEdit!.email ?? '';
+      telephoneController.text = _korisnikToEdit!.telefon ?? '';
+      userNameController.text = _korisnikToEdit!.korisnickoIme ?? '';
+    }
+    loadData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          color: const Color.fromRGBO(247, 249, 253, 1),
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Text(
+                      'Edit User',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Ime',
+                        hintText: 'Example: John',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: surnameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Prezime',
+                        hintText: 'Example: Smith',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your surname';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: userNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Korisničko ime',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        hintText: 'example@email.com',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: telephoneController,
+                      decoration: const InputDecoration(
+                        labelText: 'Telefon',
+                        hintText: 'Example: 037-123-456',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your telephone';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: ulogaController,
+                      decoration: const InputDecoration(
+                        labelText: 'Current Role',
+                      ),
+                      readOnly: true,
+                    ),
+                  
+                            
+                          
+                      
+                      
+                    
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        ElevatedButton(
+                          onPressed: widget.onCancelPressed,
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _editUser();
+                            }
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

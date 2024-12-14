@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace eRecipes.Model
 {
@@ -18,6 +19,7 @@ namespace eRecipes.Model
         public string? Telefon { get; set; }
 
         public string KorisnickoIme { get; set; } = null!;
+        public string Uloge => string.Join(", ", KorisnikUlogas?.Select(x => x.Uloga?.Naziv)?.ToList());
 
         public bool? Status { get; set; }
 

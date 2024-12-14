@@ -27,7 +27,28 @@ abstract class BaseProvider<T> with ChangeNotifier {
     http = IOClient(client);
     fullUrl = "$_baseUrl$_endpoint";
   }
+ Future<List<T>> Get([dynamic search]) async {
+    var url = "${_baseUrl}${_endpoint}";
 
+    if (search != null) {
+      String queryString = getQueryString(search);
+      url = url + "?" + queryString;
+    }
+
+    var uri = Uri.parse(url);
+
+    Map<String, String> headers = getHeaders();
+
+    var response = await http!.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<T> list = data.map((x) => fromJson(x)).cast<T>().toList();
+      return list;
+    } else {
+      throw Exception("Wrong username or password");
+    }
+  }
   Future<SearchResult<T>> get({dynamic filter}) async {
     var url = "$_baseUrl$_endpoint";
 
@@ -122,6 +143,20 @@ abstract class BaseProvider<T> with ChangeNotifier {
     return headers;
   }
 
+  Map<String, String> getHeaders() {
+    String username = AuthProvider.username !;
+    String passowrd =AuthProvider.password !;
+
+    String basicAuth =
+        "Basic ${base64Encode(utf8.encode('$username:$passowrd'))}";
+
+    var headers = {
+      "Content-Type": "application/json",
+      "Authorization": basicAuth
+    };
+
+    return headers;
+  }
   String getQueryString(Map params,
       {String prefix = '&', bool inRecursion = false}) {
     String query = '';

@@ -11,12 +11,14 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class VrstaJelaService : BaseCRUDService<Model.VrstaJela, VrstaJelaSearchObject, Database.VrstaJela, VrsteJelaUpsertRequest, VrsteJelaUpsertRequest>, IVrstaJelaService
+    public class UlogaService : BaseCRUDService<Model.Uloga, UlogaSearchObject, Database.Uloga, UlogaUpsertRequest, UlogaUpsertRequest>, IUlogaService
     {
 
-        public VrstaJelaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
+        public UlogaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+
 
     }
 }

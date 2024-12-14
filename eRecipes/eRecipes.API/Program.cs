@@ -16,6 +16,8 @@ builder.Services.AddTransient<IReceptService, ReceptService>();
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
 builder.Services.AddTransient<IKategorijaService, KategorijaService >();
+builder.Services.AddTransient<IUlogaService, UlogaService>();
+builder.Services.AddTransient<IKorisnikUlogaService, KorisnikUlogaService>();
 
 builder.Services.AddTransient<BaseReceptState>();
 builder.Services.AddTransient<InitialReceptState>();
@@ -77,11 +79,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseCors("AllowAllOrigins");
-using (var scope=app.Services.CreateScope())
-{
-    var dataContext=scope.ServiceProvider.GetRequiredService<ERecipesContext>();
-   // dataContext.Database.EnsureCreated();
-    dataContext.Database.Migrate();
-}
+//using (var scope=app.Services.CreateScope())
+//{
+//    var dataContext=scope.ServiceProvider.GetRequiredService<ERecipesContext>();
+//   // dataContext.Database.EnsureCreated();
+//    dataContext.Database.Migrate();
+//}
 
 app.Run();
