@@ -26,19 +26,37 @@ class _EditUserModalState extends State<EditUserModal> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController telephoneController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
-  final TextEditingController ulogaController = TextEditingController();
+ final TextEditingController ulogaController = TextEditingController();
 
   UlogaProvider ulogaProvider = UlogaProvider();
   late Korisnik? _korisnikToEdit;
   SearchResult<Uloga>? ulogaList;
   var selectedUloga;
 
+  int findIdFromName<T>(
+  String? selectedValue,
+  List<T> list,
+  String Function(T) getName,
+  int Function(T) getId,
+) {
+  if (selectedValue != null) {
+    T selectedObject = list.firstWhere(
+      (item) => getName(item) == selectedValue,
+      orElse: () => list.first,
+    );
+    return getId(selectedObject);
+  }
+  return -1;
+}
+
   Future<void> loadData() async {
     try {
       ulogaList = await ulogaProvider.get();
+      print("Fetched roles: $ulogaList");
+
       if (_korisnikToEdit != null) {
         setState(() {
-          selectedUloga = _korisnikToEdit!.uloge;
+          selectedUloga = _korisnikToEdit!.uloge;  
           ulogaController.text = selectedUloga != null ? selectedUloga : '';
         });
       }
@@ -47,29 +65,34 @@ class _EditUserModalState extends State<EditUserModal> {
     }
   }
 
-  Future<void> _editUser() async {
-    final name = nameController.text;
-    final surname = surnameController.text;
-    final email = emailController.text;
-    final telephone = telephoneController.text;
-    final userName = userNameController.text;
-    final uloga = ulogaController.text;
+ Future<void> _editUser() async {
+  final name = nameController.text;
+  final surname = surnameController.text;
+  final email = emailController.text;
+  final telephone = telephoneController.text;
+  final userName = userNameController.text;
 
-    if (_korisnikToEdit != null) {
-      widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
-        'ime': name,
-        'prezime': surname,
-        'email': email,
-        'telefon': telephone,
-        'korisnickoIme': userName,
-      });
-      await loadData();
-      Navigator.pop(context);
-    } else {
-      print("Error: User to edit is null!");
-    }
+  int uloga = findIdFromName<Uloga> (
+  selectedUloga,
+    ulogaList?.result ?? [],
+    (Uloga uloga) => uloga.naziv ?? '',
+   (Uloga uloga) => uloga.ulogaID ?? -1,
+  );
+
+  if (_korisnikToEdit != null) {
+    widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
+      'ime': name,
+      'prezime': surname,
+      'email': email,
+      'telefon': telephone,
+      'korisnickoIme': userName,
+    });
+   await loadData(); 
+    Navigator.pop(context);
+  } else {
+    print("Error: User to edit is null!");
   }
-
+}
   @override
   void dispose() {
     nameController.dispose();
@@ -77,7 +100,6 @@ class _EditUserModalState extends State<EditUserModal> {
     emailController.dispose();
     telephoneController.dispose();
     userNameController.dispose();
-    ulogaController.dispose();
     super.dispose();
   }
 
@@ -93,7 +115,7 @@ class _EditUserModalState extends State<EditUserModal> {
       telephoneController.text = _korisnikToEdit!.telefon ?? '';
       userNameController.text = _korisnikToEdit!.korisnickoIme ?? '';
     }
-    loadData();
+    loadData();  
   }
 
   @override
@@ -103,7 +125,7 @@ class _EditUserModalState extends State<EditUserModal> {
         borderRadius: BorderRadius.circular(20),
         child: Container(
           color: const Color.fromRGBO(247, 249, 253, 1),
-          width: MediaQuery.of(context).size.width * 0.3,
+          width: MediaQuery.of(context).size.width * 0.2,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -124,10 +146,14 @@ class _EditUserModalState extends State<EditUserModal> {
                       decoration: const InputDecoration(
                         labelText: 'Ime',
                         hintText: 'Example: John',
+                        hintStyle: TextStyle(color: Colors.grey),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your name';
+                        }
+                        if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                          return 'Name can only contain letters';
                         }
                         return null;
                       },
@@ -137,10 +163,14 @@ class _EditUserModalState extends State<EditUserModal> {
                       decoration: const InputDecoration(
                         labelText: 'Prezime',
                         hintText: 'Example: Smith',
+                        hintStyle: TextStyle(color: Colors.grey),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your surname';
+                        }
+                        if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                          return 'Surname can only contain letters';
                         }
                         return null;
                       },
@@ -149,6 +179,7 @@ class _EditUserModalState extends State<EditUserModal> {
                       controller: userNameController,
                       decoration: const InputDecoration(
                         labelText: 'Korisničko ime',
+                        hintStyle: TextStyle(color: Colors.grey),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -162,10 +193,15 @@ class _EditUserModalState extends State<EditUserModal> {
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         hintText: 'example@email.com',
+                        hintStyle: TextStyle(color: Colors.grey),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your email';
+                        }
+                        if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                            .hasMatch(value)) {
+                          return 'Invalid email format';
                         }
                         return null;
                       },
@@ -175,10 +211,14 @@ class _EditUserModalState extends State<EditUserModal> {
                       decoration: const InputDecoration(
                         labelText: 'Telefon',
                         hintText: 'Example: 037-123-456',
+                        hintStyle: TextStyle(color: Colors.grey),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your telephone';
+                        }
+                        if (!RegExp(r'^\d{3}-\d{3}-\d{3}$').hasMatch(value)) {
+                          return 'Invalid phone number format';
                         }
                         return null;
                       },
@@ -186,32 +226,37 @@ class _EditUserModalState extends State<EditUserModal> {
                     TextFormField(
                       controller: ulogaController,
                       decoration: const InputDecoration(
-                        labelText: 'Current Role',
+                        labelText: "Uloga",
+                        fillColor: Color.fromRGBO(233, 233, 233, 0.414), // Set a light gray color
+                        filled: true,
                       ),
                       readOnly: true,
                     ),
-                  
-                            
-                          
-                      
-                      
-                    
+                
                     const SizedBox(height: 20),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                          ),
                           onPressed: widget.onCancelPressed,
-                          child: const Text('Cancel'),
+                          child: const Text('Cancel',
+                              style: TextStyle(color: Colors.white)),
                         ),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromRGBO(97, 142, 246, 1),
+                          ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               _editUser();
                             }
                           },
-                          child: const Text('Save'),
+                          child: const Text('Save',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),

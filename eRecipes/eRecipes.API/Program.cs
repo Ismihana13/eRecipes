@@ -17,7 +17,7 @@ builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
 builder.Services.AddTransient<IKategorijaService, KategorijaService >();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
-builder.Services.AddTransient<IKorisnikUlogaService, KorisnikUlogaService>();
+
 
 builder.Services.AddTransient<BaseReceptState>();
 builder.Services.AddTransient<InitialReceptState>();

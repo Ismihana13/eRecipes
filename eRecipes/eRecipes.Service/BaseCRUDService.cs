@@ -55,6 +55,5 @@ namespace eRecipes.Service
         public virtual void BeforeUpdate(TUpdate request, TDbEntity entity)
         {
         }
-
     }
 }

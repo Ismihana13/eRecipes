@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
 using Microsoft.Extensions.Logging;
+using Azure.Core;
 namespace eRecipes.Service
 {
     public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
@@ -51,6 +52,11 @@ namespace eRecipes.Service
             {
                 query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga);
             }
+            //if (searchObject.Status == true)
+            //{
+            //    query = query.Where(x => x.Status == searchObject.Status);
+            //}
+
 
             return query;
         }
@@ -125,5 +131,55 @@ namespace eRecipes.Service
             }
             return this.Mapper.Map<Model.Korisnik>(entity);
         }
+        public override Model.Korisnik Insert(KorisnikInsertRequest request)
+        {
+            var entity = base.Insert(request);
+            foreach (var uloga in request.UlogeID)
+            {
+                Database.KorisnikUloga Uloga = new Database.KorisnikUloga();
+                Uloga.UlogaId = uloga;
+                Uloga.KorisnikId = entity.KorisnikId;
+                Uloga.DatumIzmjene = DateTime.Now;
+                Context.KorisnikUlogas.Add(Uloga);
+            }
+            Context.SaveChanges();
+            return entity;
+        }
+        public Model.Korisnik AddUloga(int id, KorisnikUpdateRequest request)
+        {
+            var user = Context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefault(x => x.KorisnikId == id);
+            var uloga = Context.Ulogas.FirstOrDefault(x => x.Naziv.ToLower() == request.Uloga);
+            Database.KorisnikUloga nova = new Database.KorisnikUloga()
+            {
+                DatumIzmjene = DateTime.Now,
+                KorisnikId = id,
+                UlogaId = uloga.UlogaId
+            };
+            Context.KorisnikUlogas.Add(nova);
+            Context.SaveChanges();
+            return Mapper.Map<Model.Korisnik>(user);
+        }
+        public Model.Korisnik DeleteUloga(int id, KorisnikUpdateRequest request)
+        {
+            var user = Context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefault(x => x.KorisnikId == id);
+            var uloga = Context.Ulogas.FirstOrDefault(x => x.Naziv.ToLower() == request.Uloga);
+            var korisnikUloga = Context.KorisnikUlogas.FirstOrDefault(x => x.KorisnikId == user.KorisnikId && x.UlogaId == uloga.UlogaId);
+            Context.KorisnikUlogas.Remove(korisnikUloga);
+            Context.SaveChanges();
+            return Mapper.Map<Model.Korisnik>(user);
+        }
+        public Model.Korisnik DeleteKorisnik(int id)
+        {
+            var set = Context.Set<Database.Korisnik>();
+
+            var entity = set.Find(id);
+
+            entity.Status = false;
+
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.Korisnik>(entity);
+        }
     }
+
 }

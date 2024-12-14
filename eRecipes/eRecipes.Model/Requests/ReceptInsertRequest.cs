@@ -23,6 +23,7 @@ namespace eRecipes.Model.Requests
         public int? VrstaJelaId { get; set; }
 
         public int? KategorijaId { get; set; }
+        public List<int> UlogeID { get; set; }
 
     }
 }

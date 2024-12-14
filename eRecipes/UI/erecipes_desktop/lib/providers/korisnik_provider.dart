@@ -28,4 +28,18 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       throw Exception("Wrong username or password");
     }
   }
+  Future<void> deleteKorisnik(int? id) async {
+  var url = "$fullUrl/$id/DeleteKorisnik";
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+
+  var response = await http!.put(uri, headers: headers);
+
+  if (isValidResponse(response)) {
+    print("Korisnik obrisan.");
+  } else {
+    throw Exception("Neuspješno brisanje korisnika.");
+  }
+}
+
 }

@@ -20,6 +20,7 @@ Korisnik _$KorisnikFromJson(Map<String, dynamic> json) => Korisnik(
           ? null
           : Uloga.fromJson(json['uloga'] as Map<String, dynamic>),
       uloge: json['uloge'] as String?,
+      status: json['status'] as bool?,
     )..korisnikId = (json['korisnikId'] as num?)?.toInt();
 
 Map<String, dynamic> _$KorisnikToJson(Korisnik instance) => <String, dynamic>{
@@ -33,4 +34,5 @@ Map<String, dynamic> _$KorisnikToJson(Korisnik instance) => <String, dynamic>{
       'lozinka': instance.lozinka,
       'uloga': instance.uloga,
       'uloge': instance.uloge,
+      'status': instance.status,
     };

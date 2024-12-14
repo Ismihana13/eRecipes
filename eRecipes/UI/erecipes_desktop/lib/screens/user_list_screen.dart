@@ -1,4 +1,3 @@
-
 import 'package:erecipes_desktop/modal/edit_user_modal.dart';
 import 'package:erecipes_desktop/models/korisnik.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
@@ -18,8 +17,7 @@ class _UserListScreenState extends State<UserListScreen> {
   SearchResult<Korisnik>? result;
   TextEditingController _ftsEditingController = TextEditingController();
   bool _isLoading = false; 
-  bool _isEditUserModalOpen = false;
-  Korisnik? korisnikToEdit;
+ 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -36,6 +34,7 @@ class _UserListScreenState extends State<UserListScreen> {
       var filter = {
         'KorisnickoIme': query, 
         'isKorisnikUlogeIncluded': true,
+         'Status': true,
       };
 
       result = await provider.get(filter: filter);
@@ -199,10 +198,47 @@ class _UserListScreenState extends State<UserListScreen> {
                       backgroundColor: Colors.orange,
                       foregroundColor: Colors.black, 
                     ),
-                    onPressed: () {
-                      // Action for deleting user
-                    },
-                    child: Text('Obriši korisnika'),
+                   onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                              return AlertDialog(
+                              title: Text('Potvrda'),
+                              content: Text('Da li ste sigurni da želite obrisati korisnika?'),
+                              actions: [
+                                  TextButton(
+                                     onPressed: () {
+                                         Navigator.pop(context, false); 
+                                     },
+                                     child: Text('Ne'),
+                                     ),
+                                  TextButton(
+                                     onPressed: () {
+                                       Navigator.pop(context, true); 
+                                    },
+                                  child: Text('Da'),
+                                  ),
+                                  ],
+                               );
+                             },
+                           );
+
+                         if (confirm == true) {
+                            try {
+                               await provider.deleteKorisnik(e.korisnikId);
+                               await _fetchData(); 
+                               ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(content: Text('Korisnik je uspješno obrisan')),
+                             );
+                           } catch (error) {
+                         print("Greška pri brisanju korisnika: $error");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Došlo je do greške pri brisanju korisnika')),
+                      );
+                    }
+                  }
+                },
+                  child: Text("Obriši korisnika"),
                   ),
                 ),
               ),
