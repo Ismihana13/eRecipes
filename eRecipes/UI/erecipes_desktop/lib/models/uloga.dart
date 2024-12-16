@@ -3,7 +3,7 @@ part 'uloga.g.dart';
 
 @JsonSerializable()
 class Uloga {
-  int? ulogaID;
+  int? ulogaId;
   String? naziv;
   String? opis;
 

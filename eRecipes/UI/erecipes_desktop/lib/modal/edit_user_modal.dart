@@ -1,8 +1,10 @@
 import 'package:erecipes_desktop/models/korisnik.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/models/uloga.dart';
+import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditUserModal extends StatefulWidget {
   final VoidCallback onCancelPressed;
@@ -26,58 +28,49 @@ class _EditUserModalState extends State<EditUserModal> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController telephoneController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
- final TextEditingController ulogaController = TextEditingController();
 
-  UlogaProvider ulogaProvider = UlogaProvider();
   late Korisnik? _korisnikToEdit;
-  SearchResult<Uloga>? ulogaList;
-  var selectedUloga;
+  late UlogaProvider ulogaProvider;
+  SearchResult<Uloga>? ulogaResult=null;
+  Map<String,dynamic> _initialValue={};
+   bool isLoading=true;
 
-  int findIdFromName<T>(
-  String? selectedValue,
-  List<T> list,
-  String Function(T) getName,
-  int Function(T) getId,
-) {
-  if (selectedValue != null) {
-    T selectedObject = list.firstWhere(
-      (item) => getName(item) == selectedValue,
-      orElse: () => list.first,
-    );
-    return getId(selectedObject);
-  }
-  return -1;
+  @override
+   void didChangeDependencies(){
+    super.didChangeDependencies();
+   
+   }
+    @override
+  void initState() {
+    ulogaProvider=context.read<UlogaProvider>();
+    super.initState();
+    _korisnikToEdit = widget.korisnikToEdit;
+     nameController.text = _korisnikToEdit!.ime ?? '';
+     surnameController.text = _korisnikToEdit!.prezime ?? '';
+     emailController.text = _korisnikToEdit!.email ?? '';
+     telephoneController.text = _korisnikToEdit!.telefon ?? '';
+     userNameController.text = _korisnikToEdit!.korisnickoIme ?? '';
+     _initialValue={
+       'ulogaId':_korisnikToEdit?.ulogaId.toString(),
+      };
+    initForm();   
 }
 
-  Future<void> loadData() async {
-    try {
-      ulogaList = await ulogaProvider.get();
-      print("Fetched roles: $ulogaList");
-
-      if (_korisnikToEdit != null) {
-        setState(() {
-          selectedUloga = _korisnikToEdit!.uloge;  
-          ulogaController.text = selectedUloga != null ? selectedUloga : '';
-        });
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    Future initForm() async{
+    ulogaResult= await ulogaProvider.get();
+    print("vrtsa:${ulogaResult?.result.length}");
+    setState(() {
+      isLoading=false;
+    });
   }
-
+ 
  Future<void> _editUser() async {
   final name = nameController.text;
   final surname = surnameController.text;
   final email = emailController.text;
   final telephone = telephoneController.text;
   final userName = userNameController.text;
-
-  int uloga = findIdFromName<Uloga> (
-  selectedUloga,
-    ulogaList?.result ?? [],
-    (Uloga uloga) => uloga.naziv ?? '',
-   (Uloga uloga) => uloga.ulogaID ?? -1,
-  );
+  final ulogaId = _initialValue['ulogaId'];
 
   if (_korisnikToEdit != null) {
     widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
@@ -86,37 +79,13 @@ class _EditUserModalState extends State<EditUserModal> {
       'email': email,
       'telefon': telephone,
       'korisnickoIme': userName,
-    });
-   await loadData(); 
+      'ulogaId': ulogaId,
+    }); 
     Navigator.pop(context);
   } else {
     print("Error: User to edit is null!");
   }
 }
-  @override
-  void dispose() {
-    nameController.dispose();
-    surnameController.dispose();
-    emailController.dispose();
-    telephoneController.dispose();
-    userNameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _korisnikToEdit = widget.korisnikToEdit;
-
-    if (_korisnikToEdit != null) {
-      nameController.text = _korisnikToEdit!.ime ?? '';
-      surnameController.text = _korisnikToEdit!.prezime ?? '';
-      emailController.text = _korisnikToEdit!.email ?? '';
-      telephoneController.text = _korisnikToEdit!.telefon ?? '';
-      userNameController.text = _korisnikToEdit!.korisnickoIme ?? '';
-    }
-    loadData();  
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,16 +192,28 @@ class _EditUserModalState extends State<EditUserModal> {
                         return null;
                       },
                     ),
-                    TextFormField(
-                      controller: ulogaController,
-                      decoration: const InputDecoration(
-                        labelText: "Uloga",
-                        fillColor: Color.fromRGBO(233, 233, 233, 0.414), // Set a light gray color
-                        filled: true,
-                      ),
-                      readOnly: true,
-                    ),
-                
+                    DropdownButtonFormField<String>(
+                      value: _initialValue['ulogaId'],
+                      onChanged: (String? value) {
+                      setState(() {
+                        _initialValue['ulogaId'] = value; 
+                      });
+                    },
+                     validator: (String? value) {
+                     if (value == null || value.isEmpty) {
+                          return 'Please select a role';
+                         }
+                       return null;
+                      },
+                      items: ulogaResult?.result.map((item) {
+                      return DropdownMenuItem<String>(
+                       value: item.ulogaId.toString(), 
+                      child: Text(item.naziv ?? ''), 
+                     );
+                       }).toList() ?? [],
+                     decoration: const InputDecoration(labelText: "Uloga"),
+                    dropdownColor: const Color.fromRGBO(247, 249, 253, 1),
+                  ),
                     const SizedBox(height: 20),
                     const Divider(),
                     Row(
@@ -270,3 +251,5 @@ class _EditUserModalState extends State<EditUserModal> {
     );
   }
 }
+
+

@@ -17,12 +17,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isAdministrator() {
-    return AuthProvider.korisnik?.uloge
-            ?.split(',')
-            .map((e) => e.trim().toLowerCase())
-            .contains('admin') ??
-        false;
+  bool isAdministrator() {
+  return AuthProvider.korisnik?.uloga?.naziv
+          ?.split(',')
+          .map((e) => e.trim().toLowerCase())
+          .contains('admin') ?? false;
        
   }
     return Scaffold(

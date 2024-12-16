@@ -11,5 +11,5 @@ public partial class Uloga
 
     public string? Opis { get; set; }
 
-    public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
+    public virtual ICollection<Korisnik> Korisnik { get; set; }
 }

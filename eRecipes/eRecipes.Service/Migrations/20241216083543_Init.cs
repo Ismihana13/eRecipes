@@ -25,27 +25,6 @@ namespace eRecipes.Service.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Korisnik",
-                columns: table => new
-                {
-                    KorisnikId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Ime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Prezime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DatumRodjenja = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    KorisnickoIme = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LozinkaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LozinkaSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Korisnik__80B06D412AF902FE", x => x.KorisnikId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Sastojak",
                 columns: table => new
                 {
@@ -86,6 +65,33 @@ namespace eRecipes.Service.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Korisnik",
+                columns: table => new
+                {
+                    KorisnikId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Ime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Prezime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DatumRodjenja = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KorisnickoIme = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LozinkaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LozinkaSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: true),
+                    UlogaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Korisnik__80B06D412AF902FE", x => x.KorisnikId);
+                    table.ForeignKey(
+                        name: "FK__Korisnik__Uloga__440B1D66",
+                        column: x => x.UlogaId,
+                        principalTable: "Uloga",
+                        principalColumn: "UlogaId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Obavijest",
                 columns: table => new
                 {
@@ -104,31 +110,6 @@ namespace eRecipes.Service.Migrations
                         column: x => x.KorisnikId,
                         principalTable: "Korisnik",
                         principalColumn: "KorisnikId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "KorisnikUloga",
-                columns: table => new
-                {
-                    KorisnikUlogaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    KorisnikId = table.Column<int>(type: "int", nullable: false),
-                    UlogaId = table.Column<int>(type: "int", nullable: false),
-                    DatumIzmjene = table.Column<DateTime>(type: "datetime", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Korisnik__1608726E898FD924", x => x.KorisnikUlogaId);
-                    table.ForeignKey(
-                        name: "FK__KorisnikU__Koris__3F466844",
-                        column: x => x.KorisnikId,
-                        principalTable: "Korisnik",
-                        principalColumn: "KorisnikId");
-                    table.ForeignKey(
-                        name: "FK__KorisnikU__Uloga__403A8C7D",
-                        column: x => x.UlogaId,
-                        principalTable: "Uloga",
-                        principalColumn: "UlogaId");
                 });
 
             migrationBuilder.CreateTable(
@@ -273,13 +254,8 @@ namespace eRecipes.Service.Migrations
                 column: "ReceptId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_KorisnikUloga_KorisnikId",
-                table: "KorisnikUloga",
-                column: "KorisnikId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_KorisnikUloga_UlogaId",
-                table: "KorisnikUloga",
+                name: "IX_Korisnik_UlogaId",
+                table: "Korisnik",
                 column: "UlogaId");
 
             migrationBuilder.CreateIndex(
@@ -340,9 +316,6 @@ namespace eRecipes.Service.Migrations
                 name: "Izvjestaj");
 
             migrationBuilder.DropTable(
-                name: "KorisnikUloga");
-
-            migrationBuilder.DropTable(
                 name: "Lajkovi");
 
             migrationBuilder.DropTable(
@@ -353,9 +326,6 @@ namespace eRecipes.Service.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReceptSastojak");
-
-            migrationBuilder.DropTable(
-                name: "Uloga");
 
             migrationBuilder.DropTable(
                 name: "Recept");
@@ -371,6 +341,9 @@ namespace eRecipes.Service.Migrations
 
             migrationBuilder.DropTable(
                 name: "VrstaJela");
+
+            migrationBuilder.DropTable(
+                name: "Uloga");
         }
     }
 }

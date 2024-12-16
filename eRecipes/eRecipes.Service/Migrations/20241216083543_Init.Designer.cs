@@ -12,7 +12,7 @@ using eRecipes.Service.Database;
 namespace eRecipes.Service.Migrations
 {
     [DbContext(typeof(ERecipesContext))]
-    [Migration("20241214193747_Init")]
+    [Migration("20241216083543_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -120,37 +120,15 @@ namespace eRecipes.Service.Migrations
                     b.Property<string>("Telefon")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UlogaId")
+                        .HasColumnType("int");
+
                     b.HasKey("KorisnikId")
                         .HasName("PK__Korisnik__80B06D412AF902FE");
 
-                    b.ToTable("Korisnik", (string)null);
-                });
-
-            modelBuilder.Entity("eRecipes.Service.Database.KorisnikUloga", b =>
-                {
-                    b.Property<int>("KorisnikUlogaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KorisnikUlogaId"));
-
-                    b.Property<DateTime>("DatumIzmjene")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("KorisnikId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UlogaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("KorisnikUlogaId")
-                        .HasName("PK__Korisnik__1608726E898FD924");
-
-                    b.HasIndex("KorisnikId");
-
                     b.HasIndex("UlogaId");
 
-                    b.ToTable("KorisnikUloga", (string)null);
+                    b.ToTable("Korisnik", (string)null);
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Lajkovi", b =>
@@ -392,21 +370,12 @@ namespace eRecipes.Service.Migrations
                     b.Navigation("Recept");
                 });
 
-            modelBuilder.Entity("eRecipes.Service.Database.KorisnikUloga", b =>
+            modelBuilder.Entity("eRecipes.Service.Database.Korisnik", b =>
                 {
-                    b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
-                        .WithMany("KorisnikUlogas")
-                        .HasForeignKey("KorisnikId")
-                        .IsRequired()
-                        .HasConstraintName("FK__KorisnikU__Koris__3F466844");
-
                     b.HasOne("eRecipes.Service.Database.Uloga", "Uloga")
-                        .WithMany("KorisnikUlogas")
+                        .WithMany("Korisnik")
                         .HasForeignKey("UlogaId")
-                        .IsRequired()
-                        .HasConstraintName("FK__KorisnikU__Uloga__403A8C7D");
-
-                    b.Navigation("Korisnik");
+                        .HasConstraintName("FK__Korisnik__Uloga__440B1D66");
 
                     b.Navigation("Uloga");
                 });
@@ -503,8 +472,6 @@ namespace eRecipes.Service.Migrations
 
             modelBuilder.Entity("eRecipes.Service.Database.Korisnik", b =>
                 {
-                    b.Navigation("KorisnikUlogas");
-
                     b.Navigation("Lajkovis");
 
                     b.Navigation("Obavijests");
@@ -532,7 +499,7 @@ namespace eRecipes.Service.Migrations
 
             modelBuilder.Entity("eRecipes.Service.Database.Uloga", b =>
                 {
-                    b.Navigation("KorisnikUlogas");
+                    b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.VrstaJela", b =>

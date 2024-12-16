@@ -61,10 +61,12 @@ class _UserListScreenState extends State<UserListScreen> {
           korisnikToEdit: korisnik,
         );
       },
-    ).then((_) =>{
-        _fetchData()
-    } );
-  }
+    ).then((_) {
+    setState(() {
+      _fetchData();  
+    });
+  });
+}
    void updateUser(int id, dynamic request) async {
     try {
       var updatedUser = await provider.update(id, request);
@@ -74,7 +76,9 @@ class _UserListScreenState extends State<UserListScreen> {
             content: Text('User updated successfully'),
           ),
         );
-        setState(() {});
+         setState(() {
+      _fetchData();  
+    });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -141,42 +145,37 @@ class _UserListScreenState extends State<UserListScreen> {
 
   return Container(
     width: double.infinity,
-    color: Colors.grey[200], 
+    color: Colors.grey[200],
     child: SingleChildScrollView(
       child: DataTable(
-        columnSpacing: 10,  
+        columnSpacing: 10,
         border: TableBorder.all(
-          color: Colors.black,  
-          width: 1,  
-          borderRadius: BorderRadius.zero, 
+          color: Colors.black,
+          width: 1,
+          borderRadius: BorderRadius.zero,
         ),
         columns: [
           DataColumn(
             label: Center(child: Text("Korisnik ID", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
           ),
           DataColumn(
-            label: Center(child: Text("Korisničko ime", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-          ),
+            label: Center(child: Text("Korisničko ime", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
           DataColumn(
-            label: Center(child: Text("Email", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-          ),
+            label: Center(child: Text("Email", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
           DataColumn(
-            label: Center(child: Text("Uloga", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-          ),
+            label: Center(child: Text("Uloga", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
           DataColumn(
-            label: Center(child: Text("Uredi korisnika", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-          ),
+            label: Center(child: Text("Uredi korisnika", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
           DataColumn(
-            label: Center(child: Text("Obriši korisnika", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-          ),
+            label: Center(child: Text("Obriši korisnika", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
         ],
         rows: result!.result.map((e) {
           return DataRow(
             cells: [
               DataCell(Center(child: Text(e.korisnikId.toString(), style: TextStyle(fontWeight: FontWeight.bold)))),
-              DataCell(Center(child: Text(e.korisnickoIme ?? "", style: TextStyle(fontWeight: FontWeight.bold)))),
-              DataCell(Center(child: Text(e.email ?? "", style: TextStyle(fontWeight: FontWeight.bold)))),
-              DataCell(Center(child: Text(e.uloge ?? "", style: TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(Center(child: Text(e.korisnickoIme ?? "Nema korisničkog imena", style: TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(Center(child: Text(e.email ?? "Nema emaila", style: TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(Center(child: Text(e.uloga?.naziv ?? "Nema uloge", style: TextStyle(fontWeight: FontWeight.bold)))),
               DataCell(
                 Center(
                   child: ElevatedButton(
@@ -196,49 +195,49 @@ class _UserListScreenState extends State<UserListScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
-                      foregroundColor: Colors.black, 
+                      foregroundColor: Colors.black,
                     ),
-                   onPressed: () async {
+                    onPressed: () async {
                       final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (BuildContext context) {
-                              return AlertDialog(
-                              title: Text('Potvrda'),
-                              content: Text('Da li ste sigurni da želite obrisati korisnika?'),
-                              actions: [
-                                  TextButton(
-                                     onPressed: () {
-                                         Navigator.pop(context, false); 
-                                     },
-                                     child: Text('Ne'),
-                                     ),
-                                  TextButton(
-                                     onPressed: () {
-                                       Navigator.pop(context, true); 
-                                    },
-                                  child: Text('Da'),
-                                  ),
-                                  ],
-                               );
-                             },
-                           );
-
-                         if (confirm == true) {
-                            try {
-                               await provider.deleteKorisnik(e.korisnikId);
-                               await _fetchData(); 
-                               ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(content: Text('Korisnik je uspješno obrisan')),
-                             );
-                           } catch (error) {
-                         print("Greška pri brisanju korisnika: $error");
-                        ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Došlo je do greške pri brisanju korisnika')),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Potvrda'),
+                            content: Text('Da li ste sigurni da želite obrisati korisnika?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, false); 
+                                },
+                                child: Text('Ne'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true); 
+                                },
+                                child: Text('Da'),
+                              ),
+                            ],
+                          );
+                        },
                       );
-                    }
-                  }
-                },
-                  child: Text("Obriši korisnika"),
+
+                      if (confirm == true) {
+                        try {
+                          await provider.deleteKorisnik(e.korisnikId);
+                          await _fetchData(); 
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Korisnik je uspješno obrisan')),
+                          );
+                        } catch (error) {
+                          print("Greška pri brisanju korisnika: $error");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Došlo je do greške pri brisanju korisnika')),
+                          );
+                        }
+                      }
+                    },
+                    child: Text("Obriši korisnika"),
                   ),
                 ),
               ),

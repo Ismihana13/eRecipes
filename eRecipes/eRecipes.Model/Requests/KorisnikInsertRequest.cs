@@ -23,7 +23,7 @@ namespace eRecipes.Model.Requests
         public string LozinkaPotvrda { get; set; }
 
         public bool? Status { get; set; }
-        public List<int> UlogeID { get; set; }
+        public int? UlogaId { get; set; }
 
     }
 }

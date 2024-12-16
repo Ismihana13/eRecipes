@@ -21,8 +21,6 @@ public partial class ERecipesContext : DbContext
 
     public virtual DbSet<Korisnik> Korisniks { get; set; }
 
-    public virtual DbSet<KorisnikUloga> KorisnikUlogas { get; set; }
-
     public virtual DbSet<Lajkovi> Lajkovis { get; set; }
 
     public virtual DbSet<Obavijest> Obavijests { get; set; }
@@ -72,27 +70,11 @@ public partial class ERecipesContext : DbContext
             entity.HasKey(e => e.KorisnikId).HasName("PK__Korisnik__80B06D412AF902FE");
 
             entity.ToTable("Korisnik");
+            entity.HasOne(d => d.Uloga).WithMany(p => p.Korisnik)
+                .HasForeignKey(d => d.UlogaId)
+                .HasConstraintName("FK__Korisnik__Uloga__440B1D66");
 
             entity.Property(e => e.DatumRodjenja).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<KorisnikUloga>(entity =>
-        {
-            entity.HasKey(e => e.KorisnikUlogaId).HasName("PK__Korisnik__1608726E898FD924");
-
-            entity.ToTable("KorisnikUloga");
-
-            entity.Property(e => e.DatumIzmjene).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.KorisnikUlogas)
-                .HasForeignKey(d => d.KorisnikId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KorisnikU__Koris__3F466844");
-
-            entity.HasOne(d => d.Uloga).WithMany(p => p.KorisnikUlogas)
-                .HasForeignKey(d => d.UlogaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KorisnikU__Uloga__403A8C7D");
         });
 
         modelBuilder.Entity<Lajkovi>(entity =>

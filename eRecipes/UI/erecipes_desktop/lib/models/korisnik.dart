@@ -13,10 +13,9 @@ class Korisnik{
   String? telefon; 
   String? korisnickoIme; 
   String? lozinka; 
-  Uloga? uloga; 
-  String? uloge;
-  bool? status;
-//List<KorisnikUloga> korisnikUlogas;
+  int? ulogaId;
+  Uloga? uloga;
+
    Korisnik({
     this.ime,
     this.prezime,
@@ -25,9 +24,8 @@ class Korisnik{
     this.telefon,
     this.korisnickoIme,
     this.lozinka,
-    this.uloga,
-    this.uloge,
-    this.status,
+    this.ulogaId,
+    this.uloga
    });
 
   factory Korisnik.FromJson(Map<String,dynamic> json)=> _$KorisnikFromJson(json);

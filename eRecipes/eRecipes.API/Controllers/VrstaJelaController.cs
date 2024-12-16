@@ -9,16 +9,17 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [AllowAnonymous]
+    //[AllowAnonymous]
     public class VrstaJelaController : BaseCURDController<VrstaJela,VrstaJelaSearchObject,VrsteJelaUpsertRequest,VrsteJelaUpsertRequest>
     {
         public VrstaJelaController(IVrstaJelaService service) : base(service) { }
-        [Authorize(Roles ="Admin, Korisnik")]
+        [Authorize(Roles ="Admin")]
         public override VrstaJela Insert(VrsteJelaUpsertRequest request)
         {
             return base.Insert(request);
         }
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public override PagedResult<VrstaJela> GetList([FromQuery] VrstaJelaSearchObject searchObject)
         {
             return base.GetList(searchObject);

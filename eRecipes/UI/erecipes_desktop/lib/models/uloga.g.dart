@@ -7,12 +7,12 @@ part of 'uloga.dart';
 // **************************************************************************
 
 Uloga _$UlogaFromJson(Map<String, dynamic> json) => Uloga()
-  ..ulogaID = (json['ulogaID'] as num?)?.toInt()
+  ..ulogaId = (json['ulogaId'] as num?)?.toInt()
   ..naziv = json['naziv'] as String?
   ..opis = json['opis'] as String?;
 
 Map<String, dynamic> _$UlogaToJson(Uloga instance) => <String, dynamic>{
-      'ulogaID': instance.ulogaID,
+      'ulogaId': instance.ulogaId,
       'naziv': instance.naziv,
       'opis': instance.opis,
     };
