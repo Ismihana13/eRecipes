@@ -15,5 +15,8 @@ namespace eRecipes.Service
         public Recept Edit(int id);
         public Recept Hide(int id);
         public List<string> AllowedActions(int id);
+        Model.Recept DeleteRecept(int id);
+       public List<Model.ReceptSastojak> GetSastojciForRecept(int id);
+
     }
 }

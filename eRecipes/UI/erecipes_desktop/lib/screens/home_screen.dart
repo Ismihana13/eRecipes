@@ -1,5 +1,6 @@
 import 'package:erecipes_desktop/main.dart';
 import 'package:erecipes_desktop/providers/auth_provider.dart';
+import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:erecipes_desktop/screens/user_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -148,9 +149,15 @@ class _HomeScreenState extends State<HomeScreen> {
           child: UserListScreen(),
         );
       case 'Recepti':
-        return const Center(child: Text('Recepti Screen Content'));
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: RecipeListScreen(),
+        );
       case 'Kategorije':
-        return const Center(child: Text('Kategorije Screen Content'));
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: RecipeListScreen(),
+        );
       case 'Izvještaji':
         return const Center(child: Text('Izvještaji Screen Content'));
       case 'Obavjesti':

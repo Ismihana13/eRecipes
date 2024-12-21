@@ -175,6 +175,14 @@ namespace eRecipes.Service
 
             return Mapper.Map<Model.Korisnik>(entity);
         }
+
+        public Model.Korisnik GetByUsername(string korisnickoIme)
+        {
+            var set = Context.Set<Database.Korisnik>();
+
+            var entity = set.FirstOrDefault(k => k.KorisnickoIme == korisnickoIme);
+            return Mapper.Map<Model.Korisnik>(entity);
+        }
     }
 
 }

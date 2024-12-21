@@ -2,6 +2,7 @@
 using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using eRecipes.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eRecipes.API.Controllers
@@ -35,6 +36,20 @@ namespace eRecipes.API.Controllers
         {
             return (_service as IReceptService).AllowedActions(id);
         }
-
+        [HttpPost]
+        public override Recept Insert(ReceptInsertRequest request)
+        {
+            return _service.Insert(request);
+        }
+        [HttpPut("{id}/DeleteRecept")]
+        public Recept DeleteRecept(int id)
+        {
+            return ((IReceptService)_service).DeleteRecept(id);
+        }
+        [HttpGet("{receptId}/sastojci")]
+        public ActionResult<List<ReceptSastojak>> GetSastojciForRecept(int receptId)
+        {
+            return ((IReceptService)_service).GetSastojciForRecept(receptId);
+        }
     }
 }

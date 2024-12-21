@@ -1,7 +1,6 @@
 import 'package:erecipes_desktop/models/korisnik.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/models/uloga.dart';
-import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

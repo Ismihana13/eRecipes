@@ -1,4 +1,3 @@
-import 'package:erecipes_desktop/modal/recipe_details_modal.dart';
 import 'package:erecipes_desktop/models/recept.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
@@ -6,14 +5,14 @@ import 'package:erecipes_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RecipeListScreen extends StatefulWidget {
-  const RecipeListScreen({super.key});
+class CategoryListScreen extends StatefulWidget {
+  const CategoryListScreen({super.key});
 
   @override
-  State<RecipeListScreen> createState() => _RecipeListScreenState();
+  State<CategoryListScreen> createState() => _CategoryListScreenState();
 }
 
-class _RecipeListScreenState extends State<RecipeListScreen> {
+class _CategoryListScreenState extends State<CategoryListScreen> {
 
   late RecipeProvider provider;
    SearchResult<Recept>? result;
@@ -49,19 +48,7 @@ Future<void> _fetchData({String query = ''}) async {
       print('Error fetching data: $e');
     }
   }
-   void openRecipeDetailsModal(Recept recept) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return RecipeDetailsModal(recept: recept);
-      },
-    ).then((_) {
-    setState(() {
-      _fetchData();  
-    });
-  });
-}
-
+  
  @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -77,6 +64,7 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
 
   Widget _buildSearch() {
   return Padding(
@@ -142,11 +130,6 @@ Widget build(BuildContext context) {
         ],
         rows: result!.result.map((e) {
           return DataRow(
-            onSelectChanged: (selected){
-              if(selected==true){
-                openRecipeDetailsModal(e);
-              }         
-            },
             cells: [
               DataCell(Center(child: e.slika!=null? Container(width: 100,height: 100, child: imageFromString(e.slika!),):Text(""))),
               DataCell(Center(child: Text(e.naziv.toString(), style: TextStyle(fontWeight: FontWeight.bold)))),
@@ -179,11 +162,13 @@ Widget build(BuildContext context) {
                                   Navigator.pop(context, true); 
                                 },
                                 child: Text('Da',style: TextStyle(color: const Color.fromARGB(255, 42, 87, 44)),),
+                                
                               ),
                             ],
                           );
                         },
                       );
+
                       if (confirm == true) {
                         try {
                           await provider.deleteRecept(e.receptId);

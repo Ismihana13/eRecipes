@@ -109,12 +109,10 @@ class _UserListScreenState extends State<UserListScreen> {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(
-      
       children: [
         Row(
           children: [
             SizedBox(
-              
               width: MediaQuery.of(context).size.width / 2,
               child: TextField(
                 controller: _ftsEditingController,
@@ -209,13 +207,13 @@ class _UserListScreenState extends State<UserListScreen> {
                                 onPressed: () {
                                   Navigator.pop(context, false); 
                                 },
-                                child: Text('Ne'),
+                                child: Text('Ne',style: TextStyle(color: const Color.fromARGB(255, 42, 87, 44)),),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.pop(context, true); 
                                 },
-                                child: Text('Da'),
+                                child: Text('Da',style: TextStyle(color: const Color.fromARGB(255, 42, 87, 44)),),
                               ),
                             ],
                           );

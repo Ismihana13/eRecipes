@@ -10,7 +10,7 @@ namespace eRecipes.Model.Requests
 
         public string? OpisRecepta { get; set; }
 
-        public byte[]? Slika { get; set; }
+       // public byte[]? Slika { get; set; }
 
         public int? VrijemePripreme { get; set; }
 
@@ -23,7 +23,7 @@ namespace eRecipes.Model.Requests
         public int? VrstaJelaId { get; set; }
 
         public int? KategorijaId { get; set; }
-        public List<int> UlogeID { get; set; }
+       
 
     }
 }

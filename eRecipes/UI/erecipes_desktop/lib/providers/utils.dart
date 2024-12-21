@@ -12,7 +12,13 @@ String formatNumber(dynamic) {
   return f.format(dynamic);
 }
 
-
 Image imageFromString(String input) {
   return Image.memory(base64Decode(input));
+}
+
+String formatDate(DateTime? date) {
+  if (date == null) {
+    return '';
+  }
+  return DateFormat('dd.MM.yyyy').format(date);
 }

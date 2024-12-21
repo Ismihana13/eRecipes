@@ -3,6 +3,7 @@ using eRecipes.Model.SearchObjects;
 using eRecipes.Service.Database;
 using eRecipes.Service.ReceptStateMachine;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,17 +12,22 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace eRecipes.Service
 {
     public class ReceptService : BaseCRUDService<Model.Recept, ReceptSearchObject, Database.Recept, ReceptInsertRequest, ReceptUpdateRequest>, IReceptService
     {
+        
         ILogger<ReceptService> _logger;
         public BaseReceptState BaseReceptState { get; set; }
        
         public ReceptService(ERecipesContext context, IMapper mapper, BaseReceptState baseReceptState, ILogger<ReceptService> logger) : base(context, mapper) {
             BaseReceptState = baseReceptState;
             _logger = logger;
+           
+           
         }
 
         public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
@@ -29,15 +35,22 @@ namespace eRecipes.Service
             var filteredQuery = base.AddFilter(search, query);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                filteredQuery = filteredQuery.Where(x => x.Naziv.Contains(search.FTS));
+                filteredQuery = filteredQuery.Where(x => x.Naziv.ToLower().StartsWith(search.FTS.ToLower()));
             }
+            if (search.Status.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Status == search.Status);
+            }
+            filteredQuery = filteredQuery.Include(r => r.VrstaJela)
+                                 .Include(r => r.Kategorija).Include(r=>r.Korisnik);
             return filteredQuery;
         }
 
         public override void BeforeInsert(ReceptInsertRequest request, Recept entity)
         {
-            base.BeforeInsert(request, entity);
+
         }
+
 
         public override Model.Recept Insert(ReceptInsertRequest request)
         {
@@ -88,5 +101,29 @@ namespace eRecipes.Service
                 return state.AllowedActions(entity);
             }
         }
+        public Model.Recept DeleteRecept(int id)
+        {
+            var set = Context.Set<Database.Recept>();
+
+            var entity = set.Find(id);
+
+            entity.Status = false;
+
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.Recept>(entity);
+        }
+
+        public List<Model.ReceptSastojak> GetSastojciForRecept(int receptId)
+        {
+            var receptSastojci = Context.ReceptSastojaks
+                                         .Where(rs => rs.ReceptId == receptId)
+                                         .Include(rs => rs.Sastojak)  // Ako želite dodatne informacije o Sastojak entitetu
+                                         .ToList();
+            // Vraćanje mape liste ReceptSastojak objekata
+            return Mapper.Map<List<Model.ReceptSastojak>>(receptSastojci);
+        }
+
+
     }
 }
