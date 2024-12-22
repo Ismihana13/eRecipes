@@ -118,12 +118,9 @@ namespace eRecipes.Service
         {
             var receptSastojci = Context.ReceptSastojaks
                                          .Where(rs => rs.ReceptId == receptId)
-                                         .Include(rs => rs.Sastojak)  // Ako želite dodatne informacije o Sastojak entitetu
+                                         .Include(rs => rs.Sastojak)  
                                          .ToList();
-            // Vraćanje mape liste ReceptSastojak objekata
             return Mapper.Map<List<Model.ReceptSastojak>>(receptSastojci);
         }
-
-
     }
 }

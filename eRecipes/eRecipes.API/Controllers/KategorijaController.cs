@@ -13,7 +13,17 @@ namespace eRecipes.API.Controllers
     public class KategorijaController : BaseController<Kategorija,KategorijaSearchObject>
     {
         public KategorijaController(IKategorijaService service) : base(service) { }
-      
 
+        [HttpGet("{id}/broj-recepata")]
+        public IActionResult GetBrojRecepataZaKategoriju(int id)
+        {
+            var brojRecepata = ((IKategorijaService)_service).GetBrojRecepataZaKategoriju(id);
+            return Ok(brojRecepata);
+        }
+        [HttpPut("{id}/DeleteKategorija")]
+        public Kategorija DeleteKategorija(int id)
+        {
+            return ((IKategorijaService)_service).DeleteKategorija(id);
+        }
     }
 }

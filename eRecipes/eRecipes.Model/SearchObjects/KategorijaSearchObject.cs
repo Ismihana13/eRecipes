@@ -6,6 +6,7 @@ namespace eRecipes.Model.SearchObjects
 {
     public class KategorijaSearchObject:BaseSearchObject
     {
-
+        public string? NazivGTE { get; set; }
+        public bool? Status { get; set; }
     }
 }

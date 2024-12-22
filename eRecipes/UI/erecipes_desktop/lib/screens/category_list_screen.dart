@@ -1,7 +1,6 @@
-import 'package:erecipes_desktop/models/recept.dart';
+import 'package:erecipes_desktop/models/kategorija.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
-import 'package:erecipes_desktop/providers/recipe_provider.dart';
-import 'package:erecipes_desktop/providers/utils.dart';
+import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,15 +13,16 @@ class CategoryListScreen extends StatefulWidget {
 
 class _CategoryListScreenState extends State<CategoryListScreen> {
 
-  late RecipeProvider provider;
-   SearchResult<Recept>? result;
+  late KategorijaProvider provider;
+   SearchResult<Kategorija>? result;
    TextEditingController _ftsEditingController = TextEditingController();
+  
    bool _isLoading = false; 
   @override
   void didChangeDependencies(){
     super.didChangeDependencies();
 
-    provider=context.read<RecipeProvider>();
+    provider=context.read<KategorijaProvider>();
     _fetchData();
   }
 Future<void> _fetchData({String query = ''}) async {
@@ -32,12 +32,19 @@ Future<void> _fetchData({String query = ''}) async {
 
     try {
       var filter = {
-       'FTS':query,
-       'Status': true,
+       'NazivGTE':query,
+       'Status':true,
       };
 
       result = await provider.get(filter: filter);
-
+        Map<int, int> brojRecepataMap = {};
+      for (var kategorija in result!.result) {
+      brojRecepataMap[kategorija.kategorijaId!] = 
+          await provider.fetchBrojRecepataZaKategoriju(kategorija.kategorijaId!);
+    }
+     result!.result.forEach((kategorija) {
+      kategorija.brojRecepata = brojRecepataMap[kategorija.kategorijaId!] ?? 0;
+    });
       setState(() {
         _isLoading = false;  
       });
@@ -115,27 +122,17 @@ Widget build(BuildContext context) {
         ),
         columns: [
           DataColumn(
-            label: Center(child: Text("Slika", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-          ),
-          DataColumn(
-            label: Center(child: Text("Naziv recepta", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
-          DataColumn(
-            label: Center(child: Text("Korisničko ime", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
-          DataColumn(
             label: Center(child: Text("Kategorija", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
-          DataColumn(
-            label: Center(child: Text("Vrsta jela", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
-          DataColumn(
-            label: Center(child: Text("Obriši recept", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
+            DataColumn(
+        label: Center(child: Text("Broj recepata",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold)))),
+            DataColumn(
+            label: Center(child: Text("Obriši kategoriju", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)))),
         ],
         rows: result!.result.map((e) {
           return DataRow(
             cells: [
-              DataCell(Center(child: e.slika!=null? Container(width: 100,height: 100, child: imageFromString(e.slika!),):Text(""))),
-              DataCell(Center(child: Text(e.naziv.toString(), style: TextStyle(fontWeight: FontWeight.bold)))),
-              DataCell(Center(child: Text(e.korisnik?.korisnickoIme ?? "Nema korisničkog imena", style: TextStyle(fontWeight: FontWeight.bold)))),
-              DataCell(Center(child: Text(e.kategorija?.naziv ?? "Nema kategorije", style: TextStyle(fontWeight: FontWeight.bold)))),
-              DataCell(Center(child: Text(e.vrstaJela?.naziv ?? "Nema vrste jela", style: TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(Center(child: Text(e.naziv ?? "Nema kategorije", style: TextStyle(fontWeight: FontWeight.bold)))),
+                DataCell(Center(child: Text(e.brojRecepata?.toString() ?? "0",style: TextStyle(fontWeight: FontWeight.bold)))),
               DataCell(
                 Center(
                   child: ElevatedButton(
@@ -149,7 +146,7 @@ Widget build(BuildContext context) {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('Potvrda'),
-                            content: Text('Da li ste sigurni da želite obrisati recept?'),
+                            content: Text('Da li ste sigurni da želite obrisati kategoriju?'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -171,20 +168,20 @@ Widget build(BuildContext context) {
 
                       if (confirm == true) {
                         try {
-                          await provider.deleteRecept(e.receptId);
+                          await provider.deleteKategorija(e.kategorijaId);
                           await _fetchData(); 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Recept je uspješno obrisan')),
+                            SnackBar(content: Text('Kategorija je uspješno obrisana')),
                           );
                         } catch (error) {
-                          print("Greška pri brisanju recepta: $error");
+                          print("Greška pri brisanju kategorije: $error");
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Došlo je do greške pri brisanju recepta')),
+                            SnackBar(content: Text('Došlo je do greške pri brisanju kategorije')),
                           );
                         }
                       }
                     },
-                    child: Text("Obriši recept"),
+                    child: Text("Obriši kategoriju"),
                   ),
                 ),
               ),
