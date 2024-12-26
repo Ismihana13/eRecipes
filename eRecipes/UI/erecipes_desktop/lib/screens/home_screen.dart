@@ -14,8 +14,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedNavItem = '';
+  String selectedNavItem = 'Recepti';
   
+@override
+void initState() {
+  super.initState();
+  selectedNavItem = 'Recepti'; // Postavljamo inicijalnu vrednost
+}
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ?.split(',')
           .map((e) => e.trim().toLowerCase())
           .contains('admin') ?? false;
-       
   }
     return Scaffold(
       appBar: AppBar(

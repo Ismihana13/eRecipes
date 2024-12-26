@@ -26,8 +26,6 @@ namespace eRecipes.Service
         public ReceptService(ERecipesContext context, IMapper mapper, BaseReceptState baseReceptState, ILogger<ReceptService> logger) : base(context, mapper) {
             BaseReceptState = baseReceptState;
             _logger = logger;
-           
-           
         }
 
         public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
@@ -51,7 +49,6 @@ namespace eRecipes.Service
 
         }
 
-
         public override Model.Recept Insert(ReceptInsertRequest request)
         {
             var state = BaseReceptState.CreateState("initial");
@@ -64,7 +61,6 @@ namespace eRecipes.Service
             return state.Update(id, request);
         }
         
-
         public Model.Recept Acivate(int id)
         {
             var entity = GetById(id);
@@ -101,6 +97,7 @@ namespace eRecipes.Service
                 return state.AllowedActions(entity);
             }
         }
+
         public Model.Recept DeleteRecept(int id)
         {
             var set = Context.Set<Database.Recept>();

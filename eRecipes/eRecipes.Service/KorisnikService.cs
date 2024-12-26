@@ -56,11 +56,8 @@ namespace eRecipes.Service
             {
                 query = query.Where(x => x.Status == searchObject.Status);
             }
-
-
             return query;
         }
-
 
         public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
         {
@@ -78,10 +75,9 @@ namespace eRecipes.Service
         public static string GenerateSalt()
         {
             var byteArray = RNGCryptoServiceProvider.GetBytes(16);
-
-
             return Convert.ToBase64String(byteArray);
         }
+
         public static string GenerateHash(string salt, string password)
         {
             byte[] src = Convert.FromBase64String(salt);
@@ -109,7 +105,6 @@ namespace eRecipes.Service
                 entity.LozinkaSalt = GenerateSalt();
                 entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
-
         }
 
         public Model.Korisnik Login(string username, string password)
@@ -163,6 +158,7 @@ namespace eRecipes.Service
         //    Context.SaveChanges();
         //    return Mapper.Map<Model.Korisnik>(user);
         //}
+
         public Model.Korisnik DeleteKorisnik(int id)
         {
             var set = Context.Set<Database.Korisnik>();

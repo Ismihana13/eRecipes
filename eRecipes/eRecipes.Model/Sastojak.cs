@@ -9,6 +9,5 @@ namespace eRecipes.Model
         public int SastojakId { get; set; }
 
         public string Naziv { get; set; } 
-
     }
 }

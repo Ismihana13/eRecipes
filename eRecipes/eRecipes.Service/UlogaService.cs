@@ -13,7 +13,6 @@ namespace eRecipes.Service
 {
     public class UlogaService : BaseCRUDService<Model.Uloga, UlogaSearchObject, Database.Uloga, UlogaUpsertRequest, UlogaUpsertRequest>, IUlogaService
     {
-
         public UlogaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }

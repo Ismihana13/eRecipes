@@ -20,6 +20,7 @@ namespace eRecipes.API.Controllers
             var brojRecepata = ((IKategorijaService)_service).GetBrojRecepataZaKategoriju(id);
             return Ok(brojRecepata);
         }
+
         [HttpPut("{id}/DeleteKategorija")]
         public Kategorija DeleteKategorija(int id)
         {

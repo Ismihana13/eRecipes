@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RecipeListScreen extends StatefulWidget {
+   
   const RecipeListScreen({super.key});
 
   @override
   State<RecipeListScreen> createState() => _RecipeListScreenState();
+   static const String routeName = "/recept";
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {

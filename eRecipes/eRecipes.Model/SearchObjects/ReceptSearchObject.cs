@@ -8,6 +8,5 @@ namespace eRecipes.Model.SearchObjects
     {
         public string? FTS { get; set; }
         public bool? Status { get; set; }
-
     }
 }

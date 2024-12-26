@@ -7,11 +7,8 @@ namespace eRecipes.Model.Requests
     public  class KorisnikUpdateRequest
     {
         public string? Ime { get; set; } = null!;
-
         public string? Prezime { get; set; } = null!;
-
        // public DateTime? DatumRodjenja { get; set; }
-
         public string? Telefon { get; set; }
         public string? Email { get; set; }
         public string KorisnickoIme { get; set; }
@@ -19,7 +16,5 @@ namespace eRecipes.Model.Requests
         public string? LozinkaPotvrda { get; set; }
         public int? UlogaId { get; set; }
        // public bool? Status { get; set; }
-
-       
     }
 }

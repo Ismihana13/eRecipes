@@ -13,17 +13,17 @@ namespace eRecipes.API.Controllers
     public class VrstaJelaController : BaseCURDController<VrstaJela,VrstaJelaSearchObject,VrsteJelaUpsertRequest,VrsteJelaUpsertRequest>
     {
         public VrstaJelaController(IVrstaJelaService service) : base(service) { }
+
         [Authorize(Roles ="Admin")]
         public override VrstaJela Insert(VrsteJelaUpsertRequest request)
         {
             return base.Insert(request);
         }
-        //[AllowAnonymous]
+        
         [Authorize(Roles = "Admin")]
         public override PagedResult<VrstaJela> GetList([FromQuery] VrstaJelaSearchObject searchObject)
         {
             return base.GetList(searchObject);
         }
-
     }
 }

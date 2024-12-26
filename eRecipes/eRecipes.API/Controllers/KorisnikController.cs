@@ -20,6 +20,7 @@ namespace eRecipes.API.Controllers
         {
             _service = service;
         }
+
         [HttpPost("login")]
         [AllowAnonymous]
         public Model.Korisnik Login(string username, string password)
@@ -30,6 +31,7 @@ namespace eRecipes.API.Controllers
             }
             return _service.Login(username, password);
         }
+
         [HttpGet("Authenticate")]
         [AllowAnonymous]
         public Korisnik Authenticate()
@@ -60,6 +62,5 @@ namespace eRecipes.API.Controllers
         {
             return ((IKorisnikService)_service).DeleteKorisnik(id);
         }
-
     }
 }

@@ -7,11 +7,8 @@ namespace eRecipes.Model
     public class Recept
     {
         public int ReceptId { get; set; }
-
         public string Naziv { get; set; }
-
         public string? OpisRecepta { get; set; }
-
         public byte[]? Slika { get; set; }
         public int VrstaJelaId { get; set; }
 
@@ -29,6 +26,5 @@ namespace eRecipes.Model
         public bool? Status { get; set; }
         public string? StateMachine { get; set; }
         public ICollection<ReceptSastojak> ReceptSastojaks { get; set; } = new List<ReceptSastojak>();
-
     }
 }
