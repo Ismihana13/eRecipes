@@ -69,6 +69,8 @@ namespace eRecipes.Service
 
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.UlogaId = 2;
+            entity.Status = true;
             base.BeforeInsert(request, entity);
         }
 

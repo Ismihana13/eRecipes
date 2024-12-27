@@ -14,7 +14,7 @@ namespace eRecipes.Model.Requests
         public string KorisnickoIme { get; set; } = null!;
         public string Lozinka { get; set; }
         public string LozinkaPotvrda { get; set; }
-        public bool? Status { get; set; }
-        public int? UlogaId { get; set; }
+       // public bool? Status { get; set; }
+       // public int? UlogaId { get; set; }
     }
 }

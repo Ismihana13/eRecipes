@@ -6,6 +6,7 @@ import 'package:erecipes_mobile/providers/logged_recipe_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
+import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,10 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: ((context) => RecipeListScreen()));
           } else if (settings.name == LoginScreen.routeName) {
             return MaterialPageRoute(builder: ((context) => LoginScreen()));
+          }else if (settings.name == SingupScreen.routeName) { 
+          return MaterialPageRoute(builder: (context) => SingupScreen());
           }
+          return null;
         },
     );
   }
@@ -52,6 +56,9 @@ late KorisnikProvider _korisnikProvider;
         AuthProvider.username = _usernameController.text;
         AuthProvider.password = _passwordController.text;
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
+        print("Username: ${AuthProvider.username}");
+print("Password: ${AuthProvider.password}");
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Login successful!'),
@@ -201,7 +208,7 @@ Widget build(BuildContext context) {
                         const Text("Don’t have an account? "),
                         GestureDetector(
                           onTap: () {
-
+                                 Navigator.of(context).pushNamed(SingupScreen.routeName);
                             print("Navigacija na registraciju");
                           },
                           child: const Text(
@@ -225,3 +232,5 @@ Widget build(BuildContext context) {
   );
 }
 }
+
+

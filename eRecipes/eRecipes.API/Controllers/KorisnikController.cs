@@ -44,6 +44,11 @@ namespace eRecipes.API.Controllers
 
             return ((IKorisnikService)_service).Login(usernamePassword.Substring(0, seperatorIndex), usernamePassword[(seperatorIndex + 1)..]);
         }
+        [AllowAnonymous]
+        public override Korisnik Insert(KorisnikInsertRequest request)
+        {
+            return base.Insert(request);
+        }
         //[HttpPut("{id}/AddUloga")]
         //[Authorize(Roles = "Admin")]
         //public Korisnik AddUloga(int id, [FromBody] KorisnikUpdateRequest request)
