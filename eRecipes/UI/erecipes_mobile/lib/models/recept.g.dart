@@ -19,7 +19,14 @@ Recept _$ReceptFromJson(Map<String, dynamic> json) => Recept()
   ..opisRecepta = json['opisRecepta'] as String?
   ..datumObjave = json['datumObjave'] == null
       ? null
-      : DateTime.parse(json['datumObjave'] as String);
+      : DateTime.parse(json['datumObjave'] as String)
+  ..opisPripreme = json['opisPripreme'] as String?
+  ..sastojci = (json['sastojci'] as List<dynamic>?)
+      ?.map((e) => ReceptSastojak.FromJson(e as Map<String, dynamic>))
+      .toList()
+  ..korisnik = json['korisnik'] == null
+      ? null
+      : Korisnik.FromJson(json['korisnik'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ReceptToJson(Recept instance) => <String, dynamic>{
       'receptId': instance.receptId,
@@ -33,4 +40,7 @@ Map<String, dynamic> _$ReceptToJson(Recept instance) => <String, dynamic>{
       'stateMachine': instance.stateMachine,
       'opisRecepta': instance.opisRecepta,
       'datumObjave': instance.datumObjave?.toIso8601String(),
+      'opisPripreme': instance.opisPripreme,
+      'sastojci': instance.sastojci,
+      'korisnik': instance.korisnik,
     };

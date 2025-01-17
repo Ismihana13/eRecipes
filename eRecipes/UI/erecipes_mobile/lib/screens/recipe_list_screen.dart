@@ -14,7 +14,6 @@ import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
-
 class RecipeListScreen extends StatefulWidget {
   const RecipeListScreen({super.key});
 
@@ -24,21 +23,22 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
-  RecipeProvider? _recipeProvider=null;
-  VrstaJelaProvider? _vrstaJelaProvider=null;
-  KategorijaProvider? _kategorijaProvider=null;
-  OmiljeniReceptProvider? _omiljeniReceptProvider=null;
+  RecipeProvider? _recipeProvider = null;
+  VrstaJelaProvider? _vrstaJelaProvider = null;
+  KategorijaProvider? _kategorijaProvider = null;
+  OmiljeniReceptProvider? _omiljeniReceptProvider = null;
   SearchResult<Recept>? data;
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
   TextEditingController _searchController = TextEditingController();
   SearchResult<Recept>? cachedData;
-  bool isLoading=true;
-@override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-}
+  bool isLoading = true;
+  int? selectedIndex;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
@@ -49,205 +49,223 @@ void didChangeDependencies() {
     _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     loadData();
     initForm();
-    
   }
- Future initForm() async{
+
+  Future initForm() async {
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
   }
-toggleFavorite(Recept recept) async {
-  var noviOmiljeniRecept = OmiljeniRecept();
-  noviOmiljeniRecept.receptId = recept.receptId;
-  bool isFavorite = await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
 
-  if (isFavorite) {
-    await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Uklonili ste recept iz omiljenih.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  } else {
-    await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Dodali ste recept u omiljene.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  toggleFavorite(Recept recept) async {
+    var noviOmiljeniRecept = OmiljeniRecept();
+    noviOmiljeniRecept.receptId = recept.receptId;
+    bool isFavorite =
+        await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
+
+    if (isFavorite) {
+      await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Uklonili ste recept iz omiljenih.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Dodali ste recept u omiljene.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+    setState(() {});
   }
-   setState(() {
-   
-  });
-}
 
-Future<void>   loadData({String query = ''}) async {
-  try {
-    setState(() {
-      isLoading = true;  
-    });
-    var filter = {
-      'FTS': query,
-      'Status': true,
-    };
+  Future<void> loadData({String query = ''}) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      var filter = {
+        'FTS': query,
+        'Status': true,
+        'KategorijaId': query,
+        'VrstaJelaId': query,
+      };
 
-    var tmpData = await _recipeProvider?.get(filter: filter); 
-    var tmpKategorije = await _kategorijaProvider?.get();
-    var tmpVrsteJela = await _vrstaJelaProvider?.get();
+      var tmpData = await _recipeProvider?.get(filter: filter);
+      var tmpKategorije = await _kategorijaProvider?.get();
+      var tmpVrsteJela = await _vrstaJelaProvider?.get();
 
-    setState(() {
-      data = tmpData!;
-      kategorije = tmpKategorije!;
-      vrsteJela = tmpVrsteJela!;
-    });
-  } catch (e) {
-    print('Error fetching data: $e');
-    setState(() {
-      data = null; 
-      kategorije = null;
-      vrsteJela = null;
-      isLoading=false;
-    });
+      setState(() {
+        data = tmpData!;
+        kategorije = tmpKategorije!;
+        vrsteJela = tmpVrsteJela!;
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+      setState(() {
+        data = null;
+        kategorije = null;
+        vrsteJela = null;
+        isLoading = false;
+      });
+    }
   }
-}
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text(
-        'eRecipes',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontStyle: FontStyle.italic,
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'eRecipes',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+          ),
         ),
+        backgroundColor: Color.fromRGBO(1, 100, 34, 1),
       ),
-      backgroundColor: Color.fromRGBO(1, 100, 34, 1),
-      
-    ),
-    body: SingleChildScrollView(
-            child: Container(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(),
-                      Row(
-                        children: [
-                          const Text(
-                            'Dobro došli!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(
-                            Icons.person,
-                            color: Colors.black,
-                            size: 24,
-                          ),
-                        ],
+                      const Text(
+                        'Dobro došli!',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.person,
+                        color: Colors.black,
+                        size: 24,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  _buildRecipeSearch(),
-                  const SizedBox(height: 10),
-                  _buildCategoryAndDishTypeFilter(),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 500,
-                    child: GridView(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.70,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 30,
-                      ),
-                      scrollDirection: Axis.vertical,
-                      children: _buildRecipeCard(),
-                    ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _buildRecipeSearch(),
+              const SizedBox(height: 10),
+              _buildCategoryAndDishTypeFilter(),
+              const SizedBox(height: 10),
+              Container(
+                height: 500,
+                child: GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.70,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 30,
                   ),
-                ],
+                  scrollDirection: Axis.vertical,
+                  children: _buildRecipeCard(),
+                ),
               ),
-            ),
+            ],
           ),
-  );
-}
-
-Widget _buildCategoryAndDishTypeFilter() {
-  List<dynamic> combinedList = [];
-  if (kategorije != null) {
-    combinedList.addAll(kategorije!.result);
-  }
-  if (vrsteJela != null) {
-    combinedList.addAll(vrsteJela!.result);
-  }
-
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-    child: Row(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              data = _recipeProvider?.get() as SearchResult<Recept>?;
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(207, 243, 243, 243), 
-            foregroundColor: Colors.black, 
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          child: const Text('Svi'),
         ),
-        if (combinedList.isNotEmpty)
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var item in combinedList)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (kategorije?.result.contains(item) ?? false) {
-                              data = _kategorijaProvider!.get(
-                                  filter: {'category': item.id.toString()}) as SearchResult<Recept>?;
-                            } else if (vrsteJela?.result.contains(item) ?? false) {
-                              data = _vrstaJelaProvider?.get(
-                                  filter: {'dishType': item.id.toString()}) as SearchResult<Recept>?;
-                            }
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(207, 243, 243, 243), 
-                          foregroundColor: Colors.black, 
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        child: Text(item.naziv),
-                      ),
-                    ),
-                ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryAndDishTypeFilter() {
+    List<dynamic> combinedList = [];
+    if (kategorije != null) {
+      combinedList.addAll(kategorije!.result);
+    }
+    if (vrsteJela != null) {
+      combinedList.addAll(vrsteJela!.result);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              if (selectedIndex != 0) {
+                setState(() {
+                  selectedIndex = 0;
+                });
+                loadData();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: selectedIndex == 0
+                  ? Colors.grey[300]
+                  : Color.fromARGB(207, 243, 243, 243),
+              foregroundColor: selectedIndex == 0 ? Colors.black : Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
               ),
             ),
+            child: const Text('Svi'),
           ),
-      ],
-    ),
-  );
-}
+          if (combinedList.isNotEmpty)
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (var item in combinedList)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            SearchResult<Recept>? newData;
+                            if (kategorije?.result.contains(item) ?? false) {
+                              newData = await _recipeProvider?.get(filter: {
+                                'KategorijaId': item.kategorijaId.toString(),
+                              }) as SearchResult<Recept>?;
+                            } else if (vrsteJela?.result.contains(item) ??
+                                false) {
+                              newData = await _recipeProvider?.get(filter: {
+                                'VrstaJelaId': item.vrstaJelaId.toString()
+                              }) as SearchResult<Recept>?;
+                            }
+                            setState(() {
+                              data = newData;
+                              selectedIndex = combinedList.indexOf(item) + 1;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: selectedIndex ==
+                                    (combinedList.indexOf(item) + 1)
+                                ? Colors.grey[300]
+                                : Color.fromARGB(207, 243, 243, 243),
+                            foregroundColor: selectedIndex ==
+                                    (combinedList.indexOf(item) + 1)
+                                ? Colors.black
+                                : Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: Text(item.naziv),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildRecipeSearch() {
     return Row(
@@ -263,9 +281,10 @@ Widget _buildCategoryAndDishTypeFilter() {
                   hintText: "Search",
                   prefixIcon: const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
                 ),
-                    onChanged: (value) {
+                onChanged: (value) {
                   loadData(query: value);
                 },
               ),
@@ -276,8 +295,11 @@ Widget _buildCategoryAndDishTypeFilter() {
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: ElevatedButton(
             onPressed: () {
-               Navigator.push( context,MaterialPageRoute(builder: (context) => OmiljeniReceptiScreen()),
-    );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OmiljeniReceptiScreen()),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 242, 104, 150),
@@ -306,82 +328,103 @@ Widget _buildCategoryAndDishTypeFilter() {
   }
 
   List<Widget> _buildRecipeCard() {
-    if (data?.result.length == 0) {
-      return [Text("Loading...")];
+    if (data?.result.isEmpty ?? true) {
+      return [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Nema recepata.",
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
+        ),
+      ];
     }
 
-    List<Widget>? list = data?.result.map((x) => Container(
-      padding: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 120,
-            width: double.infinity,
-            child: x.slika == null 
-              ? Placeholder() : imageFromString(x.slika!),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(x.naziv ?? "",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              FutureBuilder(
-               future: _omiljeniReceptProvider?.isFavorite(x.receptId!),
-               builder: (context, snapshot) {
-                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Icon(Icons.favorite_border, color: Colors.red, size: 30);
-                }
-                if (snapshot.hasData) {
-                  bool isFavorite = snapshot.data!;
-                return IconButton(
+    List<Widget>? list = data?.result
+            .map((x) => Container(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 120,
+                        width: double.infinity,
+                        child: x.slika == null
+                            ? Placeholder()
+                            : imageFromString(x.slika!),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            x.naziv ?? "",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          FutureBuilder(
+                            future: _omiljeniReceptProvider
+                                ?.isFavorite(x.receptId!),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Icon(Icons.favorite_border,
+                                    color: Colors.red, size: 30);
+                              }
+                              if (snapshot.hasData) {
+                                bool isFavorite = snapshot.data!;
+                                return IconButton(
+                                  onPressed: () {
+                                    toggleFavorite(x);
+                                  },
+                                  icon: Icon(
+                                    isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                                  padding: EdgeInsets.all(0),
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                );
+                              } else {
+                                return Icon(Icons.favorite_border,
+                                    color: Colors.red, size: 30);
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                      Text(
+                        x.opisRecepta ?? "",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      ElevatedButton(
                         onPressed: () {
-                          toggleFavorite(x);  
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    RecipeDetailsScreen(recept: x)),
+                          ).then((value) {
+                            loadData();
+                          });
                         },
-                        icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
-                        size: 30,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
-                        padding: EdgeInsets.all(0),
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        );
-                        } else {
-                      return Icon(Icons.favorite_border, color: Colors.red, size: 30);
-                      }
-                    },
-                  )
-            ],
-          ),
-          Text(x.opisRecepta ?? "",
-            style: TextStyle(color: Colors.grey),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Handle "View Recipe" button action
-               Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RecipeDetailsScreen(recept: x)),
-        ).then((value) {
-          loadData(); 
-        }
-            );
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            child: Text("Pregled recepta"),
-          ),
-          SizedBox(height: 8.0),
-        ],
-      ),
-    )).toList() ?? [];
+                        child: Text("Pregled recepta"),
+                      ),
+                      SizedBox(height: 8.0),
+                    ],
+                  ),
+                ))
+            .toList() ??
+        [];
     return list;
   }
 }

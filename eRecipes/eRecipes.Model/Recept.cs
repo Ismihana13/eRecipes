@@ -9,6 +9,7 @@ namespace eRecipes.Model
         public int ReceptId { get; set; }
         public string Naziv { get; set; }
         public string? OpisRecepta { get; set; }
+        public string? OpisPripreme { get; set; }
         public byte[]? Slika { get; set; }
         public int VrstaJelaId { get; set; }
 

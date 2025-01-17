@@ -39,7 +39,16 @@ namespace eRecipes.Service
             {
                 filteredQuery = filteredQuery.Where(x => x.Status == search.Status);
             }
+            if (search.KategorijaId.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(r => r.KategorijaId == search.KategorijaId.Value);
+            }
+            if (search.VrstaJelaId.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(r => r.VrstaJelaId == search.VrstaJelaId.Value);
+            }
             filteredQuery = filteredQuery.Include(r => r.VrstaJela)
+                                 .Include(r => r.Kategorija)
                                  .Include(r => r.Kategorija).Include(r=>r.Korisnik);
             return filteredQuery;
         }

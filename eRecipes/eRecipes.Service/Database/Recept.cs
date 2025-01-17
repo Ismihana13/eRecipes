@@ -10,6 +10,7 @@ public partial class Recept
     public string Naziv { get; set; } = null!;
 
     public string? OpisRecepta { get; set; }
+    public string? OpisPripreme { get; set; }
 
     public byte[]? Slika { get; set; }
 
