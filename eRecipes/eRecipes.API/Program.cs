@@ -17,6 +17,7 @@ builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
 builder.Services.AddTransient<IKategorijaService, KategorijaService >();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
+builder.Services.AddTransient<IOmiljeniReceptService, OmiljeniReceptService>();
 builder.Services.AddHttpContextAccessor();
 
 

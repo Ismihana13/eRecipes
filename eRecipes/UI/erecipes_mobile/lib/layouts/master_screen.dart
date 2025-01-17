@@ -1,5 +1,5 @@
-import 'package:erecipes_mobile/providers/like_provider.dart';
-import 'package:erecipes_mobile/screens/like_screen.dart';
+/*import 'package:erecipes_mobile/providers/like_provider.dart';
+import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/user_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class _MyWidgetState extends State<MasterScreen> {
              title: Text("in like ${_likeProvider?.like?.items?.length ?? 0}"),
 
               onTap: () => {
-               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> LikeScreen()))
+               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> OmiljeniReceptiScreen()))
               },
             ),
             ListTile(
@@ -60,4 +60,4 @@ class _MyWidgetState extends State<MasterScreen> {
       body: widget.child,
     );
   }
-}
+}*/

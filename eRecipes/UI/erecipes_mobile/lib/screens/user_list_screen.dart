@@ -1,4 +1,4 @@
-import 'package:erecipes_mobile/layouts/master_screen.dart';
+/*import 'package:erecipes_mobile/layouts/master_screen.dart';
 import 'package:flutter/material.dart';
 
 class UserListScreen extends StatelessWidget {
@@ -8,4 +8,4 @@ class UserListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MasterScreen("Korisnici", Placeholder());
   }
-}
+}*/

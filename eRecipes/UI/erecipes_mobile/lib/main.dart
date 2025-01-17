@@ -3,52 +3,67 @@ import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 import 'package:erecipes_mobile/providers/like_provider.dart';
 import 'package:erecipes_mobile/providers/logged_recipe_provider.dart';
+import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
+import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider<RecipeProvider>(create: (_) => LoggedRecipeProvider()),
-      ChangeNotifierProvider<KategorijaProvider>(create: (_) => KategorijaProvider()),
-      ChangeNotifierProvider<VrstaJelaProvider>(create: (_) => VrstaJelaProvider()),
-      ChangeNotifierProvider<KorisnikProvider>(create: (_) => KorisnikProvider()),
-      ChangeNotifierProvider<LikeProvider>(create: (_) => LikeProvider()),
-    ],
-    child: const MyApp(),
-  ));
+  //Stripe.publishableKey = stripePublishableKey;
+  runApp(const MainApp());
+  WidgetsFlutterBinding.ensureInitialized();
 }
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
+class MainApp  extends StatelessWidget {
+  const MainApp ({super.key});
+   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: LoginScreen(),
-        onGenerateRoute: (settings) {
-          if (settings.name == RecipeListScreen.routeName) {
-            return MaterialPageRoute(builder: ((context) => RecipeListScreen()));
-          } else if (settings.name == LoginScreen.routeName) {
-            return MaterialPageRoute(builder: ((context) => LoginScreen()));
-          }else if (settings.name == SingupScreen.routeName) { 
-          return MaterialPageRoute(builder: (context) => SingupScreen());
-          }
-          return null;
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => KorisnikProvider()),
+        ChangeNotifierProvider(create: (_) => RecipeProvider()),
+        ChangeNotifierProvider(create: (_) => KategorijaProvider()),
+        ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
+        ChangeNotifierProvider(create: (_) => OmiljeniReceptProvider()),
+       // ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
+      ],
+      child: MaterialApp(
+        initialRoute: LoginScreen.routeName,
+        routes: {
+         // HomeScreen.routeName: (context) => HomeScreen(),
+          LoginScreen.routeName: (context) => LoginScreen(),
+          SingupScreen.routeName: (context) =>  SingupScreen(),
+          RecipeListScreen.routeName: (context) => RecipeListScreen(),
+          OmiljeniReceptiScreen.routeName: (context) => const OmiljeniReceptiScreen(),
+          RecipeDetailsScreen.routeName:(context)=> RecipeDetailsScreen(),
+         // ProfileScreen.routeName: (context) => ProfileScreen(),
         },
+      ),
     );
   }
 }
-class LoginScreen extends StatelessWidget {
+
+class LoginScreen extends StatefulWidget {
 
 LoginScreen({super.key});
-TextEditingController _usernameController=new TextEditingController();
-TextEditingController _passwordController=new TextEditingController();
-late KorisnikProvider _korisnikProvider;
-  final _formKey = GlobalKey<FormState>();
   static const String routeName = "/login";
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+TextEditingController _usernameController=new TextEditingController();
+
+TextEditingController _passwordController=new TextEditingController();
+
+late KorisnikProvider _korisnikProvider;
+
+  final _formKey = GlobalKey<FormState>();
 
  void handleLogin(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
@@ -65,10 +80,7 @@ print("Password: ${AuthProvider.password}");
             duration: Duration(seconds: 3),
           ),
         );
-        Navigator.of(context).pushNamedAndRemoveUntil(
-         RecipeListScreen.routeName,
-          (route) => false,
-        );
+       Navigator.pushNamed(context, RecipeListScreen.routeName);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
            SnackBar(

@@ -4,21 +4,35 @@ import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 
 
-class SingupScreen extends StatelessWidget {
+class SingupScreen extends StatefulWidget {
   SingupScreen({super.key});
   
+  static const String routeName = "/signup";
+
+  @override
+  State<SingupScreen> createState() => _SingupScreenState();
+}
+
+class _SingupScreenState extends State<SingupScreen> {
   TextEditingController _imeController = TextEditingController();
+
   TextEditingController _prezimeController = TextEditingController();
+
   TextEditingController _emailController = TextEditingController();
+
   TextEditingController _telefonController = TextEditingController();
+
   TextEditingController _usernameController = TextEditingController();
+
   TextEditingController _passwordController = TextEditingController();
+
   TextEditingController _passwordConfirmController = TextEditingController();
+
   TextEditingController _datumRodjenjaController = TextEditingController();
 
   late KorisnikProvider _korisnikProvider;
+
   final _formKey = GlobalKey<FormState>();
-  static const String routeName = "/signup";
 
   void handleSignup(BuildContext context) async {
     if (_formKey.currentState!.validate()) {

@@ -29,6 +29,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     http = IOClient(client);
     fullUrl = "$_baseUrl$_endpoint";
   }
+  
  Future<List<T>> Get([dynamic search]) async {
     var url = "${_baseUrl}${_endpoint}";
 
@@ -78,6 +79,21 @@ abstract class BaseProvider<T> with ChangeNotifier {
       return result;
     } else {
       throw new Exception("Wrong username or password");
+    }
+  }
+
+    Future<T> getById(int id) async {
+    var url = Uri.parse("$_baseUrl$_endpoint/$id");
+
+    Map<String, String> headers = getHeaders();
+
+    var response = await http!.get(url, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data) as T;
+    } else {
+      throw Exception("Exception... handle this gracefully");
     }
   }
 

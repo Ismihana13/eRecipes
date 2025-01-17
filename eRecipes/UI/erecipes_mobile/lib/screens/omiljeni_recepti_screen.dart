@@ -1,114 +1,66 @@
+
+import 'dart:convert';
 import 'package:erecipes_mobile/models/kategorija.dart';
 import 'package:erecipes_mobile/models/omiljeni_recept.dart';
+import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/models/vrsta_jela.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
-import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
-import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
-import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:erecipes_mobile/models/recept.dart';
-import 'package:erecipes_mobile/models/search_result.dart';
-
-import 'package:erecipes_mobile/providers/recipe_provider.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 
-class RecipeListScreen extends StatefulWidget {
-  const RecipeListScreen({super.key});
+class OmiljeniReceptiScreen extends StatefulWidget {
+  static const String routeName = "/omiljeniRecept";
+
+   const OmiljeniReceptiScreen({Key? key}) : super(key: key);
 
   @override
-  State<RecipeListScreen> createState() => _RecipeListScreenState();
-  static const String routeName = "/recept";
+  State<OmiljeniReceptiScreen> createState() => _LikeScreenState();
 }
 
-class _RecipeListScreenState extends State<RecipeListScreen> {
-  RecipeProvider? _recipeProvider=null;
-  VrstaJelaProvider? _vrstaJelaProvider=null;
+class _LikeScreenState extends State<OmiljeniReceptiScreen> {
+ VrstaJelaProvider? _vrstaJelaProvider=null;
   KategorijaProvider? _kategorijaProvider=null;
   OmiljeniReceptProvider? _omiljeniReceptProvider=null;
-  SearchResult<Recept>? data;
+  List<OmiljeniRecept>? data;
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
   TextEditingController _searchController = TextEditingController();
-  SearchResult<Recept>? cachedData;
-  bool isLoading=true;
-@override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-}
 
-
-  @override
+    @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _recipeProvider = context.read<RecipeProvider>();
+    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     _kategorijaProvider = context.read<KategorijaProvider>();
     _vrstaJelaProvider = context.read<VrstaJelaProvider>();
-    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     loadData();
-    initForm();
-    
   }
- Future initForm() async{
-    setState(() {
-      isLoading=false;
-    });
-  }
-toggleFavorite(Recept recept) async {
-  var noviOmiljeniRecept = OmiljeniRecept();
-  noviOmiljeniRecept.receptId = recept.receptId;
-  bool isFavorite = await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
 
-  if (isFavorite) {
-    await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Uklonili ste recept iz omiljenih.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  } else {
-    await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Dodali ste recept u omiljene.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-   setState(() {
-   
-  });
-}
-
-Future<void>   loadData({String query = ''}) async {
+ loadData({String query = ''}) async {
   try {
-    setState(() {
-      isLoading = true;  
-    });
     var filter = {
       'FTS': query,
-      'Status': true,
     };
-
-    var tmpData = await _recipeProvider?.get(filter: filter); 
+    var tmpData = await _omiljeniReceptProvider?.getFavoritesForCurrentUser(filter:filter);
     var tmpKategorije = await _kategorijaProvider?.get();
     var tmpVrsteJela = await _vrstaJelaProvider?.get();
 
     setState(() {
-      data = tmpData!;
+      data = tmpData! as List<OmiljeniRecept>? ;
       kategorije = tmpKategorije!;
       vrsteJela = tmpVrsteJela!;
     });
   } catch (e) {
     print('Error fetching data: $e');
     setState(() {
-      data = null; 
+      data = null;
       kategorije = null;
       vrsteJela = null;
-      isLoading=false;
     });
   }
 }
@@ -126,7 +78,6 @@ Widget build(BuildContext context) {
         ),
       ),
       backgroundColor: Color.fromRGBO(1, 100, 34, 1),
-      
     ),
     body: SingleChildScrollView(
             child: Container(
@@ -161,14 +112,23 @@ Widget build(BuildContext context) {
                   const SizedBox(height: 10),
                   _buildCategoryAndDishTypeFilter(),
                   const SizedBox(height: 10),
+                  const Text(
+                    'Omiljeni Recepti',
+                    style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                     color: Colors.black,
+                  ),
+            ),
+            const SizedBox(height: 10),
                   Container(
                     height: 500,
                     child: GridView(
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.70,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 30,
+                        crossAxisCount: 1,
+                        childAspectRatio:8/4,
+                        crossAxisSpacing: 1,
+                        mainAxisSpacing: 1,
                       ),
                       scrollDirection: Axis.vertical,
                       children: _buildRecipeCard(),
@@ -197,7 +157,8 @@ Widget _buildCategoryAndDishTypeFilter() {
         ElevatedButton(
           onPressed: () {
             setState(() {
-              data = _recipeProvider?.get() as SearchResult<Recept>?;
+              // Fetch regular recipes (Recept)
+             // data = _omiljeniReceptProvider?.getFavoritesForCurrentUser() as SearchResult<OmiljeniRecept>?; // Keep Recept here
             });
           },
           style: ElevatedButton.styleFrom(
@@ -222,11 +183,13 @@ Widget _buildCategoryAndDishTypeFilter() {
                         onPressed: () {
                           setState(() {
                             if (kategorije?.result.contains(item) ?? false) {
-                              data = _kategorijaProvider!.get(
-                                  filter: {'category': item.id.toString()}) as SearchResult<Recept>?;
+                              // When filtering by category, fetch regular recipes (Recept)
+                             /// data = _kategorijaProvider!.get(
+                            //      filter: {'category': item.id.toString()}) as SearchResult<OmiljeniRecept>?; // Keep Recept here
                             } else if (vrsteJela?.result.contains(item) ?? false) {
-                              data = _vrstaJelaProvider?.get(
-                                  filter: {'dishType': item.id.toString()}) as SearchResult<Recept>?;
+                              // When filtering by dish type, fetch regular recipes (Recept)
+                           //   data = _vrstaJelaProvider?.get(
+                            //      filter: {'dishType': item.id.toString()}) as SearchResult<OmiljeniRecept>?; // Keep Recept here
                             }
                           });
                         },
@@ -263,7 +226,7 @@ Widget _buildCategoryAndDishTypeFilter() {
                   hintText: "Search",
                   prefixIcon: const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0) ),
                 ),
                     onChanged: (value) {
                   loadData(query: value);
@@ -304,84 +267,70 @@ Widget _buildCategoryAndDishTypeFilter() {
       ],
     );
   }
+  
 
-  List<Widget> _buildRecipeCard() {
-    if (data?.result.length == 0) {
-      return [Text("Loading...")];
-    }
+List<Widget> _buildRecipeCard() {
+    if (data?.isEmpty ?? true) {
+    return [
+      Center(
+        child: Text(
+          "Nema omiljenih recepata.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      ),
+    ];
+  }
 
-    List<Widget>? list = data?.result.map((x) => Container(
-      padding: EdgeInsets.all(8.0),
-      child: Column(
+  return data!.map((x) => Container(
+    margin: EdgeInsets.symmetric(vertical: 8.0), 
+    padding: EdgeInsets.all(5.0),
+    color: Color.fromARGB(187, 247, 246, 246),
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 120,
-            width: double.infinity,
-            child: x.slika == null 
-              ? Placeholder() : imageFromString(x.slika!),
+            width: MediaQuery.of(context).size.width * 0.45,
+            height: 150,
+            child: x.recept!.slika == null 
+              ? Placeholder()
+              : Image.memory(base64Decode( x.recept!.slika!), fit: BoxFit.cover),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(x.naziv ?? "",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              FutureBuilder(
-               future: _omiljeniReceptProvider?.isFavorite(x.receptId!),
-               builder: (context, snapshot) {
-                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Icon(Icons.favorite_border, color: Colors.red, size: 30);
-                }
-                if (snapshot.hasData) {
-                  bool isFavorite = snapshot.data!;
-                return IconButton(
-                        onPressed: () {
-                          toggleFavorite(x);  
-                        },
-                        icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
-                        size: 30,
-                        ),
-                        padding: EdgeInsets.all(0),
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        );
-                        } else {
-                      return Icon(Icons.favorite_border, color: Colors.red, size: 30);
-                      }
-                    },
-                  )
-            ],
-          ),
-          Text(x.opisRecepta ?? "",
-            style: TextStyle(color: Colors.grey),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Handle "View Recipe" button action
-               Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RecipeDetailsScreen(recept: x)),
-        ).then((value) {
-          loadData(); 
-        }
-            );
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+          SizedBox(width: 10), 
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  x.recept!.naziv ?? "",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                SizedBox(height: 6), 
+                Text(
+                  x.recept!.opisRecepta ?? "",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                SizedBox(height: 6), 
+                ElevatedButton(
+                  onPressed: () {
+                    // Handle "View Recipe" button action
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: Text("Pregled recepta"),
+                ),
+              ],
             ),
-            child: Text("Pregled recepta"),
           ),
-          SizedBox(height: 8.0),
         ],
       ),
-    )).toList() ?? [];
-    return list;
-  }
+    ),
+  )).toList() ?? [];
+}
 }

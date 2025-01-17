@@ -19,7 +19,6 @@ namespace eRecipes.Service.ReceptStateMachine
         {
             _httpContextAccessor = httpContextAccessor;
             _korisnikService = korisnikService;
-            _korisnikService = korisnikService;
         }
 
         public override Recept Insert(ReceptInsertRequest request)

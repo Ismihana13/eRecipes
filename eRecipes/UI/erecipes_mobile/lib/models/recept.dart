@@ -1,3 +1,6 @@
+
+
+import 'package:erecipes_mobile/models/recept_sastojak.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'recept.g.dart';
@@ -11,9 +14,12 @@ class Recept{
   int? kategorijaId;
   int? vrijemePripreme;
   int? korisnikId;
+  bool? premium;
+  String? stateMachine;
   String? opisRecepta;
   DateTime? datumObjave;
-  Recept({this.receptId, this.naziv});
+  List<ReceptSastojak>? sastojci;
+  Recept();
 
   factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);
 
