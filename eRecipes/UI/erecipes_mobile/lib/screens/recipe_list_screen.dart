@@ -5,12 +5,12 @@ import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/search_result.dart';
-
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +33,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   TextEditingController _searchController = TextEditingController();
   SearchResult<Recept>? cachedData;
   bool isLoading = true;
-  int? selectedIndex;
+  dynamic _selectedFilter;
 
   @override
   void didChangeDependencies() {
@@ -47,6 +47,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     _kategorijaProvider = context.read<KategorijaProvider>();
     _vrstaJelaProvider = context.read<VrstaJelaProvider>();
     _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
+    _selectedFilter = 'Svi';
     loadData();
     initForm();
   }
@@ -66,7 +67,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     if (isFavorite) {
       await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Uklonili ste recept iz omiljenih.'),
           duration: Duration(seconds: 2),
         ),
@@ -74,7 +75,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     } else {
       await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Dodali ste recept u omiljene.'),
           duration: Duration(seconds: 2),
         ),
@@ -127,56 +128,54 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             fontStyle: FontStyle.italic,
           ),
         ),
-        backgroundColor: Color.fromRGBO(1, 100, 34, 1),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
       body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(),
-                  Row(
-                    children: [
-                      const Text(
-                        'Dobro došli!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(),
+                Row(
+                  children: [
+                    Text(
+                      'Dobro došli!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.person,
-                        color: Colors.black,
-                        size: 24,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _buildRecipeSearch(),
-              const SizedBox(height: 10),
-              _buildCategoryAndDishTypeFilter(),
-              const SizedBox(height: 10),
-              Container(
-                height: 500,
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.70,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 30,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  children: _buildRecipeCard(),
+                    ),
+                    SizedBox(width: 8),
+                    Icon(
+                      Icons.person,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                  ],
                 ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _buildRecipeSearch(),
+            const SizedBox(height: 10),
+            _buildCategoryAndDishTypeFilter(),
+            const SizedBox(height: 10),
+            Container(
+              height: 500,
+              child: GridView(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.70,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 30,
+                ),
+                scrollDirection: Axis.vertical,
+                children: _buildRecipeCard(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -184,12 +183,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
   Widget _buildCategoryAndDishTypeFilter() {
     List<dynamic> combinedList = [];
-    if (kategorije != null) {
-      combinedList.addAll(kategorije!.result);
-    }
-    if (vrsteJela != null) {
-      combinedList.addAll(vrsteJela!.result);
-    }
+    if (kategorije != null) combinedList.addAll(kategorije!.result);
+    if (vrsteJela != null) combinedList.addAll(vrsteJela!.result);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -197,21 +192,19 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         children: [
           ElevatedButton(
             onPressed: () {
-              if (selectedIndex != 0) {
-                setState(() {
-                  selectedIndex = 0;
-                });
+              setState(() {
+                _selectedFilter = 'Svi';
                 loadData();
-              }
+              });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: selectedIndex == 0
-                  ? Colors.grey[300]
-                  : Color.fromARGB(207, 243, 243, 243),
-              foregroundColor: selectedIndex == 0 ? Colors.black : Colors.black,
+              backgroundColor: _selectedFilter == 'Svi'
+                  ? Colors.grey[800]
+                  : const Color.fromARGB(207, 243, 243, 243),
+              foregroundColor:
+                  _selectedFilter == 'Svi' ? Colors.white : Colors.black,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+                  borderRadius: BorderRadius.circular(8.0)),
             ),
             child: const Text('Svi'),
           ),
@@ -220,45 +213,47 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: [
-                    for (var item in combinedList)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            SearchResult<Recept>? newData;
-                            if (kategorije?.result.contains(item) ?? false) {
-                              newData = await _recipeProvider?.get(filter: {
-                                'KategorijaId': item.kategorijaId.toString(),
-                              }) as SearchResult<Recept>?;
-                            } else if (vrsteJela?.result.contains(item) ??
-                                false) {
-                              newData = await _recipeProvider?.get(filter: {
+                  children: combinedList.map((item) {
+                    bool isSelected = _selectedFilter == item;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            _selectedFilter = item;
+                          });
+                          SearchResult<Recept>? newData;
+                          if (kategorije?.result.contains(item) ?? false) {
+                            newData = await _recipeProvider?.get(
+                              filter: {
+                                'KategorijaId': item.kategorijaId.toString()
+                              },
+                            );
+                          } else if (vrsteJela?.result.contains(item) ??
+                              false) {
+                            newData = await _recipeProvider?.get(
+                              filter: {
                                 'VrstaJelaId': item.vrstaJelaId.toString()
-                              }) as SearchResult<Recept>?;
-                            }
-                            setState(() {
-                              data = newData;
-                              selectedIndex = combinedList.indexOf(item) + 1;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: selectedIndex ==
-                                    (combinedList.indexOf(item) + 1)
-                                ? Colors.grey[300]
-                                : Color.fromARGB(207, 243, 243, 243),
-                            foregroundColor: selectedIndex ==
-                                    (combinedList.indexOf(item) + 1)
-                                ? Colors.black
-                                : Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                          child: Text(item.naziv),
+                              },
+                            );
+                          }
+                          setState(() {
+                            data = newData;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isSelected
+                              ? Colors.grey[800]
+                              : const Color.fromARGB(207, 243, 243, 243),
+                          foregroundColor:
+                              isSelected ? Colors.white : Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
                         ),
+                        child: Text(item.naziv),
                       ),
-                  ],
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -313,7 +308,13 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddNewRecipeScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               shape: RoundedRectangleBorder(
@@ -330,8 +331,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   List<Widget> _buildRecipeCard() {
     if (data?.result.isEmpty ?? true) {
       return [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text(
             "Nema recepata.",
             style: TextStyle(fontSize: 20, color: Colors.grey),
@@ -342,7 +343,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
     List<Widget>? list = data?.result
             .map((x) => Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -350,7 +351,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         height: 120,
                         width: double.infinity,
                         child: x.slika == null
-                            ? Placeholder()
+                            ? const Placeholder()
                             : imageFromString(x.slika!),
                       ),
                       Row(
@@ -358,7 +359,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         children: [
                           Text(
                             x.naziv ?? "",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           FutureBuilder(
@@ -367,7 +368,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return Icon(Icons.favorite_border,
+                                return const Icon(Icons.favorite_border,
                                     color: Colors.red, size: 30);
                               }
                               if (snapshot.hasData) {
@@ -388,7 +389,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                   highlightColor: Colors.transparent,
                                 );
                               } else {
-                                return Icon(Icons.favorite_border,
+                                return const Icon(Icons.favorite_border,
                                     color: Colors.red, size: 30);
                               }
                             },
@@ -397,7 +398,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ),
                       Text(
                         x.opisRecepta ?? "",
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -417,9 +418,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        child: Text("Pregled recepta"),
+                        child: const Text("Pregled recepta"),
                       ),
-                      SizedBox(height: 8.0),
+                      const SizedBox(height: 8.0),
                     ],
                   ),
                 ))

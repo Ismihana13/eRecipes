@@ -36,84 +36,65 @@ namespace eRecipes.Service
         }
         public override void BeforeInsert(OmiljeniReceptUpsertRequest request, OmiljeniRecept entity)
         {
-            // Postavljanje trenutnog datuma
             entity.DatumDodavanja = DateTime.Now;
-
-            // Proveravamo da li HttpContext i HttpContext.User nisu null
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-
-            // Ako korisnik nije logovan, userIdClaim će biti null
             if (userIdClaim != null)
             {
                 string username = userIdClaim.Value;
-
-                // Proveravamo da li je korisnik pronađen
                 var user = _korisnikService.GetByUsername(username);
                 if (user != null)
                 {
-                    // Ako je korisnik pronađen, postavljamo korisnički ID u entitet
                     entity.KorisnikId = user.KorisnikId;
-
-                    // Proveravamo da li je ovaj recept već u omiljenima tog korisnika
-                  //  bool exists = Context.OmiljeniRecepts
-                     //   .Any(omiljeni => omiljeni.KorisnikId == user.KorisnikId && omiljeni.ReceptId == entity.ReceptId);
-
-                    //if (exists)
-                   // {
-                        // Ako recept već postoji u omiljenima, bacite izuzetak
-                     //   throw new Exception("Recept je već u vašim omiljenim.");
-                   // }
                 }
                 else
                 {
-                    // Ako korisnik nije pronađen, možete baciti izuzetak
                     throw new Exception("Korisnik nije pronađen.");
                 }
             }
             else
             {
-                // Ako korisnik nije logovan, bacite izuzetak ili obavestite korisnika
                 throw new Exception("Korisnik nije logovan.");
             }
-
-            // Pozivanje osnovne implementacije za unos
             base.BeforeInsert(request, entity);
         }
 
         public async Task<List<Model.OmiljeniRecept>> GetFavoritesForCurrentUser(OmiljeniReceptSearchObject searchObject)
         {
-            // Dohvat korisničkog ID-a iz tokena ili sesije
             var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
             {
                 throw new Exception("Korisnik nije logovan.");
             }
-
             string username = userIdClaim.Value;
 
-            // Dohvat korisnika prema username-u
             var user = _korisnikService.GetByUsername(username);
-
             if (user == null)
             {
                 throw new Exception("Korisnik nije pronađen.");
             }
 
-            // Filtriranje omiljenih recepata za ovog korisnika
             var omiljeniReceptiQuery = Context.OmiljeniRecepts
-       .Include(omiljeni => omiljeni.Recept)  // Uključivanje Recepta pre filtriranja
-       .Where(omiljeni => omiljeni.KorisnikId == user.KorisnikId);
+                                .Include(omiljeni => omiljeni.Recept)
+                                .Include(omiljeni=>omiljeni.Recept.Kategorija)
+                                .Include(omiljeni=> omiljeni.Recept.VrstaJela)
+                                .Where(omiljeni => omiljeni.KorisnikId == user.KorisnikId);
 
-            // Apply filter for FTS if provided
             if (!string.IsNullOrWhiteSpace(searchObject?.FTS))
             {
                 omiljeniReceptiQuery = omiljeniReceptiQuery
-                    .Where(omiljeni => omiljeni.Recept.Naziv.ToLower().Contains(searchObject.FTS.ToLower()));  // Filtriranje po nazivu recepta
+                    .Where(omiljeni => omiljeni.Recept.Naziv.ToLower().Contains(searchObject.FTS.ToLower()));  
+            }
+            if (searchObject.KategorijaId.HasValue)
+            {
+                omiljeniReceptiQuery=omiljeniReceptiQuery.Where(omiljeni=>omiljeni.Recept.KategorijaId==searchObject.KategorijaId.Value);
+            }
+            if (searchObject.VrstaJelaId.HasValue)
+            {
+                omiljeniReceptiQuery = omiljeniReceptiQuery.Where(omiljeni => omiljeni.Recept.VrstaJelaId == searchObject.VrstaJelaId.Value);
             }
             var omiljeniRecepti = await omiljeniReceptiQuery.ToListAsync();
 
-            // Mapiranje omiljenih recepata u model koji će se vratiti
             return Mapper.Map<List<Model.OmiljeniRecept>>(omiljeniRecepti);
         }
 
@@ -127,7 +108,6 @@ namespace eRecipes.Service
             }
 
             string username = userIdClaim.Value;
-
             var user = _korisnikService.GetByUsername(username);
 
             if (user == null)

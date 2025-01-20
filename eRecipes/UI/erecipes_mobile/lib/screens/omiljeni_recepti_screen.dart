@@ -29,6 +29,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
   TextEditingController _searchController = TextEditingController();
+  dynamic _selectedFilter;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
     _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     _kategorijaProvider = context.read<KategorijaProvider>();
     _vrstaJelaProvider = context.read<VrstaJelaProvider>();
+    _selectedFilter = 'Svi';
     loadData();
   }
 
@@ -76,65 +78,63 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             fontStyle: FontStyle.italic,
           ),
         ),
-        backgroundColor: Color.fromRGBO(1, 100, 34, 1),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
       body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(),
-                  Row(
-                    children: [
-                      const Text(
-                        'Dobro došli!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(),
+                Row(
+                  children: [
+                    Text(
+                      'Dobro došli!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.person,
-                        color: Colors.black,
-                        size: 24,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _buildRecipeSearch(),
-              const SizedBox(height: 10),
-              _buildCategoryAndDishTypeFilter(),
-              const SizedBox(height: 10),
-              const Text(
-                'Omiljeni Recepti',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                    ),
+                    SizedBox(width: 8),
+                    Icon(
+                      Icons.person,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                  ],
                 ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _buildRecipeSearch(),
+            const SizedBox(height: 10),
+            _buildCategoryAndDishTypeFilter(),
+            const SizedBox(height: 10),
+            const Text(
+              'Omiljeni Recepti',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              const SizedBox(height: 10),
-              Container(
-                height: 500,
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 8 / 4,
-                    crossAxisSpacing: 1,
-                    mainAxisSpacing: 1,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  children: _buildRecipeCard(),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              height: 500,
+              child: GridView(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1,
+                  childAspectRatio: 8 / 4,
+                  crossAxisSpacing: 1,
+                  mainAxisSpacing: 1,
                 ),
+                scrollDirection: Axis.vertical,
+                children: _buildRecipeCard(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -142,12 +142,8 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
 
   Widget _buildCategoryAndDishTypeFilter() {
     List<dynamic> combinedList = [];
-    if (kategorije != null) {
-      combinedList.addAll(kategorije!.result);
-    }
-    if (vrsteJela != null) {
-      combinedList.addAll(vrsteJela!.result);
-    }
+    if (kategorije != null) combinedList.addAll(kategorije!.result);
+    if (vrsteJela != null) combinedList.addAll(vrsteJela!.result);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -156,16 +152,18 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
           ElevatedButton(
             onPressed: () {
               setState(() {
-                // Fetch regular recipes (Recept)
-                // data = _omiljeniReceptProvider?.getFavoritesForCurrentUser() as SearchResult<OmiljeniRecept>?; // Keep Recept here
+                _selectedFilter = 'Svi';
+                loadData();
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(207, 243, 243, 243),
-              foregroundColor: Colors.black,
+              backgroundColor: _selectedFilter == 'Svi'
+                  ? Colors.grey[800]
+                  : const Color.fromARGB(207, 243, 243, 243),
+              foregroundColor:
+                  _selectedFilter == 'Svi' ? Colors.white : Colors.black,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+                  borderRadius: BorderRadius.circular(8.0)),
             ),
             child: const Text('Svi'),
           ),
@@ -174,36 +172,49 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: [
-                    for (var item in combinedList)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              if (kategorije?.result.contains(item) ?? false) {
-                                // When filtering by category, fetch regular recipes (Recept)
-                                /// data = _kategorijaProvider!.get(
-                                //      filter: {'category': item.id.toString()}) as SearchResult<OmiljeniRecept>?; // Keep Recept here
-                              } else if (vrsteJela?.result.contains(item) ??
-                                  false) {
-                                // When filtering by dish type, fetch regular recipes (Recept)
-                                //   data = _vrstaJelaProvider?.get(
-                                //      filter: {'dishType': item.id.toString()}) as SearchResult<OmiljeniRecept>?; // Keep Recept here
-                              }
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(207, 243, 243, 243),
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                          child: Text(item.naziv),
+                  children: combinedList.map((item) {
+                    bool isSelected = _selectedFilter == item;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            _selectedFilter = item;
+                          });
+                          List<OmiljeniRecept>? newData;
+                          if (kategorije?.result.contains(item) ?? false) {
+                            newData = await _omiljeniReceptProvider
+                                ?.getFavoritesForCurrentUser(
+                              filter: {
+                                'KategorijaId': item.kategorijaId.toString()
+                              },
+                            );
+                          } else if (vrsteJela?.result.contains(item) ??
+                              false) {
+                            newData = await _omiljeniReceptProvider
+                                ?.getFavoritesForCurrentUser(
+                              filter: {
+                                'VrstaJelaId': item.vrstaJelaId.toString()
+                              },
+                            );
+                          }
+                          setState(() {
+                            data = newData;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isSelected
+                              ? Colors.grey[800]
+                              : const Color.fromARGB(207, 243, 243, 243),
+                          foregroundColor:
+                              isSelected ? Colors.white : Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
                         ),
+                        child: Text(item.naziv),
                       ),
-                  ],
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -275,7 +286,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
   List<Widget> _buildRecipeCard() {
     if (data?.isEmpty ?? true) {
       return [
-        Center(
+        const Center(
           child: Text(
             "Nema omiljenih recepata.",
             style: TextStyle(fontSize: 18, color: Colors.grey),
@@ -286,9 +297,9 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
 
     return data!
         .map((x) => Container(
-              margin: EdgeInsets.symmetric(vertical: 8.0),
-              padding: EdgeInsets.all(5.0),
-              color: Color.fromARGB(187, 247, 246, 246),
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.all(5.0),
+              color: const Color.fromARGB(187, 247, 246, 246),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -298,26 +309,26 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                       width: MediaQuery.of(context).size.width * 0.45,
                       height: 150,
                       child: x.recept!.slika == null
-                          ? Placeholder()
+                          ? const Placeholder()
                           : Image.memory(base64Decode(x.recept!.slika!),
                               fit: BoxFit.cover),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             x.recept!.naziv ?? "",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           Text(
                             x.recept!.opisRecepta ?? "",
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -336,7 +347,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                             ),
-                            child: Text("Pregled recepta"),
+                            child: const Text("Pregled recepta"),
                           ),
                         ],
                       ),
