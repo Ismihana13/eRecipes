@@ -52,35 +52,39 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Wrong username or password");
     }
   }
-  Future<SearchResult<T>> get({dynamic filter}) async {
-    var url = "$_baseUrl$_endpoint";
+ Future<SearchResult<T>> get({dynamic filter}) async {
+  var url = "$_baseUrl$_endpoint";
 
-    if (filter != null) {
-      var queryString = getQueryString(filter);
-      url = "$url?$queryString";
-    }
-
-    var uri = Uri.parse(url);
-    var headers = createHeaders();
-
-    var response = await http!.get(uri, headers: headers);
-
-    if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-
-      var result = SearchResult<T>();
-
-      result.count = data['count'];
-
-      for (var item in data['resultList']) {
-        result.result.add(fromJson(item));
-      }
-
-      return result;
-    } else {
-      throw new Exception("Wrong username or password");
-    }
+  if (filter != null) {
+    var queryString = getQueryString(filter);
+    url = "$url?$queryString";
   }
+
+  // Ispisivanje URL-a koji se poziva
+  print("URL za GET zahtev sa filterom: $url");
+
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+
+  var response = await http!.get(uri, headers: headers);
+
+  if (isValidResponse(response)) {
+    var data = jsonDecode(response.body);
+
+    var result = SearchResult<T>();
+
+    result.count = data['count'];
+
+    for (var item in data['resultList']) {
+      result.result.add(fromJson(item));
+    }
+
+    return result;
+  } else {
+    throw new Exception("Wrong username or password");
+  }
+}
+
 
     Future<T> getById(int id) async {
     var url = Uri.parse("$_baseUrl$_endpoint/$id");
@@ -134,6 +138,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   bool isValidResponse(Response response) {
+    print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
     if (response.statusCode < 299) {
       return true;
     } else if (response.statusCode == 401) {

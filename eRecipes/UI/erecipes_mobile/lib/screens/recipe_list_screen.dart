@@ -23,18 +23,18 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
-  RecipeProvider? _recipeProvider = null;
-  VrstaJelaProvider? _vrstaJelaProvider = null;
-  KategorijaProvider? _kategorijaProvider = null;
-  OmiljeniReceptProvider? _omiljeniReceptProvider = null;
+  RecipeProvider? _recipeProvider;
+  VrstaJelaProvider? _vrstaJelaProvider;
+  KategorijaProvider? _kategorijaProvider;
+  OmiljeniReceptProvider? _omiljeniReceptProvider;
   SearchResult<Recept>? data;
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
   TextEditingController _searchController = TextEditingController();
-  SearchResult<Recept>? cachedData;
-  bool isLoading = true;
+  //SearchResult<Recept>? cachedData;
+ // bool isLoading = true;
   dynamic _selectedFilter;
-
+ 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -49,71 +49,50 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     _selectedFilter = 'Svi';
     loadData();
-    initForm();
   }
 
-  Future initForm() async {
+Future toggleFavorite(Recept recept) async {
+  var noviOmiljeniRecept = OmiljeniRecept();
+  noviOmiljeniRecept.receptId = recept.receptId;
+  bool isFavorite =
+      await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
+
+  if (isFavorite) {
+    await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
     setState(() {
-      isLoading = false;
+      recept.isFavorite = false;  
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Uklonili ste recept iz omiljenih.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  } else {
+    await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
+    setState(() {
+      recept.isFavorite = true;  
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Dodali ste recept u omiljene.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
+}
 
-  toggleFavorite(Recept recept) async {
-    var noviOmiljeniRecept = OmiljeniRecept();
-    noviOmiljeniRecept.receptId = recept.receptId;
-    bool isFavorite =
-        await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
 
-    if (isFavorite) {
-      await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Uklonili ste recept iz omiljenih.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dodali ste recept u omiljene.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
-    setState(() {});
-  }
-
-  Future<void> loadData({String query = ''}) async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      var filter = {
-        'FTS': query,
-        'Status': true,
-        'KategorijaId': query,
-        'VrstaJelaId': query,
-      };
-
-      var tmpData = await _recipeProvider?.get(filter: filter);
-      var tmpKategorije = await _kategorijaProvider?.get();
-      var tmpVrsteJela = await _vrstaJelaProvider?.get();
-
-      setState(() {
-        data = tmpData!;
-        kategorije = tmpKategorije!;
-        vrsteJela = tmpVrsteJela!;
-      });
-    } catch (e) {
-      print('Error fetching data: $e');
-      setState(() {
-        data = null;
-        kategorije = null;
-        vrsteJela = null;
-        isLoading = false;
-      });
-    }
+  Future loadData({String query = ''}) async {
+ var tmpData = await _recipeProvider?.get();
+    var tmpKategorije=await _kategorijaProvider?.get();
+    var tmpVrsteJela=await _vrstaJelaProvider?.get();
+    setState(() {
+      data = tmpData!;
+      kategorije=tmpKategorije!;
+      vrsteJela=tmpVrsteJela!;
+    });
+   
   }
 
   @override
@@ -162,7 +141,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             const SizedBox(height: 10),
             _buildCategoryAndDishTypeFilter(),
             const SizedBox(height: 10),
-            Container(
+            SizedBox(
               height: 500,
               child: GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -191,10 +170,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       child: Row(
         children: [
           ElevatedButton(
-            onPressed: () {
+            onPressed: ()async {
+               var tmpData = await _recipeProvider?.get();
               setState(() {
                 _selectedFilter = 'Svi';
-                loadData();
+                 data=tmpData!;
               });
             },
             style: ElevatedButton.styleFrom(
@@ -279,8 +259,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                 ),
-                onChanged: (value) {
-                  loadData(query: value);
+                onChanged: (value) async{
+                  var tmpData= await _recipeProvider?.get(filter: {'FTS':_searchController.text});
+                  setState(() {
+                    data=tmpData;
+                  });
                 },
               ),
             ),
@@ -293,7 +276,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => OmiljeniReceptiScreen()),
+                    builder: (context) => const OmiljeniReceptiScreen()),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -347,7 +330,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         height: 120,
                         width: double.infinity,
                         child: x.slika == null
@@ -384,7 +367,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                     color: Colors.red,
                                     size: 30,
                                   ),
-                                  padding: EdgeInsets.all(0),
+                                  padding: const EdgeInsets.all(0),
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                 );

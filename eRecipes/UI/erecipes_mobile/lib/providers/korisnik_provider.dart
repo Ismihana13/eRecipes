@@ -15,29 +15,17 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
   }
 
   Future<Korisnik> Authenticate() async {
-  var url = "$fullUrl/Authenticate";
-  var uri = Uri.parse(url);
-  print("Full URL: $uri");
+    var url = "$fullUrl/Authenticate";
+    var uri = Uri.parse(url);
 
-  var headers = getHeaders();
-  var response = await http!.get(uri, headers: headers);
-
-  if (response.statusCode == 204) {
-    print('Authentication successful, no content returned.');
-    // Return a default Korisnik or handle this case differently
-    return Korisnik(); // Or return null if that makes sense
+    var headers = getHeaders();
+    var response = await http!.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      Korisnik user = fromJson(data) as Korisnik;
+      return user;
+    } else {
+      throw Exception("Wrong username or password");
+    }
   }
-
-  if (isValidResponse(response)) {
-    var data = jsonDecode(response.body);
-    print('API response: ${response.body}');
-
-    Korisnik user = fromJson(data);
-    notifyListeners();
-    return user;
-  } else {
-    throw Exception("Wrong username or password");
-  }
-}
-
 }

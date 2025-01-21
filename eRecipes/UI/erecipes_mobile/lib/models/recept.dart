@@ -22,6 +22,7 @@ class Recept{
   String? opisPripreme;
   List<ReceptSastojak>? sastojci;
   Korisnik? korisnik;
+  bool? isFavorite;
   Recept();
 
   factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);

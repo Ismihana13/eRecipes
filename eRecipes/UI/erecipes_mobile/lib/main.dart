@@ -35,29 +35,13 @@ class MainApp extends StatelessWidget {
         routes: {
           // HomeScreen.routeName: (context) => HomeScreen(),
           LoginScreen.routeName: (context) => LoginScreen(),
-          SingupScreen.routeName: (context) => SingupScreen(),
+          SignUpScreen.routeName: (context) => SignUpScreen(),
           RecipeListScreen.routeName: (context) => RecipeListScreen(),
-          OmiljeniReceptiScreen.routeName: (context) =>
-              const OmiljeniReceptiScreen(),
+          OmiljeniReceptiScreen.routeName: (context) => const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
           // ProfileScreen.routeName: (context) => ProfileScreen(),
         },  theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white, primary: Color.fromARGB(255, 48, 99, 54)) ,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white, primary: const Color.fromARGB(255, 48, 99, 54)) ,
         useMaterial3: true,
       ),
       ),
@@ -66,7 +50,7 @@ class MainApp extends StatelessWidget {
 }
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
   static const String routeName = "/login";
 
   @override
@@ -88,8 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
         AuthProvider.username = _usernameController.text;
         AuthProvider.password = _passwordController.text;
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
-        print("Username: ${AuthProvider.username}");
-        print("Password: ${AuthProvider.password}");
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -100,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushNamed(context, RecipeListScreen.routeName);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Login failed. Please check your credentials.'),
             duration: Duration(seconds: 3),
           ),
@@ -122,16 +104,16 @@ class _LoginScreenState extends State<LoginScreen> {
             fontStyle: FontStyle.italic,
           ),
         ),
-        backgroundColor: Color.fromRGBO(1, 100, 34, 1),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
       body: Stack(
         children: [
           Positioned.fill(
-            child: Container(color: Color.fromARGB(236, 255, 255, 255)),
+            child: Container(color: const Color.fromARGB(236, 255, 255, 255)),
           ),
           Column(
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 200,
                 child: Image.asset(
@@ -150,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15.0),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black26,
                       offset: Offset(0, 4),
@@ -181,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         decoration: InputDecoration(
                           labelText: "Username",
-                          labelStyle: TextStyle(color: Colors.black),
+                          labelStyle: const TextStyle(color: Colors.black),
                           prefixIcon: const Icon(Icons.person),
                           filled: true,
                           fillColor: const Color(0xFFEFEFEF),
@@ -205,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         decoration: InputDecoration(
                           labelText: "Password",
-                          labelStyle: TextStyle(color: Colors.black),
+                          labelStyle: const TextStyle(color: Colors.black),
                           prefixIcon: const Icon(Icons.lock_outline),
                           filled: true,
                           fillColor: const Color(0xFFEFEFEF),
@@ -219,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ElevatedButton(
                         onPressed: () => handleLogin(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 42, 99, 56),
+                          backgroundColor: const Color.fromARGB(255, 42, 99, 56),
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -241,8 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context)
-                                  .pushNamed(SingupScreen.routeName);
-                              print("Navigacija na registraciju");
+                                  .pushNamed(SignUpScreen.routeName);
                             },
                             child: const Text(
                               "Sign Up",

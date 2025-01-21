@@ -4,16 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 
 
-class SingupScreen extends StatefulWidget {
-  SingupScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  SignUpScreen({super.key});
   
   static const String routeName = "/signup";
 
   @override
-  State<SingupScreen> createState() => _SingupScreenState();
+  State<SignUpScreen> createState() => _SingupScreenState();
 }
 
-class _SingupScreenState extends State<SingupScreen> {
+class _SingupScreenState extends State<SignUpScreen> {
   TextEditingController _imeController = TextEditingController();
 
   TextEditingController _prezimeController = TextEditingController();
@@ -50,10 +50,7 @@ class _SingupScreenState extends State<SingupScreen> {
               : null,
         };
 
-        print('Korisnički zahtev: $korisnikRequest');
-
-        var result = await _korisnikProvider.insert(korisnikRequest);
-        print('Rezultat registracije: $result');
+         await _korisnikProvider.insert(korisnikRequest);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -61,16 +58,12 @@ class _SingupScreenState extends State<SingupScreen> {
             duration: Duration(seconds: 3),
           ),
         );
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          LoginScreen.routeName,
-          (route) => false,
-        );
+        Navigator.pushNamed(context, LoginScreen.routeName);
       } catch (e) {
-        print('Greška prilikom registracije: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Registration failed. Error: $e'),
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -90,7 +83,7 @@ class _SingupScreenState extends State<SingupScreen> {
             fontStyle: FontStyle.italic,
           ),
         ),
-        backgroundColor: Color.fromRGBO(1, 100, 34, 1),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -100,7 +93,7 @@ class _SingupScreenState extends State<SingupScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
                   offset: Offset(0, 4),
@@ -174,7 +167,7 @@ class _SingupScreenState extends State<SingupScreen> {
                   ElevatedButton(
                     onPressed: () => handleSignup(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 42, 99, 56),
+                      backgroundColor: const Color.fromARGB(255, 42, 99, 56),
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -213,7 +206,7 @@ class _SingupScreenState extends State<SingupScreen> {
           },
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.black),
+        labelStyle: const TextStyle(color: Colors.black),
         prefixIcon: Icon(icon),
         filled: true,
         fillColor: const Color(0xFFEFEFEF),
@@ -230,7 +223,7 @@ class _SingupScreenState extends State<SingupScreen> {
       controller: _datumRodjenjaController,
       decoration: InputDecoration(
         labelText: 'Datum Rođenja',
-        prefixIcon: Icon(Icons.calendar_today),
+        prefixIcon: const Icon(Icons.calendar_today),
         filled: true,
         fillColor: const Color(0xFFEFEFEF),
         border: OutlineInputBorder(

@@ -20,7 +20,7 @@ namespace eRecipes.API.Controllers
             return base.Insert(request);
         }
         
-        [Authorize(Roles = "Admin")]
+       
         public override PagedResult<VrstaJela> GetList([FromQuery] VrstaJelaSearchObject searchObject)
         {
             return base.GetList(searchObject);
