@@ -2,7 +2,6 @@ using eRecipes.API;
 using eRecipes.API.Filters;
 using eRecipes.Service;
 using eRecipes.Service.Database;
-using eRecipes.Service.ReceptStateMachine;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -18,14 +17,15 @@ builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
 builder.Services.AddTransient<IKategorijaService, KategorijaService >();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IOmiljeniReceptService, OmiljeniReceptService>();
+builder.Services.AddTransient<ISastojakService, SastojakService>();
 builder.Services.AddHttpContextAccessor();
 
 
-builder.Services.AddTransient<BaseReceptState>();
-builder.Services.AddTransient<InitialReceptState>();
-builder.Services.AddTransient<DraftReceptState>();
-builder.Services.AddTransient<ActiveReceptState>();
-builder.Services.AddTransient<HiddenReceptState>();
+//builder.Services.AddTransient<BaseReceptState>();
+//builder.Services.AddTransient<InitialReceptState>();
+//builder.Services.AddTransient<DraftReceptState>();
+//builder.Services.AddTransient<ActiveReceptState>();
+//builder.Services.AddTransient<HiddenReceptState>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",

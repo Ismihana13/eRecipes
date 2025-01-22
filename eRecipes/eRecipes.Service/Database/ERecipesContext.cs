@@ -133,7 +133,7 @@ public partial class ERecipesContext : DbContext
             entity.Property(e => e.DatumObjave).HasColumnType("datetime");
             entity.Property(e => e.OpisRecepta).HasColumnType("text");
             entity.Property(e => e.Premium).HasDefaultValue(false);
-            entity.Property(e => e.StateMachine).HasMaxLength(255);
+           // entity.Property(e => e.StateMachine).HasMaxLength(255);
 
             entity.HasOne(d => d.Kategorija).WithMany(p => p.Recepts)
                 .HasForeignKey(d => d.KategorijaId)

@@ -28,7 +28,7 @@ public partial class Recept
 
     public bool? Status { get; set; }
 
-    public string? StateMachine { get; set; }
+   // public string? StateMachine { get; set; }
 
     public virtual ICollection<Izvjestaj> Izvjestajs { get; set; } = new List<Izvjestaj>();
 

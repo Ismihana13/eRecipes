@@ -27,4 +27,16 @@ class RecipeProvider extends BaseProvider<Recept>{
       throw Exception('Failed to load ingredients');
     }
   }
+  Future<void> activateRecipe(int id) async {
+  var url = "$fullUrl/$id/activate";
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+
+  var response = await http!.put(uri, headers: headers); // Pretpostavka je da koristite POST za aktivaciju
+
+  if (!isValidResponse(response)) {
+    throw Exception('Failed to activate recipe');
+  }
+}
+
 }

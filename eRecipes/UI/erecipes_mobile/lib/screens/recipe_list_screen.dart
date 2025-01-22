@@ -31,10 +31,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
   TextEditingController _searchController = TextEditingController();
-  //SearchResult<Recept>? cachedData;
- // bool isLoading = true;
   dynamic _selectedFilter;
- 
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -51,48 +49,46 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     loadData();
   }
 
-Future toggleFavorite(Recept recept) async {
-  var noviOmiljeniRecept = OmiljeniRecept();
-  noviOmiljeniRecept.receptId = recept.receptId;
-  bool isFavorite =
-      await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
+  Future toggleFavorite(Recept recept) async {
+    var noviOmiljeniRecept = OmiljeniRecept();
+    noviOmiljeniRecept.receptId = recept.receptId;
+    bool isFavorite =
+        await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
 
-  if (isFavorite) {
-    await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
-    setState(() {
-      recept.isFavorite = false;  
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Uklonili ste recept iz omiljenih.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  } else {
-    await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
-    setState(() {
-      recept.isFavorite = true;  
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Dodali ste recept u omiljene.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    if (isFavorite) {
+      await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
+      setState(() {
+        recept.isFavorite = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Uklonili ste recept iz omiljenih.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
+      setState(() {
+        recept.isFavorite = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Dodali ste recept u omiljene.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
-}
-
 
   Future loadData({String query = ''}) async {
- var tmpData = await _recipeProvider?.get();
-    var tmpKategorije=await _kategorijaProvider?.get();
-    var tmpVrsteJela=await _vrstaJelaProvider?.get();
+    var tmpData = await _recipeProvider?.get();
+    var tmpKategorije = await _kategorijaProvider?.get();
+    var tmpVrsteJela = await _vrstaJelaProvider?.get();
     setState(() {
       data = tmpData!;
-      kategorije=tmpKategorije!;
-      vrsteJela=tmpVrsteJela!;
+      kategorije = tmpKategorije!;
+      vrsteJela = tmpVrsteJela!;
     });
-   
   }
 
   @override
@@ -170,11 +166,11 @@ Future toggleFavorite(Recept recept) async {
       child: Row(
         children: [
           ElevatedButton(
-            onPressed: ()async {
-               var tmpData = await _recipeProvider?.get();
+            onPressed: () async {
+              var tmpData = await _recipeProvider?.get();
               setState(() {
                 _selectedFilter = 'Svi';
-                 data=tmpData!;
+                data = tmpData!;
               });
             },
             style: ElevatedButton.styleFrom(
@@ -259,10 +255,11 @@ Future toggleFavorite(Recept recept) async {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                 ),
-                onChanged: (value) async{
-                  var tmpData= await _recipeProvider?.get(filter: {'FTS':_searchController.text});
+                onChanged: (value) async {
+                  var tmpData = await _recipeProvider
+                      ?.get(filter: {'FTS': _searchController.text});
                   setState(() {
-                    data=tmpData;
+                    data = tmpData;
                   });
                 },
               ),
@@ -340,10 +337,16 @@ Future toggleFavorite(Recept recept) async {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            x.naziv ?? "",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                          Expanded(
+                            child: Text(
+                              x.naziv ?? "",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                              softWrap: true,
+                              maxLines: 3,
+                              overflow: TextOverflow
+                                  .ellipsis, // Dodano da se tekst skraćuje
+                            ),
                           ),
                           FutureBuilder(
                             future: _omiljeniReceptProvider
@@ -376,7 +379,7 @@ Future toggleFavorite(Recept recept) async {
                                     color: Colors.red, size: 30);
                               }
                             },
-                          )
+                          ),
                         ],
                       ),
                       Text(

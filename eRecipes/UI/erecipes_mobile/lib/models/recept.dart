@@ -23,7 +23,16 @@ class Recept{
   List<ReceptSastojak>? sastojci;
   Korisnik? korisnik;
   bool? isFavorite;
-  Recept();
+  List<String>? sastojcii;
+   Recept({
+    required this.naziv,
+    required this.opisRecepta,
+    required this.opisPripreme,
+    required this.vrijemePripreme,
+    this.kategorijaId,
+    this.vrstaJelaId,
+    this.slika,
+  });
 
   factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);
 

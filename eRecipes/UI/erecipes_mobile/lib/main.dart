@@ -3,6 +3,7 @@ import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
+import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
@@ -28,6 +29,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => KategorijaProvider()),
         ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
         ChangeNotifierProvider(create: (_) => OmiljeniReceptProvider()),
+        ChangeNotifierProvider(create: (_) => SastojakProvider()),
         // ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
       ],
       child: MaterialApp(

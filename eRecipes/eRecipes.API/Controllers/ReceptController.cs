@@ -16,26 +16,26 @@ namespace eRecipes.API.Controllers
         {
            
         }
-        [HttpPut("{id}/activate")]
-        public Recept Activate(int id)
-        {
-            return (_service as IReceptService).Acivate(id);
-        }
-        [HttpPut("{id}/edit")]
-        public Recept Edit(int id)
-        {
-            return (_service as IReceptService).Edit(id);
-        }
-        [HttpPut("{id}/hide")]
-        public Recept Hide(int id)
-        {
-            return (_service as IReceptService).Hide(id);
-        }
-        [HttpGet("{id}/allowedActions")]
-        public List<string> AllowedActions(int id)
-        {
-            return (_service as IReceptService).AllowedActions(id);
-        }
+        //[HttpPut("{id}/activate")]
+        //public Recept Activate(int id)
+        //{
+        //    return (_service as IReceptService).Acivate(id);
+        //}
+        //[HttpPut("{id}/edit")]
+        //public Recept Edit(int id)
+        //{
+        //    return (_service as IReceptService).Edit(id);
+        //}
+        //[HttpPut("{id}/hide")]
+        //public Recept Hide(int id)
+        //{
+        //    return (_service as IReceptService).Hide(id);
+        //}
+        //[HttpGet("{id}/allowedActions")]
+        //public List<string> AllowedActions(int id)
+        //{
+        //    return (_service as IReceptService).AllowedActions(id);
+        //}
         [HttpPost]
         public override Recept Insert(ReceptInsertRequest request)
         {
