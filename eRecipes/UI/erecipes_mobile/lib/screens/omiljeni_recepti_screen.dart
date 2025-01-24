@@ -7,6 +7,8 @@ import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
+import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -69,40 +71,20 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'eRecipes',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
-      ),
+      appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 10),
-            const Row(
+             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(),
+                SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Dobro došli!',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Icon(
-                      Icons.person,
-                      color: Colors.black,
-                      size: 24,
-                    ),
+                    SizedBox(),
+                    WelcomeRow(),
                   ],
                 ),
               ],

@@ -12,8 +12,8 @@ using eRecipes.Service.Database;
 namespace eRecipes.Service.Migrations
 {
     [DbContext(typeof(ERecipesContext))]
-    [Migration("20241222000711_status")]
-    partial class status
+    [Migration("20250123195935_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,33 +33,26 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IzvjestajId"));
 
-                    b.Property<int?>("BrojKupovina")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int?>("BrojLajkova")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int?>("BrojPregleda")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<DateOnly>("DatumIzvjestaja")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("ReceptId")
+                    b.Property<int>("BrojKupovina")
                         .HasColumnType("int");
 
-                    b.HasKey("IzvjestajId")
-                        .HasName("PK__Izvjesta__0892A342115805A3");
+                    b.Property<int>("BrojLajkova")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BrojPregleda")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DatumIzvjestaja")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReceptId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IzvjestajId");
 
                     b.HasIndex("ReceptId");
 
-                    b.ToTable("Izvjestaj", (string)null);
+                    b.ToTable("Izvjestajs");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Kategorija", b =>
@@ -74,13 +67,32 @@ namespace eRecipes.Service.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Status")
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.HasKey("KategorijaId")
-                        .HasName("PK__Kategori__6C3B8FEE5DB06CF5");
+                    b.HasKey("KategorijaId");
 
-                    b.ToTable("Kategorija", (string)null);
+                    b.ToTable("Kategorijas");
+
+                    b.HasData(
+                        new
+                        {
+                            KategorijaId = 1,
+                            Naziv = "Predjelo",
+                            Status = true
+                        },
+                        new
+                        {
+                            KategorijaId = 2,
+                            Naziv = "Glavno jelo",
+                            Status = true
+                        },
+                        new
+                        {
+                            KategorijaId = 3,
+                            Naziv = "Desert",
+                            Status = true
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Korisnik", b =>
@@ -92,7 +104,7 @@ namespace eRecipes.Service.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KorisnikId"));
 
                     b.Property<DateTime?>("DatumRodjenja")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -117,21 +129,64 @@ namespace eRecipes.Service.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Status")
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.Property<string>("Telefon")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UlogaId")
+                    b.Property<int>("UlogaId")
                         .HasColumnType("int");
 
-                    b.HasKey("KorisnikId")
-                        .HasName("PK__Korisnik__80B06D412AF902FE");
+                    b.HasKey("KorisnikId");
 
                     b.HasIndex("UlogaId");
 
-                    b.ToTable("Korisnik", (string)null);
+                    b.ToTable("Korisniks");
+
+                    b.HasData(
+                        new
+                        {
+                            KorisnikId = 1,
+                            DatumRodjenja = new DateTime(1995, 1, 23, 20, 59, 35, 262, DateTimeKind.Local).AddTicks(7303),
+                            Email = "admin@mail.com",
+                            Ime = "Admin",
+                            KorisnickoIme = "admin",
+                            LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=",
+                            LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==",
+                            Prezime = "Adminovic",
+                            Status = true,
+                            Telefon = "060-000-000",
+                            UlogaId = 1
+                        },
+                        new
+                        {
+                            KorisnikId = 2,
+                            DatumRodjenja = new DateTime(2002, 1, 23, 20, 59, 35, 262, DateTimeKind.Local).AddTicks(7393),
+                            Email = "korisnik@mail.com",
+                            Ime = "Korisnik",
+                            KorisnickoIme = "korisnik",
+                            LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=",
+                            LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==",
+                            Prezime = "Korisnikovic",
+                            Status = true,
+                            Telefon = "060-000-001",
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            KorisnikId = 3,
+                            DatumRodjenja = new DateTime(1980, 1, 23, 20, 59, 35, 262, DateTimeKind.Local).AddTicks(7397),
+                            Email = "bajaspare@mail.com",
+                            Ime = "Baja",
+                            KorisnickoIme = "premium",
+                            LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=",
+                            LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==",
+                            Prezime = "Bajaspare",
+                            Status = true,
+                            Telefon = "060-000-002",
+                            UlogaId = 3
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Lajkovi", b =>
@@ -142,23 +197,22 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LajkoviId"));
 
-                    b.Property<DateTime?>("DatumLajka")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("DatumLajka")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("KorisnikId")
+                    b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReceptId")
+                    b.Property<int>("ReceptId")
                         .HasColumnType("int");
 
-                    b.HasKey("LajkoviId")
-                        .HasName("PK__Lajkovi__3D31B5F953B26C49");
+                    b.HasKey("LajkoviId");
 
                     b.HasIndex("KorisnikId");
 
                     b.HasIndex("ReceptId");
 
-                    b.ToTable("Lajkovi", (string)null);
+                    b.ToTable("Lajkovis");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Obavijest", b =>
@@ -169,10 +223,10 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ObavijestId"));
 
-                    b.Property<DateOnly>("DatumSlanja")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DatumSlanja")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("KorisnikId")
+                    b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
                     b.Property<string>("Naslov")
@@ -181,14 +235,13 @@ namespace eRecipes.Service.Migrations
 
                     b.Property<string>("Sadrzaj")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ObavijestId")
-                        .HasName("PK__Obavijes__99D330E0EA8A25AD");
+                    b.HasKey("ObavijestId");
 
                     b.HasIndex("KorisnikId");
 
-                    b.ToTable("Obavijest", (string)null);
+                    b.ToTable("Obavijests");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.OmiljeniRecept", b =>
@@ -199,23 +252,22 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OmiljeniReceptId"));
 
-                    b.Property<DateTime?>("DatumDodavanja")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("DatumDodavanja")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("KorisnikId")
+                    b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReceptId")
+                    b.Property<int>("ReceptId")
                         .HasColumnType("int");
 
-                    b.HasKey("OmiljeniReceptId")
-                        .HasName("PK__Omiljeni__1A663C0CF03DFE09");
+                    b.HasKey("OmiljeniReceptId");
 
                     b.HasIndex("KorisnikId");
 
                     b.HasIndex("ReceptId");
 
-                    b.ToTable("OmiljeniRecept", (string)null);
+                    b.ToTable("OmiljeniRecepts");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Recept", b =>
@@ -226,45 +278,43 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceptId"));
 
-                    b.Property<DateTime?>("DatumObjave")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("DatumObjave")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("KategorijaId")
+                    b.Property<int>("KategorijaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("KorisnikId")
+                    b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OpisRecepta")
-                        .HasColumnType("text");
+                    b.Property<string>("OpisPripreme")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Premium")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<string>("OpisRecepta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Premium")
+                        .HasColumnType("bit");
 
                     b.Property<byte[]>("Slika")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("StateMachine")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<bool?>("Status")
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("VrijemePripreme")
+                    b.Property<int>("VrijemePripreme")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VrstaJelaId")
+                    b.Property<int>("VrstaJelaId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReceptId")
-                        .HasName("PK__Recept__AFE1E3C322D7424C");
+                    b.HasKey("ReceptId");
 
                     b.HasIndex("KategorijaId");
 
@@ -272,7 +322,7 @@ namespace eRecipes.Service.Migrations
 
                     b.HasIndex("VrstaJelaId");
 
-                    b.ToTable("Recept", (string)null);
+                    b.ToTable("Recepts");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.ReceptSastojak", b =>
@@ -283,26 +333,19 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceptSastojakId"));
 
-                    b.Property<decimal?>("Kolicina")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<string>("MjernaJedinica")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ReceptId")
+                    b.Property<int>("ReceptId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SastojakId")
+                    b.Property<int>("SastojakId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReceptSastojakId")
-                        .HasName("PK__ReceptSa__865053CEFA1A8ED2");
+                    b.HasKey("ReceptSastojakId");
 
                     b.HasIndex("ReceptId");
 
                     b.HasIndex("SastojakId");
 
-                    b.ToTable("ReceptSastojak", (string)null);
+                    b.ToTable("ReceptSastojaks");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Sastojak", b =>
@@ -317,10 +360,61 @@ namespace eRecipes.Service.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SastojakId")
-                        .HasName("PK__Sastojak__114FC27F5EBEDC87");
+                    b.HasKey("SastojakId");
 
-                    b.ToTable("Sastojak", (string)null);
+                    b.ToTable("Sastojaks");
+
+                    b.HasData(
+                        new
+                        {
+                            SastojakId = 1,
+                            Naziv = "Jaje"
+                        },
+                        new
+                        {
+                            SastojakId = 2,
+                            Naziv = "Brašno"
+                        },
+                        new
+                        {
+                            SastojakId = 3,
+                            Naziv = "Šećer"
+                        },
+                        new
+                        {
+                            SastojakId = 4,
+                            Naziv = "Mlijeko"
+                        },
+                        new
+                        {
+                            SastojakId = 5,
+                            Naziv = "Maslac"
+                        },
+                        new
+                        {
+                            SastojakId = 6,
+                            Naziv = "So"
+                        },
+                        new
+                        {
+                            SastojakId = 7,
+                            Naziv = "Prašak za pecivo"
+                        },
+                        new
+                        {
+                            SastojakId = 8,
+                            Naziv = "Čokolada"
+                        },
+                        new
+                        {
+                            SastojakId = 9,
+                            Naziv = "Vanilin šećer"
+                        },
+                        new
+                        {
+                            SastojakId = 10,
+                            Naziv = "Maslinovo ulje"
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Uloga", b =>
@@ -338,10 +432,29 @@ namespace eRecipes.Service.Migrations
                     b.Property<string>("Opis")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UlogaId")
-                        .HasName("PK__Uloga__DCAB23CBCE26A230");
+                    b.HasKey("UlogaId");
 
-                    b.ToTable("Uloga", (string)null);
+                    b.ToTable("Ulogas");
+
+                    b.HasData(
+                        new
+                        {
+                            UlogaId = 1,
+                            Naziv = "Admin",
+                            Opis = "Ovaj moze sta god hoce :D"
+                        },
+                        new
+                        {
+                            UlogaId = 2,
+                            Naziv = "Korisnik",
+                            Opis = "Ovaj je obican smrtnik"
+                        },
+                        new
+                        {
+                            UlogaId = 3,
+                            Naziv = "Premium korisnik",
+                            Opis = "Ovaj baja imama para"
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.VrstaJela", b =>
@@ -354,13 +467,48 @@ namespace eRecipes.Service.Migrations
 
                     b.Property<string>("Naziv")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("VrstaJelaId")
-                        .HasName("PK__VrstaJel__E76FF56D8812CE35");
+                    b.HasKey("VrstaJelaId");
 
-                    b.ToTable("VrstaJela", (string)null);
+                    b.ToTable("VrstaJelas");
+
+                    b.HasData(
+                        new
+                        {
+                            VrstaJelaId = 4,
+                            Naziv = "Kolač"
+                        },
+                        new
+                        {
+                            VrstaJelaId = 5,
+                            Naziv = "Juha"
+                        },
+                        new
+                        {
+                            VrstaJelaId = 6,
+                            Naziv = "Salata"
+                        },
+                        new
+                        {
+                            VrstaJelaId = 7,
+                            Naziv = "Tjestenina"
+                        },
+                        new
+                        {
+                            VrstaJelaId = 8,
+                            Naziv = "Pizza"
+                        },
+                        new
+                        {
+                            VrstaJelaId = 9,
+                            Naziv = "Sendvič"
+                        },
+                        new
+                        {
+                            VrstaJelaId = 10,
+                            Naziv = "Zdravi obrok"
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Izvjestaj", b =>
@@ -368,7 +516,8 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Recept", "Recept")
                         .WithMany("Izvjestajs")
                         .HasForeignKey("ReceptId")
-                        .HasConstraintName("FK__Izvjestaj__Recep__5BE2A6F2");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Recept");
                 });
@@ -378,7 +527,8 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Uloga", "Uloga")
                         .WithMany("Korisnik")
                         .HasForeignKey("UlogaId")
-                        .HasConstraintName("FK__Korisnik__Uloga__440B1D66");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Uloga");
                 });
@@ -388,12 +538,14 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany("Lajkovis")
                         .HasForeignKey("KorisnikId")
-                        .HasConstraintName("FK__Lajkovi__Korisni__4CA06362");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("eRecipes.Service.Database.Recept", "Recept")
                         .WithMany("Lajkovis")
                         .HasForeignKey("ReceptId")
-                        .HasConstraintName("FK__Lajkovi__ReceptI__4D94879B");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Korisnik");
 
@@ -405,7 +557,8 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany("Obavijests")
                         .HasForeignKey("KorisnikId")
-                        .HasConstraintName("FK__Obavijest__Koris__5629CD9C");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Korisnik");
                 });
@@ -415,12 +568,14 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany("OmiljeniRecepts")
                         .HasForeignKey("KorisnikId")
-                        .HasConstraintName("FK__OmiljeniR__Koris__48CFD27E");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("eRecipes.Service.Database.Recept", "Recept")
                         .WithMany("OmiljeniRecepts")
                         .HasForeignKey("ReceptId")
-                        .HasConstraintName("FK__OmiljeniR__Recep__49C3F6B7");
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Korisnik");
 
@@ -432,17 +587,20 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Kategorija", "Kategorija")
                         .WithMany("Recepts")
                         .HasForeignKey("KategorijaId")
-                        .HasConstraintName("FK__Recept__Kategori__45F365D3");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany("Recepts")
                         .HasForeignKey("KorisnikId")
-                        .HasConstraintName("FK__Recept__Korisnik__440B1D61");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("eRecipes.Service.Database.VrstaJela", "VrstaJela")
                         .WithMany("Recepts")
                         .HasForeignKey("VrstaJelaId")
-                        .HasConstraintName("FK__Recept__VrstaJel__44FF419A");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Kategorija");
 
@@ -456,12 +614,14 @@ namespace eRecipes.Service.Migrations
                     b.HasOne("eRecipes.Service.Database.Recept", "Recept")
                         .WithMany("ReceptSastojaks")
                         .HasForeignKey("ReceptId")
-                        .HasConstraintName("FK__ReceptSas__Recep__52593CB8");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("eRecipes.Service.Database.Sastojak", "Sastojak")
                         .WithMany("ReceptSastojaks")
                         .HasForeignKey("SastojakId")
-                        .HasConstraintName("FK__ReceptSas__Sasto__534D60F1");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Recept");
 

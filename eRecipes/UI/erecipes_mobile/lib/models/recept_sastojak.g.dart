@@ -7,12 +7,11 @@ part of 'recept_sastojak.dart';
 // **************************************************************************
 
 ReceptSastojak _$ReceptSastojakFromJson(Map<String, dynamic> json) =>
-    ReceptSastojak()
+    ReceptSastojak(
+      receptId: (json['receptId'] as num?)?.toInt(),
+      sastojakId: (json['sastojakId'] as num?)?.toInt(),
+    )
       ..receptSastojakId = (json['receptSastojakId'] as num?)?.toInt()
-      ..receptId = (json['receptId'] as num?)?.toInt()
-      ..sastojakId = (json['sastojakId'] as num?)?.toInt()
-      ..kolicina = (json['kolicina'] as num?)?.toDouble()
-      ..mjernaJedinica = json['mjernaJedinica'] as String?
       ..recept = json['recept'] == null
           ? null
           : Recept.FromJson(json['recept'] as Map<String, dynamic>)
@@ -25,8 +24,6 @@ Map<String, dynamic> _$ReceptSastojakToJson(ReceptSastojak instance) =>
       'receptSastojakId': instance.receptSastojakId,
       'receptId': instance.receptId,
       'sastojakId': instance.sastojakId,
-      'kolicina': instance.kolicina,
-      'mjernaJedinica': instance.mjernaJedinica,
       'recept': instance.recept,
       'sastojak': instance.sastojak,
     };

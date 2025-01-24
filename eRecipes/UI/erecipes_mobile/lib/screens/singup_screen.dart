@@ -1,4 +1,5 @@
 import 'package:erecipes_mobile/main.dart';
+import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
@@ -74,17 +75,7 @@ class _SingupScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'eRecipes',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
-      ),
+      appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: Center(
         child: SingleChildScrollView(
           child: Container(

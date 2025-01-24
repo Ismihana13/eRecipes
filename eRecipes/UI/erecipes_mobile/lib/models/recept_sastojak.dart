@@ -9,11 +9,15 @@ class ReceptSastojak{
   int? receptSastojakId;
   int? receptId; 
  int? sastojakId;
-double? kolicina;
-String? mjernaJedinica;
+//double? kolicina;
+//String? mjernaJedinica;
 Recept? recept;
 Sastojak? sastojak; 
-  ReceptSastojak();
+  ReceptSastojak(
+    {
+          required this.receptId,
+          required this.sastojakId,
+    });
 
  factory ReceptSastojak.FromJson(Map<String,dynamic> json)=> _$ReceptSastojakFromJson(json);
 

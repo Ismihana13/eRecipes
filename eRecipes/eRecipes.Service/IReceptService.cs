@@ -17,6 +17,7 @@ namespace eRecipes.Service
         //public List<string> AllowedActions(int id);
         Model.Recept DeleteRecept(int id);
        public List<Model.ReceptSastojak> GetSastojciForRecept(int id);
+       public Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds);
 
     }
 }

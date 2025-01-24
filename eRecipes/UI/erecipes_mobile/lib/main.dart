@@ -9,6 +9,7 @@ import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
+import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
         ChangeNotifierProvider(create: (_) => OmiljeniReceptProvider()),
         ChangeNotifierProvider(create: (_) => SastojakProvider()),
+         
         // ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
       ],
       child: MaterialApp(
@@ -97,17 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'eRecipes',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
-      ),
+      appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: Stack(
         children: [
           Positioned.fill(
@@ -182,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "The password field cannot be empty";
-                          } else if (value.length < 6) {
+                          } else if (value.length < 4) {
                             return "Password must be at least 6 characters long";
                           }
                           return null;

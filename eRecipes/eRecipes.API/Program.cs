@@ -10,7 +10,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 //Add services to the container.
-//builder.Services.AddSingleton<IProizvodiService, DummyProizvodiService>();
+
 builder.Services.AddTransient<IReceptService, ReceptService>();
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
@@ -18,19 +18,14 @@ builder.Services.AddTransient<IKategorijaService, KategorijaService >();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IOmiljeniReceptService, OmiljeniReceptService>();
 builder.Services.AddTransient<ISastojakService, SastojakService>();
+builder.Services.AddTransient<IReceptSastojakService, ReceptSastojakService>();
 builder.Services.AddHttpContextAccessor();
 
-
-//builder.Services.AddTransient<BaseReceptState>();
-//builder.Services.AddTransient<InitialReceptState>();
-//builder.Services.AddTransient<DraftReceptState>();
-//builder.Services.AddTransient<ActiveReceptState>();
-//builder.Services.AddTransient<HiddenReceptState>();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAllOrigins",
+//        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+//});
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add<ExceptionFilter>();
@@ -57,10 +52,8 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
-var connectionString = builder.Configuration.GetConnectionString("eRecipesConnection");
-Console.WriteLine($"con {connectionString}");
 builder.Services.AddDbContext<ERecipesContext>(options =>
-  options.UseSqlServer(connectionString));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddMapster();
 builder.Services.AddAuthentication("BasicAuthentication")
@@ -80,11 +73,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors("AllowAllOrigins");
-//using (var scope=app.Services.CreateScope())
+
+//using (var scope = app.Services.CreateScope())
 //{
-//    var dataContext=scope.ServiceProvider.GetRequiredService<ERecipesContext>();
-//   // dataContext.Database.EnsureCreated();
+//    var dataContext = scope.ServiceProvider.GetRequiredService<ERecipesContext>();
+
 //    dataContext.Database.Migrate();
 //}
 

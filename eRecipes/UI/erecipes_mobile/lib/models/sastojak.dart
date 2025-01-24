@@ -7,7 +7,7 @@ class Sastojak{
   int? sastojakId;
   String? naziv; 
  
-  Sastojak();
+  Sastojak({this.naziv,this.sastojakId});
 
  factory Sastojak.FromJson(Map<String,dynamic> json)=> _$SastojakFromJson(json);
 

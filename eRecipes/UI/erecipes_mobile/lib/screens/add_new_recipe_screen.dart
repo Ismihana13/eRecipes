@@ -10,9 +10,12 @@ import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:multiselect/multiselect.dart';
 import 'package:provider/provider.dart';
 
 class AddNewRecipeScreen extends StatefulWidget {
@@ -45,7 +48,8 @@ String _imageText = 'Select image';
   File? _image;
   String? _base64Image;
   String? _imageError;
-  List<String> _selectedSastojci = []; // List to store selected ingredients
+  List<Sastojak> _selectedSastojci = [];
+  String? _recipeError;
 
 
   @override
@@ -88,30 +92,27 @@ String _imageText = 'Select image';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('eRecipes', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
-        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
-      ),
+      appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 10),
-            const Row(
+         const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(),
+                SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Dobro došli!', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    SizedBox(width: 8),
-                    Icon(Icons.person, color: Colors.black, size: 24),
+                    SizedBox(),
+                    WelcomeRow(),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 10),
             const Text('Dodajte novi recept', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xCC0D3E09))),
-            isLoading ? CircularProgressIndicator() : _buildFormForRecipe(),
+            isLoading ? const CircularProgressIndicator() : _buildFormForRecipe(),
           ],
         ),
       ),
@@ -140,18 +141,18 @@ String _imageText = 'Select image';
                             name: "imageId",
                             builder: (field)  {
                                 return InputDecorator(
-                                  decoration: InputDecoration(labelText: "Odaberite sliku"),
+                                  decoration: const InputDecoration(labelText: "Odaberite sliku"),
                                   child: ListTile(
-                                      leading: Icon(Icons.image),
+                                      leading: const Icon(Icons.image),
                                       title: Text(_imageText),
-                                      trailing: Icon(Icons.file_upload),
+                                      trailing: const Icon(Icons.file_upload),
                                       onTap: getImage,
                                   ),
                                 );
                             },
                           )
                         )],
-            ),  if (_imageError != null) // Prikaz poruke o grešci
+            ),  if (_imageError != null) 
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
@@ -165,6 +166,10 @@ String _imageText = 'Select image';
             _buildDropdown('Vrsta jela', vrstaJelaResult?.result, _selectedVrstaJelaId, (value) => setState(() => _selectedVrstaJelaId = value)),
             const SizedBox(height: 30),
               _buildMultiSelectSastojak('Potrebni sastojci', sastojakResult?.result),
+              ElevatedButton(onPressed: (){
+
+              }, 
+              child: const Text('Dodaj novi sastojak', style: TextStyle(fontSize: 16)),),
              const SizedBox(height: 30,),
             ElevatedButton(
               onPressed: _onSubmit,
@@ -179,32 +184,44 @@ String _imageText = 'Select image';
       ),
     );
   }
+
+  
 Widget _buildMultiSelectSastojak(String label, List<Sastojak>? items) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
       const SizedBox(height: 8),
-      // Prikazivanje liste sastojaka kao checkbox
-      ...?items?.map((sastojak) {
-        return CheckboxListTile(
-          title: Text(sastojak.naziv ?? "Nepoznat sastojak"),
-          value: _selectedSastojci.contains(sastojak.sastojakId.toString()),
-          onChanged: (bool? selected) {
-            setState(() {
-              if (selected == true) {
-                _selectedSastojci.add(sastojak.sastojakId.toString());
-              } else {
-                _selectedSastojci.remove(sastojak.sastojakId.toString());
-              }
-            });
-          },
-        );
-      }).toList(),
+      DropDownMultiSelect<String>(
+        onChanged: (List<String> selectedValues) {
+          setState(() {
+            if (selectedValues.isEmpty) {
+              _recipeError = 'Morate odabrati barem jedan sastojak.';
+            } else {
+              _selectedSastojci = items!.where((sastojak) {
+                return selectedValues.contains(sastojak.naziv ?? "Nepoznat sastojak");
+              }).toList();
+              _selectedSastojci.sort((a, b) => a.naziv!.compareTo(b.naziv!));  
+              _recipeError = null;  
+            }
+          });
+        },
+        options: items?.map((sastojak) => sastojak.naziv ?? "Nepoznat sastojak").toList() ?? [],
+        selectedValues: _selectedSastojci.map((sastojak) => sastojak.naziv ?? "Nepoznat sastojak").toList(),
+        selectedValuesStyle: const TextStyle(fontSize: 0.0),
+        hint: const Text("Odaberite potrebne sastojke"),
+      ),
+      if (_recipeError != null) 
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            _recipeError!, 
+            style: const TextStyle(color: Colors.red, fontSize: 14),
+          ),
+        ),
     ],
   );
 }
-
 
 Widget _buildTextField(TextEditingController controller, String label, String hint, {int maxLines = 1, TextInputType? keyboardType,}) {
   return TextFormField(
@@ -214,61 +231,31 @@ Widget _buildTextField(TextEditingController controller, String label, String hi
       hintText: hint,
       border: const OutlineInputBorder(),
       errorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red), // Red border on error
+        borderSide: BorderSide(color: Colors.red), 
       ),
       focusedErrorBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.red), // Red border when focused
+        borderSide: BorderSide(color: Colors.red), 
       ),
       suffixIcon: label == 'Vrijeme pripreme (u minutama)' 
         ? const Padding(
             padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.access_time), // Icon of a clock
+            child: Icon(Icons.access_time), 
           )
-        : null, // No icon for other fields
+        : null, 
     ),
     validator: (value) {
       if (value?.isEmpty ?? true) {
-        return 'The field cannot be empty'; // Error message when field is empty
+        return 'The field cannot be empty'; 
       }
-      // Check if the value is a valid number for "Vrijeme pripreme"
       if (label == 'Vrijeme pripreme (u minutama)' && int.tryParse(value ?? '') == null) {
-        return 'Please enter a number'; // Error message for non-numeric value
+        return 'Please enter a number'; 
       }
-      return null; // No error if the field is not empty and is a number
+      return null; 
     },
     maxLines: maxLines,
     keyboardType: keyboardType,
   );
 }
-
-/*Widget _buildDropdownSastojak(String label, List<Sastojak>? items) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-      const SizedBox(height: 8),
-      DropDownMultiSelect(
-        onChanged: (List<String> selectedItems) {
-          setState(() {
-            _selectedSastojci = selectedItems;
-          });
-        },
-        options: items!.map((item) => item.naziv ?? "Nepoznat sastojak").toList(),
-        selectedValues: _selectedSastojci,
-        whenEmpty: 'Odaberite sastojke',
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.grey[200],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        ),
-      ),
-    ],
-  );
-}*/
-
 
   Widget _buildDropdown(String label, List? items, String? selectedValue, ValueChanged<String?> onChanged) {
     return Column(
@@ -296,12 +283,17 @@ Widget _buildTextField(TextEditingController controller, String label, String hi
   if (_formKey.currentState?.validate() ?? false) {
     if (_image == null) {
       setState(() {
-        _imageError = 'Slika je obavezna'; // Poruka o grešci
+        _imageError = 'Slika je obavezna'; 
       });
-      return; // Ne šaljemo formu dok korisnik ne odabere sliku
+      return; 
+    }
+    if (_selectedSastojci.isEmpty) {
+      setState(() {
+        _recipeError = 'Morate odabrati sastojke'; 
+      });
+      return;
     }
 
-    // Ako je slika odabrana, nastavi sa submit-ovanjem
     String recipeName = _recipeNameController.text;
     String recipeDescription = _recipeDescriptionController.text;
     String preparationDescription = _preparationDescriptionController.text;
@@ -319,20 +311,46 @@ Widget _buildTextField(TextEditingController controller, String label, String hi
       vrstaJelaId: vrstaJelaId,
       slika: base64Image,
     );
-
-    // Pozivanje metode za unos recepta
-    // await _recipeProvider.insert(newRecipe);
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return RecipePreviewModal(recept: newRecipe);
+        return RecipePreviewModal(recept: newRecipe, sastojci:_selectedSastojci);
       },
     );
-  } else {
-    print("Form validation failed");
   }
 }
+}
+class MultiDropdown extends StatefulWidget {
+  final 
+  String label;final List<Sastojak>? items;
+  const MultiDropdown({super.key, required this.label, this.items});
 
+  @override
+  State<MultiDropdown> createState() => _MultiDropdownState();
 }
 
+class _MultiDropdownState extends State<MultiDropdown> {
+  List<String> selectedSastojci=[];
 
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(widget.label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+      const SizedBox(height: 8),
+      DropDownMultiSelect<String>(
+        onChanged: (List<String> selectedValues) {
+          setState(() {
+           selectedSastojci = selectedValues..sort();  
+          });
+        },
+        options: widget.items?.map((sastojak) => sastojak.naziv ?? "Nepoznat sastojak").toList() ?? [],
+        selectedValues: selectedSastojci,
+        hint: Text("" )
+      ),
+    ],
+  );
+  }
+}

@@ -7,15 +7,15 @@ public partial class ReceptSastojak
 {
     public int ReceptSastojakId { get; set; }
 
-    public int? ReceptId { get; set; }
+    public int ReceptId { get; set; }
 
-    public int? SastojakId { get; set; }
+    public int SastojakId { get; set; }
 
-    public decimal? Kolicina { get; set; }
+    //public float Kolicina { get; set; } = 0;
 
-    public string? MjernaJedinica { get; set; }
+    //public string MjernaJedinica { get; set; } = string.Empty;
 
-    public virtual Recept? Recept { get; set; }
+    public virtual Recept Recept { get; set; } = null!;
 
-    public virtual Sastojak? Sastojak { get; set; }
+    public virtual Sastojak Sastojak { get; set; } = null!;
 }

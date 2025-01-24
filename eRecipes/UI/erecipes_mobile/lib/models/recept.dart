@@ -23,7 +23,7 @@ class Recept{
   List<ReceptSastojak>? sastojci;
   Korisnik? korisnik;
   bool? isFavorite;
-  List<String>? sastojcii;
+ 
    Recept({
     required this.naziv,
     required this.opisRecepta,

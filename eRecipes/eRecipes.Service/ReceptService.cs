@@ -157,5 +157,36 @@ namespace eRecipes.Service
                                          .ToList();
             return Mapper.Map<List<Model.ReceptSastojak>>(receptSastojci);
         }
+        public async Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds)
+        {
+            var recept = await Context.Recepts.Include(r => r.ReceptSastojaks)
+                                                .FirstOrDefaultAsync(r => r.ReceptId == receptId);
+
+            if (recept == null)
+            {
+                return "Recept nije pronađen.";
+            }
+
+            var sastojci = await Context.Sastojaks.Where(s => sastojakIds.Contains(s.SastojakId)).ToListAsync();
+
+            if (sastojci.Count != sastojakIds.Count)
+            {
+                return "Neki od sastojaka nisu pronađeni.";
+            }
+
+            foreach (var sastojak in sastojci)
+            {
+                var receptSastojak = new ReceptSastojak
+                {
+                    ReceptId = receptId,
+                    SastojakId = sastojak.SastojakId
+                };
+                Context.ReceptSastojaks.Add(receptSastojak);
+            }
+
+            await Context.SaveChangesAsync();
+
+            return "Sastojci su uspješno dodani.";
+        }
     }
 }

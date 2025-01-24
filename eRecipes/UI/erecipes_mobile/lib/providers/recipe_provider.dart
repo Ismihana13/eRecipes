@@ -32,11 +32,26 @@ class RecipeProvider extends BaseProvider<Recept>{
   var uri = Uri.parse(url);
   var headers = createHeaders();
 
-  var response = await http!.put(uri, headers: headers); // Pretpostavka je da koristite POST za aktivaciju
+  var response = await http!.put(uri, headers: headers); 
 
   if (!isValidResponse(response)) {
     throw Exception('Failed to activate recipe');
   }
 }
+Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
+  var url = "$fullUrl/$receptId/sastojci";
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+    final response = await http!.post(
+      uri,
+      headers:headers,
+      body: jsonEncode(sastojakIds),
+    );
+    if (response.statusCode == 200) {
+      return "Sastojci su uspješno dodani!";
+    } else {
+      return "Došlo je do greške: ${response.body}";
+    }
+  }
 
 }
