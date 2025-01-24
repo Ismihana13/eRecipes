@@ -13,12 +13,9 @@ namespace eRecipes.Service
 {
     public class VrstaJelaService : BaseCRUDService<Model.VrstaJela, VrstaJelaSearchObject, Database.VrstaJela, VrsteJelaUpsertRequest, VrsteJelaUpsertRequest>, IVrstaJelaService
     {
-
         public VrstaJelaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
-
-
 
     }
 }

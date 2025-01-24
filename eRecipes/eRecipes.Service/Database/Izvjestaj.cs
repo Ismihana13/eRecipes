@@ -7,15 +7,15 @@ public partial class Izvjestaj
 {
     public int IzvjestajId { get; set; }
 
-    public int? ReceptId { get; set; }
+    public int ReceptId { get; set; }
 
-    public int? BrojPregleda { get; set; }
+    public int BrojPregleda { get; set; } = 0;
 
-    public int? BrojLajkova { get; set; }
+    public int BrojLajkova { get; set; } = 0;
 
-    public int? BrojKupovina { get; set; }
+    public int BrojKupovina { get; set; } = 0;
 
-    public DateOnly DatumIzvjestaja { get; set; }
+    public DateTime DatumIzvjestaja { get; set; }
 
-    public virtual Recept? Recept { get; set; }
+    public virtual Recept Recept { get; set; } = null!;
 }

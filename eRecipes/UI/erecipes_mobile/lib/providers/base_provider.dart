@@ -1,51 +1,104 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:http/io_client.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint = "";
+  String? fullUrl;
+  
+  HttpClient client = HttpClient();
+  IOClient? http;
 
   BaseProvider(String endpoint) {
+        _baseUrl = const String.fromEnvironment("baseUrl",
+        defaultValue: "http://10.0.2.2:5089/");
+    if (_baseUrl!.endsWith("/") == false) {
+      _baseUrl = _baseUrl! + "/";
+    }
+
     _endpoint = endpoint;
-    _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "http://localhost:5089/");
+
+    client.badCertificateCallback = (cert, host, port) => true;
+    http = IOClient(client);
+    fullUrl = "$_baseUrl$_endpoint";
   }
+  
+ Future<List<T>> Get([dynamic search]) async {
+    var url = "${_baseUrl}${_endpoint}";
 
-  Future<SearchResult<T>> get({dynamic filter}) async {
-    var url = "$_baseUrl$_endpoint";
-
-    if (filter != null) {
-      var queryString = getQueryString(filter);
-      url = "$url?$queryString";
+    if (search != null) {
+      String queryString = getQueryString(search);
+      url = url + "?" + queryString;
     }
 
     var uri = Uri.parse(url);
-    var headers = createHeaders();
 
-    var response = await http.get(uri, headers: headers);
+    Map<String, String> headers = getHeaders();
+
+    var response = await http!.get(uri, headers: headers);
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-
-      var result = SearchResult<T>();
-
-      result.count = data['count'];
-
-      for (var item in data['resultList']) {
-        result.result.add(fromJson(item));
-      }
-
-      return result;
+      List<T> list = data.map((x) => fromJson(x)).cast<T>().toList();
+      return list;
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Wrong username or password");
     }
-    // print("response: ${response.request} ${response.statusCode}, ${response.body}");
+  }
+ Future<SearchResult<T>> get({dynamic filter}) async {
+  var url = "$_baseUrl$_endpoint";
+
+  if (filter != null) {
+    var queryString = getQueryString(filter);
+    url = "$url?$queryString";
+  }
+
+  // Ispisivanje URL-a koji se poziva
+  print("URL za GET zahtev sa filterom: $url");
+
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+
+  var response = await http!.get(uri, headers: headers);
+
+  if (isValidResponse(response)) {
+    var data = jsonDecode(response.body);
+
+    var result = SearchResult<T>();
+
+    result.count = data['count'];
+
+    for (var item in data['resultList']) {
+      result.result.add(fromJson(item));
+    }
+
+    return result;
+  } else {
+    throw new Exception("Wrong username or password");
+  }
+}
+
+
+    Future<T> getById(int id) async {
+    var url = Uri.parse("$_baseUrl$_endpoint/$id");
+
+    Map<String, String> headers = getHeaders();
+
+    var response = await http!.get(url, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data) as T;
+    } else {
+      throw Exception("Exception... handle this gracefully");
+    }
   }
 
   Future<T> insert(dynamic request) async {
@@ -54,7 +107,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
-    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    var response = await http!.post(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
@@ -70,7 +123,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
-    var response = await http.put(uri, headers: headers, body: jsonRequest);
+    var response = await http!.put(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
@@ -85,6 +138,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   bool isValidResponse(Response response) {
+    print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
     if (response.statusCode < 299) {
       return true;
     } else if (response.statusCode == 401) {
@@ -112,6 +168,20 @@ abstract class BaseProvider<T> with ChangeNotifier {
     return headers;
   }
 
+  Map<String, String> getHeaders() {
+    String username = AuthProvider.username !;
+    String passowrd =AuthProvider.password !;
+
+    String basicAuth =
+        "Basic ${base64Encode(utf8.encode('$username:$passowrd'))}";
+
+    var headers = {
+      "Content-Type": "application/json",
+      "Authorization": basicAuth
+    };
+
+    return headers;
+  }
   String getQueryString(Map params,
       {String prefix = '&', bool inRecursion = false}) {
     String query = '';

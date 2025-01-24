@@ -7,13 +7,13 @@ public partial class OmiljeniRecept
 {
     public int OmiljeniReceptId { get; set; }
 
-    public int? KorisnikId { get; set; }
+    public int KorisnikId { get; set; }
 
-    public int? ReceptId { get; set; }
+    public int ReceptId { get; set; }
 
-    public DateTime? DatumDodavanja { get; set; }
+    public DateTime DatumDodavanja { get; set; } = DateTime.Now;
 
-    public virtual Korisnik? Korisnik { get; set; }
+    public virtual Korisnik Korisnik { get; set; } = null!;
 
-    public virtual Recept? Recept { get; set; }
+    public virtual Recept Recept { get; set; } = null!;
 }

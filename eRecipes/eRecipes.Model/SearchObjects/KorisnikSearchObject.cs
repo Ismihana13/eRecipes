@@ -11,7 +11,7 @@ namespace eRecipes.Model.SearchObjects
         public string? Email { get; set; }
         public string? KorisnickoIme { get; set; } 
         public bool? isKorisnikUlogeIncluded { get; set; }
-       
+        public bool? Status {  get; set; }
         public string? OrderBy { get; set; }
     }
 }

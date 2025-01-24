@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
 using Microsoft.Extensions.Logging;
+using Azure.Core;
 namespace eRecipes.Service
 {
     public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
@@ -44,17 +45,19 @@ namespace eRecipes.Service
 
             if (!string.IsNullOrWhiteSpace(searchObject?.KorisnickoIme))
             {
-                query = query.Where(x => x.KorisnickoIme == searchObject.KorisnickoIme);
+                query = query.Where(x => x.KorisnickoIme.StartsWith( searchObject.KorisnickoIme));
             }
 
             if (searchObject.isKorisnikUlogeIncluded == true)
             {
-                query = query.Include(x => x.KorisnikUlogas).ThenInclude(x => x.Uloga);
+                query = query.Include(x => x.Uloga);
             }
-
+            if (searchObject.Status.HasValue)
+            {
+                query = query.Where(x => x.Status == searchObject.Status);
+            }
             return query;
         }
-
 
         public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
         {
@@ -66,16 +69,17 @@ namespace eRecipes.Service
 
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.UlogaId = 2;
+            entity.Status = true;
             base.BeforeInsert(request, entity);
         }
 
         public static string GenerateSalt()
         {
             var byteArray = RNGCryptoServiceProvider.GetBytes(16);
-
-
             return Convert.ToBase64String(byteArray);
         }
+
         public static string GenerateHash(string salt, string password)
         {
             byte[] src = Convert.FromBase64String(salt);
@@ -107,7 +111,7 @@ namespace eRecipes.Service
 
         public Model.Korisnik Login(string username, string password)
         {
-            var entity = Context.Korisniks.Include(x=>x.KorisnikUlogas).ThenInclude(y=>y.Uloga).FirstOrDefault(x => x.KorisnickoIme == username);
+            var entity = Context.Korisniks.Include(x=>x.Uloga).FirstOrDefault(x => x.KorisnickoIme == username);
             if (entity == null) 
             {
                 return null;
@@ -119,5 +123,64 @@ namespace eRecipes.Service
             }
             return this.Mapper.Map<Model.Korisnik>(entity);
         }
+        //public override Model.Korisnik Insert(KorisnikInsertRequest request)
+        //{
+        //    var entity = base.Insert(request);
+        //    foreach (var uloga in request.UlogeID)
+        //    {
+        //        Database.KorisnikUloga Uloga = new Database.KorisnikUloga();
+        //        Uloga.UlogaId = uloga;
+        //        Uloga.KorisnikId = entity.KorisnikId;
+        //        Uloga.DatumIzmjene = DateTime.Now;
+        //        Context.KorisnikUlogas.Add(Uloga);
+        //    }
+        //    Context.SaveChanges();
+        //    return entity;
+        //}
+        //public Model.Korisnik AddUloga(int id, KorisnikUpdateRequest request)
+        //{
+        //    var user = Context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefault(x => x.KorisnikId == id);
+        //    var uloga = Context.Ulogas.FirstOrDefault(x => x.Naziv.ToLower() == request.Uloga);
+        //    Database.KorisnikUloga nova = new Database.KorisnikUloga()
+        //    {
+        //        DatumIzmjene = DateTime.Now,
+        //        KorisnikId = id,
+        //        UlogaId = uloga.UlogaId
+        //    };
+        //    Context.KorisnikUlogas.Add(nova);
+        //    Context.SaveChanges();
+        //    return Mapper.Map<Model.Korisnik>(user);
+        //}
+        //public Model.Korisnik DeleteUloga(int id, KorisnikUpdateRequest request)
+        //{
+        //    var user = Context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefault(x => x.KorisnikId == id);
+        //    var uloga = Context.Ulogas.FirstOrDefault(x => x.Naziv.ToLower() == request.Uloga);
+        //    var korisnikUloga = Context.KorisnikUlogas.FirstOrDefault(x => x.KorisnikId == user.KorisnikId && x.UlogaId == uloga.UlogaId);
+        //    Context.KorisnikUlogas.Remove(korisnikUloga);
+        //    Context.SaveChanges();
+        //    return Mapper.Map<Model.Korisnik>(user);
+        //}
+
+        public Model.Korisnik DeleteKorisnik(int id)
+        {
+            var set = Context.Set<Database.Korisnik>();
+
+            var entity = set.Find(id);
+
+            entity.Status = false;
+
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.Korisnik>(entity);
+        }
+
+        public Model.Korisnik GetByUsername(string korisnickoIme)
+        {
+            var set = Context.Set<Database.Korisnik>();
+
+            var entity = set.FirstOrDefault(k => k.KorisnickoIme == korisnickoIme);
+            return Mapper.Map<Model.Korisnik>(entity);
+        }
     }
+
 }

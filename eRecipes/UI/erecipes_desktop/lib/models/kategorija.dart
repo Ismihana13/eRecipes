@@ -6,6 +6,7 @@ part 'kategorija.g.dart';
 class Kategorija{
   int? kategorijaId;
   String? naziv; 
+  int? brojRecepata;
 
    Kategorija();
 

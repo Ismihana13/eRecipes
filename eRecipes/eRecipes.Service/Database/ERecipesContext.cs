@@ -21,8 +21,6 @@ public partial class ERecipesContext : DbContext
 
     public virtual DbSet<Korisnik> Korisniks { get; set; }
 
-    public virtual DbSet<KorisnikUloga> KorisnikUlogas { get; set; }
-
     public virtual DbSet<Lajkovi> Lajkovis { get; set; }
 
     public virtual DbSet<Obavijest> Obavijests { get; set; }
@@ -39,175 +37,142 @@ public partial class ERecipesContext : DbContext
 
     public virtual DbSet<VrstaJela> VrstaJelas { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Data Source=localhost, 1434; Initial Catalog=eRecipes; user=sa; Password=ismi123; TrustServerCertificate=True");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Izvjestaj>(entity =>
-        {
-            entity.HasKey(e => e.IzvjestajId).HasName("PK__Izvjesta__0892A342115805A3");
+        modelBuilder.Entity<Lajkovi>()
+       .HasOne(l => l.Korisnik)
+       .WithMany(k => k.Lajkovis)
+       .HasForeignKey(l => l.KorisnikId)
+       .OnDelete(DeleteBehavior.Cascade); // Or DeleteBehavior.Restrict if you want to disable cascading deletes here
 
-            entity.ToTable("Izvjestaj");
+        modelBuilder.Entity<Lajkovi>()
+            .HasOne(l => l.Recept)
+            .WithMany(r => r.Lajkovis)
+            .HasForeignKey(l => l.ReceptId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-            entity.Property(e => e.BrojKupovina).HasDefaultValue(0);
-            entity.Property(e => e.BrojLajkova).HasDefaultValue(0);
-            entity.Property(e => e.BrojPregleda).HasDefaultValue(0);
+        modelBuilder.Entity<OmiljeniRecept>()
+      .HasOne(o => o.Korisnik)  // Assuming a relationship between OmiljeniRecept and Korisnik
+      .WithMany(k => k.OmiljeniRecepts)
+      .HasForeignKey(o => o.KorisnikId)
+      .OnDelete(DeleteBehavior.Restrict);  // Or DeleteBehavior.SetNull
 
-            entity.HasOne(d => d.Recept).WithMany(p => p.Izvjestajs)
-                .HasForeignKey(d => d.ReceptId)
-                .HasConstraintName("FK__Izvjestaj__Recep__5BE2A6F2");
-        });
+        modelBuilder.Entity<OmiljeniRecept>()
+            .HasOne(o => o.Recept)  // Assuming a relationship between OmiljeniRecept and Recept
+            .WithMany(r => r.OmiljeniRecepts)
+            .HasForeignKey(o => o.ReceptId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Kategorija>(entity =>
-        {
-            entity.HasKey(e => e.KategorijaId).HasName("PK__Kategori__6C3B8FEE5DB06CF5");
 
-            entity.ToTable("Kategorija");
-        });
 
-        modelBuilder.Entity<Korisnik>(entity =>
-        {
-            entity.HasKey(e => e.KorisnikId).HasName("PK__Korisnik__80B06D412AF902FE");
 
-            entity.ToTable("Korisnik");
+        modelBuilder.Entity<Uloga>().HasData(
+          new Uloga { UlogaId = 1, Naziv = "Admin", Opis = "Ovaj moze sta god hoce :D" },
+          new Uloga { UlogaId = 2, Naziv = "Korisnik", Opis = "Ovaj je obican smrtnik" },
+          new Uloga { UlogaId = 3, Naziv = "Premium korisnik", Opis = "Ovaj baja imama para" }
 
-            entity.Property(e => e.DatumRodjenja).HasColumnType("datetime");
-        });
+      );
 
-        modelBuilder.Entity<KorisnikUloga>(entity =>
-        {
-            entity.HasKey(e => e.KorisnikUlogaId).HasName("PK__Korisnik__1608726E898FD924");
+        modelBuilder.Entity<Korisnik>().HasData(
+            new Korisnik { KorisnikId = 1, Ime = "Admin", Prezime = "Adminovic", DatumRodjenja = DateTime.Now.AddYears(-30), Email = "admin@mail.com", Telefon = "060-000-000", KorisnickoIme = "admin", LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=", LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==", Status = true, UlogaId = 1 },
+            new Korisnik { KorisnikId = 2, Ime = "Korisnik", Prezime = "Korisnikovic", DatumRodjenja = DateTime.Now.AddYears(-23), Email = "korisnik@mail.com", Telefon = "060-000-001", KorisnickoIme = "korisnik", LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=", LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==", Status = true, UlogaId = 2 },
+            new Korisnik { KorisnikId = 3, Ime = "Baja", Prezime = "Bajaspare", DatumRodjenja = DateTime.Now.AddYears(-45), Email = "bajaspare@mail.com", Telefon = "060-000-002", KorisnickoIme = "premium", LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=", LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==", Status = true, UlogaId = 3 }
+            );
+        modelBuilder.Entity<Kategorija>().HasData(
+            new Kategorija { KategorijaId = 1, Naziv = "Predjelo", Status = true },
+            new Kategorija { KategorijaId = 2, Naziv = "Glavno jelo", Status = true },
+            new Kategorija { KategorijaId = 3, Naziv = "Desert", Status = true }
+        );
+        modelBuilder.Entity<VrstaJela>().HasData(
+            new VrstaJela { VrstaJelaId = 4, Naziv = "Kolač" },
+            new VrstaJela { VrstaJelaId = 5, Naziv = "Juha" },
+            new VrstaJela { VrstaJelaId = 6, Naziv = "Salata" },
+            new VrstaJela { VrstaJelaId = 7, Naziv = "Tjestenina" },
+            new VrstaJela { VrstaJelaId = 8, Naziv = "Pizza" },
+            new VrstaJela { VrstaJelaId = 9, Naziv = "Sendvič" },
+            new VrstaJela { VrstaJelaId = 10, Naziv = "Zdravi obrok" }
+        );
+        modelBuilder.Entity<Sastojak>().HasData(
+            new Sastojak { SastojakId = 1, Naziv = "Jaje" },
+            new Sastojak { SastojakId = 2, Naziv = "Brašno" },
+            new Sastojak { SastojakId = 3, Naziv = "Šećer" },
+            new Sastojak { SastojakId = 4, Naziv = "Mlijeko" },
+            new Sastojak { SastojakId = 5, Naziv = "Maslac" },
+            new Sastojak { SastojakId = 6, Naziv = "So" },
+            new Sastojak { SastojakId = 7, Naziv = "Prašak za pecivo" },
+            new Sastojak { SastojakId = 8, Naziv = "Čokolada" },
+            new Sastojak { SastojakId = 9, Naziv = "Vanilin šećer" },
+            new Sastojak { SastojakId = 10, Naziv = "Maslinovo ulje" }
+        );
+        //modelBuilder.Entity<Recept>().HasData(
+        //    new Recept
+        //    {
+        //        ReceptId = 1,
+        //        Naziv = "Palačinke",
+        //        OpisRecepta = "Jednostavan recept za ukusne palačinke.",
+        //        OpisPripreme = "Pomiješati sve sastojke i ispeći na tavi.",
+        //        VrijemePripreme = 20,
+        //        KorisnikId = 1,
+        //        DatumObjave = DateTime.Now,
+        //        Premium = false,
+        //        VrstaJelaId = 1, 
+        //        KategorijaId = 1, 
+        //        Status = true
+        //    },
+        //    new Recept
+        //    { 
+        //        ReceptId = 2,
+        //        Naziv = "Pizza Margherita",
+        //        OpisRecepta = "Klasična pizza s rajčicom, sirom i bosiljkom.",
+        //        OpisPripreme = "Pripremiti tijesto, dodati sastojke i ispeći u pećnici.",
+        //        VrijemePripreme = 40,
+        //        KorisnikId = 2,
+        //        DatumObjave = DateTime.Now,
+        //        Premium = true,
+        //        VrstaJelaId = 8,    
+        //        KategorijaId = 2, 
+        //        Status = true
+        //     }
+        //);
+        //modelBuilder.Entity<ReceptSastojak>().HasData(
+        //    new ReceptSastojak
+        //    {
+        //        ReceptSastojakId = 1,
+        //        ReceptId = 1, 
+        //        SastojakId = 1, 
+        //        Kolicina = 2,
+        //        MjernaJedinica = "kom"
+        //    },
+        //    new ReceptSastojak
+        //    {
+        //        ReceptSastojakId = 2,
+        //        ReceptId = 1, 
+        //        SastojakId = 2, 
+        //        Kolicina = 200,
+        //        MjernaJedinica = "gr"
+        //    },
+        //    new ReceptSastojak
+        //    {
+        //        ReceptSastojakId = 3,
+        //        ReceptId = 2, 
+        //        SastojakId = 3, 
+        //        Kolicina = 1,
+        //        MjernaJedinica = "kašičica"
+        //    },
+        //    new ReceptSastojak
+        //    {
+        //        ReceptSastojakId = 4,
+        //        ReceptId = 2, 
+        //        SastojakId = 4, 
+        //        Kolicina = 100,
+        //        MjernaJedinica = "ml"
+        //    }
+        //);
 
-            entity.ToTable("KorisnikUloga");
 
-            entity.Property(e => e.DatumIzmjene).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.KorisnikUlogas)
-                .HasForeignKey(d => d.KorisnikId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KorisnikU__Koris__3F466844");
 
-            entity.HasOne(d => d.Uloga).WithMany(p => p.KorisnikUlogas)
-                .HasForeignKey(d => d.UlogaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__KorisnikU__Uloga__403A8C7D");
-        });
-
-        modelBuilder.Entity<Lajkovi>(entity =>
-        {
-            entity.HasKey(e => e.LajkoviId).HasName("PK__Lajkovi__3D31B5F953B26C49");
-
-            entity.ToTable("Lajkovi");
-
-            entity.Property(e => e.DatumLajka).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.Lajkovis)
-                .HasForeignKey(d => d.KorisnikId)
-                .HasConstraintName("FK__Lajkovi__Korisni__4CA06362");
-
-            entity.HasOne(d => d.Recept).WithMany(p => p.Lajkovis)
-                .HasForeignKey(d => d.ReceptId)
-                .HasConstraintName("FK__Lajkovi__ReceptI__4D94879B");
-        });
-
-        modelBuilder.Entity<Obavijest>(entity =>
-        {
-            entity.HasKey(e => e.ObavijestId).HasName("PK__Obavijes__99D330E0EA8A25AD");
-
-            entity.ToTable("Obavijest");
-
-            entity.Property(e => e.Sadrzaj).HasColumnType("text");
-
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.Obavijests)
-                .HasForeignKey(d => d.KorisnikId)
-                .HasConstraintName("FK__Obavijest__Koris__5629CD9C");
-        });
-
-        modelBuilder.Entity<OmiljeniRecept>(entity =>
-        {
-            entity.HasKey(e => e.OmiljeniReceptId).HasName("PK__Omiljeni__1A663C0CF03DFE09");
-
-            entity.ToTable("OmiljeniRecept");
-
-            entity.Property(e => e.DatumDodavanja).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.OmiljeniRecepts)
-                .HasForeignKey(d => d.KorisnikId)
-                .HasConstraintName("FK__OmiljeniR__Koris__48CFD27E");
-
-            entity.HasOne(d => d.Recept).WithMany(p => p.OmiljeniRecepts)
-                .HasForeignKey(d => d.ReceptId)
-                .HasConstraintName("FK__OmiljeniR__Recep__49C3F6B7");
-        });
-
-        modelBuilder.Entity<Recept>(entity =>
-        {
-            entity.HasKey(e => e.ReceptId).HasName("PK__Recept__AFE1E3C322D7424C");
-
-            entity.ToTable("Recept");
-
-            entity.Property(e => e.DatumObjave).HasColumnType("datetime");
-            entity.Property(e => e.OpisRecepta).HasColumnType("text");
-            entity.Property(e => e.Premium).HasDefaultValue(false);
-            entity.Property(e => e.StateMachine).HasMaxLength(255);
-
-            entity.HasOne(d => d.Kategorija).WithMany(p => p.Recepts)
-                .HasForeignKey(d => d.KategorijaId)
-                .HasConstraintName("FK__Recept__Kategori__45F365D3");
-
-            entity.HasOne(d => d.Korisnik).WithMany(p => p.Recepts)
-                .HasForeignKey(d => d.KorisnikId)
-                .HasConstraintName("FK__Recept__Korisnik__440B1D61");
-
-            entity.HasOne(d => d.VrstaJela).WithMany(p => p.Recepts)
-                .HasForeignKey(d => d.VrstaJelaId)
-                .HasConstraintName("FK__Recept__VrstaJel__44FF419A");
-        });
-
-        modelBuilder.Entity<ReceptSastojak>(entity =>
-        {
-            entity.HasKey(e => e.ReceptSastojakId).HasName("PK__ReceptSa__865053CEFA1A8ED2");
-
-            entity.ToTable("ReceptSastojak");
-
-            entity.Property(e => e.Kolicina).HasColumnType("decimal(5, 2)");
-
-            entity.HasOne(d => d.Recept).WithMany(p => p.ReceptSastojaks)
-                .HasForeignKey(d => d.ReceptId)
-                .HasConstraintName("FK__ReceptSas__Recep__52593CB8");
-
-            entity.HasOne(d => d.Sastojak).WithMany(p => p.ReceptSastojaks)
-                .HasForeignKey(d => d.SastojakId)
-                .HasConstraintName("FK__ReceptSas__Sasto__534D60F1");
-        });
-
-        modelBuilder.Entity<Sastojak>(entity =>
-        {
-            entity.HasKey(e => e.SastojakId).HasName("PK__Sastojak__114FC27F5EBEDC87");
-
-            entity.ToTable("Sastojak");
-        });
-
-        modelBuilder.Entity<Uloga>(entity =>
-        {
-            entity.HasKey(e => e.UlogaId).HasName("PK__Uloga__DCAB23CBCE26A230");
-
-            entity.ToTable("Uloga");
-        });
-
-        modelBuilder.Entity<VrstaJela>(entity =>
-        {
-            entity.HasKey(e => e.VrstaJelaId).HasName("PK__VrstaJel__E76FF56D8812CE35");
-
-            entity.ToTable("VrstaJela");
-
-            entity.Property(e => e.Naziv).HasMaxLength(100);
-        });
-
-        OnModelCreatingPartial(modelBuilder);
     }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+

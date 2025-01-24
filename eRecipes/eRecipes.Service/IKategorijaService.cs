@@ -11,6 +11,7 @@ namespace eRecipes.Service
 {
     public interface IKategorijaService : IService<Kategorija,KategorijaSearchObject>
     {
-        
+        int GetBrojRecepataZaKategoriju(int kategorijaId);
+        Model.Kategorija DeleteKategorija(int id);
     }
 }

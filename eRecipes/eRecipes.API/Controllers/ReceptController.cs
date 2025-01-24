@@ -2,6 +2,7 @@
 using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using eRecipes.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eRecipes.API.Controllers
@@ -15,26 +16,52 @@ namespace eRecipes.API.Controllers
         {
            
         }
-        [HttpPut("{id}/activate")]
-        public Recept Activate(int id)
+        //[HttpPut("{id}/activate")]
+        //public Recept Activate(int id)
+        //{
+        //    return (_service as IReceptService).Acivate(id);
+        //}
+        //[HttpPut("{id}/edit")]
+        //public Recept Edit(int id)
+        //{
+        //    return (_service as IReceptService).Edit(id);
+        //}
+        //[HttpPut("{id}/hide")]
+        //public Recept Hide(int id)
+        //{
+        //    return (_service as IReceptService).Hide(id);
+        //}
+        //[HttpGet("{id}/allowedActions")]
+        //public List<string> AllowedActions(int id)
+        //{
+        //    return (_service as IReceptService).AllowedActions(id);
+        //}
+        [HttpPost]
+        public override Recept Insert(ReceptInsertRequest request)
         {
-            return (_service as IReceptService).Acivate(id);
+            return _service.Insert(request);
         }
-        [HttpPut("{id}/edit")]
-        public Recept Edit(int id)
+        [HttpPut("{id}/DeleteRecept")]
+        public Recept DeleteRecept(int id)
         {
-            return (_service as IReceptService).Edit(id);
+            return ((IReceptService)_service).DeleteRecept(id);
         }
-        [HttpPut("{id}/hide")]
-        public Recept Hide(int id)
+        [HttpGet("{receptId}/sastojci")]
+        public ActionResult<List<ReceptSastojak>> GetSastojciForRecept(int receptId)
         {
-            return (_service as IReceptService).Hide(id);
+            return ((IReceptService)_service).GetSastojciForRecept(receptId);
         }
-        [HttpGet("{id}/allowedActions")]
-        public List<string> AllowedActions(int id)
+        [HttpPost("{receptId}/sastojci")]
+        public async Task<ActionResult> AddSastojkeToRecept(int receptId, [FromBody] List<int> sastojakIds)
         {
-            return (_service as IReceptService).AllowedActions(id);
-        }
+            var result = await ((IReceptService)_service).AddSastojkeToReceptAsync(receptId, sastojakIds);
 
+            if (result == "Recept nije pronađen." || result == "Neki od sastojaka nisu pronađeni.")
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
     }
 }

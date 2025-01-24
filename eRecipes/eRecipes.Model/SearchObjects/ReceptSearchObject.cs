@@ -7,6 +7,8 @@ namespace eRecipes.Model.SearchObjects
     public class ReceptSearchObject: BaseSearchObject
     {
         public string? FTS { get; set; }
-        
+        public bool? Status { get; set; }
+        public int? KategorijaId { get; set; }
+        public int? VrstaJelaId { get; set; }
     }
 }

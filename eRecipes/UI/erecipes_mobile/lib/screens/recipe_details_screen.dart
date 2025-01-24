@@ -1,20 +1,16 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:erecipes_mobile/layouts/master_screen.dart';
-import 'package:erecipes_mobile/models/kategorija.dart';
+import 'package:erecipes_mobile/models/omiljeni_recept.dart';
 import 'package:erecipes_mobile/models/recept.dart';
-import 'package:erecipes_mobile/models/search_result.dart';
-import 'package:erecipes_mobile/models/vrsta_jela.dart';
-import 'package:erecipes_mobile/providers/kategorija_provider.dart';
+import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
-import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:erecipes_mobile/providers/utils.dart';
+import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
+  static const String routeName = "/recipeDetails";
   Recept? recept;
   RecipeDetailsScreen({super.key, this.recept});
 
@@ -23,158 +19,295 @@ class RecipeDetailsScreen extends StatefulWidget {
 }
 
 class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
-  final _formKey= GlobalKey<FormBuilderState>();
-  Map<String,dynamic> _initialValue={};
+  var sastojciList;
   late RecipeProvider recipeProvider;
-   late KategorijaProvider kategorijaProvider;
-   late VrstaJelaProvider vrstaJelaProvider;
-   SearchResult<VrstaJela>? vrstaJelaResult=null;
-   SearchResult<Kategorija>? kategorijaResult=null;
-   bool isLoading=true;
+  OmiljeniReceptProvider? _omiljeniReceptProvider = null;
+  bool isLoading = true;
 
-   @override
-   void didChangeDependencies(){
-    super.didChangeDependencies();
-   
-   }
   @override
-  void initState(){
-    recipeProvider=context.read<RecipeProvider>();
-    kategorijaProvider=context.read<KategorijaProvider>();
-    vrstaJelaProvider=context.read<VrstaJelaProvider>();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    recipeProvider = context.read<RecipeProvider>();
+    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     super.initState();
-    _initialValue={
-      'naziv':widget.recept?.naziv,
-      'opisRecepta':widget.recept?.opisRecepta,
-      'vrstaJelaId':widget.recept?.vrstaJelaId.toString(),
-      'kategorijaId':widget.recept?.kategorijaId.toString(),
-      
-    };
-    print("Vrsta jela ID: ${widget.recept?.vrstaJelaId}");
-      print("Kategorija ID: ${widget.recept?.kategorijaId}");
+    recipeProvider.sastojci(widget.recept!.receptId).then((result) {
+      setState(() {
+        sastojciList = result;
+      });
+    });
     initForm();
   }
-  Future initForm() async{
-    vrstaJelaResult= await vrstaJelaProvider.get();
-    kategorijaResult= await kategorijaProvider.get();
-    print("vrtsa:${kategorijaResult?.result.length}");
+
+  Future initForm() async {
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
+  }
+
+  void _toggleFavorite(Recept recept) async {
+    var noviOmiljeniRecept = OmiljeniRecept();
+    noviOmiljeniRecept.receptId = recept.receptId;
+    bool isFavorite =
+        await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
+    if (isFavorite) {
+      await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Uklonili ste recept iz omiljenih.')));
+    } else {
+      await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Dodali ste recept u omiljene.')));
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return MasterScreen("Detalji", 
-    Column(children: [
-       isLoading? Container(): _buildForm(),
-       _saveRow()
-
-    ],)
+    return Scaffold(
+      appBar: const CustomAppBar(naslov: 'eRecipes'),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(),
+                      WelcomeRow(),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _buildRecipeDetails()
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildForm() {
-    return FormBuilder(key: _formKey, initialValue: _initialValue,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderTextField(
-                      decoration: InputDecoration(labelText: "Naziv"),
-                      name: "naziv",
-                    )),
-                    SizedBox(width: 10,),
-                     Expanded(
-                    child: FormBuilderTextField(
-                      decoration: InputDecoration(labelText: "Opis recepta"),
-                      name: "opisRecepta",
-                    )),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderDropdown(name:"vrstaJelaId",
-                    decoration: InputDecoration(labelText: "Vrsta jela"),
-                    items: vrstaJelaResult?.result.map((item) => DropdownMenuItem(value: item.vrstaJelaId.toString(), child: Text(item.naziv?? ""))).toList()??[],
-                    )
-                    ),
-                    SizedBox(width: 10,),
-                    Expanded(
-                    child: FormBuilderDropdown(name:"kategorijaId",
-                    decoration: InputDecoration(labelText: "Kategorija"),
-                    items: kategorijaResult?.result.map((item) => DropdownMenuItem(value: item.kategorijaId.toString(), child: Text(item.naziv?? ""))).toList()??[],
-                    )
-                    ),
-                    SizedBox(width: 10,),
-                    
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormBuilderField(
-                      name: "ImageId",
-                      builder: (field)  {
-                            return InputDecorator(
-                              decoration: InputDecoration(labelText: "Odaberite sliku"),
-                              child: ListTile(
-                                leading: Icon(Icons.image),
-                                title: Text("Select image"),
-                                trailing: Icon(Icons.file_upload),
-                                onTap: getImage,
-                              ),
-                            );
-                      },
-                    )
-                  )
-                ],
-              )
-          ],),
-      ));
-}
-
- Widget _saveRow() {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+  Widget _buildRecipeDetails() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ElevatedButton(onPressed: (){
-            _formKey.currentState?.saveAndValidate();
-            debugPrint(_formKey.currentState?.value.toString());
-            var request=  Map.from(_formKey.currentState!.value);
-
-            request['slika']= _base64Image;
-
-
-            if(widget.recept==null)
-            {
-              recipeProvider.insert(request);
-            } else {
-              recipeProvider.update(widget.recept!.receptId!,request );
-            }
-           // recipeProvider.insert(_formKey.currentState?.value!);
-        }, child: Text("Sačuvaj"))
+        SizedBox(
+          width: double.infinity,
+          height: 250,
+          child: widget.recept?.slika == null
+              ? const Placeholder()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                  child: imageFromStringDetails(widget.recept!.slika!),
+                ),
+        ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  widget.recept?.naziv ?? 'Naziv recepta nije dostupan',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  softWrap: true,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Row(
+                children: [
+                  if (widget.recept?.vrijemePripreme != null) ...[
+                    const Icon(Icons.access_time,
+                        color: Colors.black, size: 24),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${widget.recept?.vrijemePripreme} min',
+                      style: const TextStyle(
+                          fontSize: 16, fontStyle: FontStyle.italic),
+                      softWrap: true,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  const SizedBox(width: 8),
+                  FutureBuilder<bool>(
+                    future: _omiljeniReceptProvider
+                        ?.isFavorite(widget.recept!.receptId!),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasData && snapshot.data!) {
+                        return IconButton(
+                          icon: const Icon(Icons.favorite, color: Colors.red),
+                          iconSize: 35,
+                          onPressed: () => _toggleFavorite(widget.recept!),
+                        );
+                      } else {
+                        return IconButton(
+                          icon: const Icon(Icons.favorite_border,
+                              color: Colors.red),
+                          iconSize: 35,
+                          onPressed: () => _toggleFavorite(widget.recept!),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            widget.recept?.opisRecepta ?? 'Opis recepta nije dostupan',
+            style: const TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: 16.0,
+              fontWeight: FontWeight.normal,
+              color: Color.fromARGB(255, 92, 92, 92),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        _buildSastojciList(),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Način pripreme:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                widget.recept?.opisPripreme ?? 'Način pripreme nije dostupan',
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Autor recepta: ${widget.recept?.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
+                style:
+                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              ),
+              Text(
+                widget.recept?.datumObjave != null
+                    ? DateFormat('dd.MM.yyyy.')
+                        .format(widget.recept!.datumObjave!)
+                    : 'Datum nije dostupan',
+                style:
+                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
+        ),
       ],
-    ),
-  );
- }
- File? _image;
- String? _base64Image;
+    );
+  }
 
- void getImage() async {
-    var result= await FilePicker.platform.pickFiles(type: FileType.image);
-
-    if(result!=null && result.files.single.path!=null)
-    {
-      _image=File(result.files.single.path!);
-      _base64Image=base64Encode(_image!.readAsBytesSync());
+  Widget _buildSastojciList() {
+    if (sastojciList == null) {
+      return const Center(child: CircularProgressIndicator());
     }
- }
-}
 
+    if (sastojciList.isEmpty) {
+      return const Center(
+        child: Text(
+          "Nema sastojaka.",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
+
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(
+          color: Color.fromARGB(199, 244, 242, 242),
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Potrebni sastojci:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 52, 52, 52),
+              ),
+            ),
+            const SizedBox(
+              width: 13,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: sastojciList.length,
+              itemBuilder: (context, index) {
+                var sastojak = sastojciList[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          sastojak.sastojak?.naziv ?? 'N/A',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 19, 51, 34),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String formatQuantity(double quantity) {
+    if (quantity == quantity.toInt()) {
+      return quantity.toInt().toString();
+    } else {
+      return quantity.toStringAsFixed(1);
+    }
+  }
+}

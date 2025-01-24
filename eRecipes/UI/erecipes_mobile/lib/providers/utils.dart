@@ -16,3 +16,6 @@ String formatNumber(dynamic) {
 Image imageFromString(String input) {
   return Image.memory(base64Decode(input));
 }
+Image imageFromStringDetails(String input) {
+  return Image.memory(base64Decode(input), fit: BoxFit.cover,);
+}

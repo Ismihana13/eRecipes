@@ -23,9 +23,10 @@ public partial class Korisnik
 
     public string LozinkaSalt { get; set; } = null!;
 
-    public bool? Status { get; set; }
+    public bool Status { get; set; } = true;
+    public int UlogaId { get; set; }
 
-    public virtual ICollection<KorisnikUloga> KorisnikUlogas { get; set; } = new List<KorisnikUloga>();
+    public virtual Uloga Uloga { get; set; } = null!;
 
     public virtual ICollection<Lajkovi> Lajkovis { get; set; } = new List<Lajkovi>();
 

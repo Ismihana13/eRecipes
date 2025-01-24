@@ -16,6 +16,7 @@ namespace eRecipes.Service
         public BaseCRUDService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
         public virtual TModel Insert(TInsert request)
         {
             TDbEntity entity = Mapper.Map<TDbEntity>(request);
@@ -32,12 +33,12 @@ namespace eRecipes.Service
             Context.SaveChanges();
 
             return Mapper.Map<TModel>(entity);
-
-
         }
+
         public virtual void BeforeInsert(TInsert request, TDbEntity entity)
         {
         }
+
         public virtual TModel Update(int id, TUpdate request)
         {
             var set = Context.Set<TDbEntity>();
@@ -52,9 +53,9 @@ namespace eRecipes.Service
 
             return Mapper.Map<TModel>(entity);
         }
+
         public virtual void BeforeUpdate(TUpdate request, TDbEntity entity)
         {
         }
-
     }
 }

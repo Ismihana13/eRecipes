@@ -1,15 +1,18 @@
 ﻿
+using eRecipes.Model;
 using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using eRecipes.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Text;
 
 namespace eRecipes.API.Controllers
 {
      [ApiController]
     [Route("[controller]")]
+    //[AllowAnonymous]
     public class KorisnikController : BaseCURDController<Model.Korisnik,KorisnikSearchObject,KorisnikInsertRequest,KorisnikUpdateRequest>
     {
         protected IKorisnikService _service;
@@ -17,6 +20,7 @@ namespace eRecipes.API.Controllers
         {
             _service = service;
         }
+
         [HttpPost("login")]
         [AllowAnonymous]
         public Model.Korisnik Login(string username, string password)
@@ -28,6 +32,40 @@ namespace eRecipes.API.Controllers
             return _service.Login(username, password);
         }
 
+        [HttpGet("Authenticate")]
+        [AllowAnonymous]
+        public Korisnik Authenticate()
+        {
+            string authorization = HttpContext.Request.Headers["Authorization"];
+            string encodedHeader = authorization["Basic ".Length..].Trim();
+            Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+            string usernamePassword = encoding.GetString(Convert.FromBase64String(encodedHeader));
+            int seperatorIndex = usernamePassword.IndexOf(':');
 
+            return ((IKorisnikService)_service).Login(usernamePassword.Substring(0, seperatorIndex), usernamePassword[(seperatorIndex + 1)..]);
+        }
+        [AllowAnonymous]
+        public override Korisnik Insert(KorisnikInsertRequest request)
+        {
+            return base.Insert(request);
+        }
+        //[HttpPut("{id}/AddUloga")]
+        //[Authorize(Roles = "Admin")]
+        //public Korisnik AddUloga(int id, [FromBody] KorisnikUpdateRequest request)
+        //{
+        //    return ((IKorisnikService)_service).AddUloga(id, request);
+        //}
+        //[HttpPut("{id}/DeleteUloga")]
+        //[Authorize(Roles = "Admin")]
+        //public Korisnik DeleteUloga(int id, [FromBody] KorisnikUpdateRequest request)
+        //{
+        //    return ((IKorisnikService)_service).DeleteUloga(id, request);
+        //}
+        [HttpPut("{id}/DeleteKorisnik")]
+        [Authorize(Roles = "Admin")]
+        public Korisnik DeleteKorisnik(int id)
+        {
+            return ((IKorisnikService)_service).DeleteKorisnik(id);
+        }
     }
 }
