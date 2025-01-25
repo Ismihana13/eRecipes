@@ -3,6 +3,7 @@ import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/sastojak.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,13 +30,8 @@ class RecipePreviewModal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(
-                  child: Text(
-                'Pregled recepta',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xCC0D3E09)),
-              )),
+                  child: CustomTitleText(title: 'Pregled recepta'),
+              ),
               recept.slika != null
                   ? Image.memory(
                       const Base64Decoder().convert(recept.slika!),

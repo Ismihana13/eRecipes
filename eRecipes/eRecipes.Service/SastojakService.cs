@@ -5,6 +5,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,15 @@ namespace eRecipes.Service
     {
         public SastojakService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
+        }
+        public override void BeforeInsert(SastojakUpsertRequest request, Sastojak entity)
+        {
+            var existingSastojak= Context.Sastojaks.FirstOrDefault(x=>x.Naziv.ToLower()==request.Naziv.ToLower());
+            if (existingSastojak != null)
+            {
+                throw new Exception($"Sastojak s nazivom '{request.Naziv}' već postoji u bazi.");
+            }
+            base.BeforeInsert(request, entity);
         }
 
     }

@@ -9,4 +9,10 @@ class SastojakProvider extends BaseProvider<Sastojak>{
   fromJson(data) {
     return Sastojak.FromJson(data);
   }
+  void addSastojak(Sastojak sastojak) {
+    insert(sastojak);
+    
+    notifyListeners(); // Obavestite slušaoce da se podaci promenili
+  }
+  
 }
