@@ -326,8 +326,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 16),
                               softWrap: true,
                               maxLines: 3,
-                              overflow: TextOverflow
-                                  .ellipsis, // Dodano da se tekst skraćuje
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           FutureBuilder(
@@ -365,8 +364,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         ],
                       ),
                       Text(
-                        x.opisRecepta ?? "",
+                        (x.opisRecepta ?? "").length > 50
+                            ? (x.opisRecepta?.substring(0, 50) ?? "") + "..."
+                            : (x.opisRecepta ?? ""),
                         style: const TextStyle(color: Colors.grey),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       ElevatedButton(
                         onPressed: () {

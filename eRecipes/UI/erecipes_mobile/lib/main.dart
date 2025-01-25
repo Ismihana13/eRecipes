@@ -5,6 +5,7 @@ import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
@@ -43,7 +44,7 @@ class MainApp extends StatelessWidget {
           RecipeListScreen.routeName: (context) => RecipeListScreen(),
           OmiljeniReceptiScreen.routeName: (context) => const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
-          // ProfileScreen.routeName: (context) => ProfileScreen(),
+           AddNewRecipeScreen.routeName: (context) => AddNewRecipeScreen(),
         },  theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white, primary: const Color.fromARGB(255, 48, 99, 54)) ,
         useMaterial3: true,
