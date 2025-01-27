@@ -28,7 +28,8 @@ Recept _$ReceptFromJson(Map<String, dynamic> json) => Recept(
       ..korisnik = json['korisnik'] == null
           ? null
           : Korisnik.FromJson(json['korisnik'] as Map<String, dynamic>)
-      ..isFavorite = json['isFavorite'] as bool?;
+      ..isFavorite = json['isFavorite'] as bool?
+      ..isLiked = json['isLiked'] as bool?;
 
 Map<String, dynamic> _$ReceptToJson(Recept instance) => <String, dynamic>{
       'receptId': instance.receptId,
@@ -46,4 +47,5 @@ Map<String, dynamic> _$ReceptToJson(Recept instance) => <String, dynamic>{
       'sastojci': instance.sastojci,
       'korisnik': instance.korisnik,
       'isFavorite': instance.isFavorite,
+      'isLiked': instance.isLiked,
     };

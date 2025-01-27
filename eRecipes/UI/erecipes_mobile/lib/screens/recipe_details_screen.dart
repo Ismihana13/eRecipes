@@ -1,8 +1,11 @@
+import 'package:erecipes_mobile/models/lajkovi.dart';
 import 'package:erecipes_mobile/models/omiljeni_recept.dart';
 import 'package:erecipes_mobile/models/recept.dart';
+import 'package:erecipes_mobile/providers/lajkovi_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
+import 'package:erecipes_mobile/screens/sastojcli_list.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +26,9 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   late RecipeProvider recipeProvider;
   OmiljeniReceptProvider? _omiljeniReceptProvider = null;
   bool isLoading = true;
+  int likesCount = 0;
+  bool isliked = false;
+  LajkoviProvider? _lajkoviProvider = null;
 
   @override
   void didChangeDependencies() {
@@ -31,21 +37,31 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
 
   @override
   void initState() {
+    super.initState();
     recipeProvider = context.read<RecipeProvider>();
     _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
-    super.initState();
+    _lajkoviProvider = context.read<LajkoviProvider>();
+    _getLikesCount();
+    _checkIfLiked();
     recipeProvider.sastojci(widget.recept!.receptId).then((result) {
       setState(() {
         sastojciList = result;
       });
     });
-    initForm();
   }
 
-  Future initForm() async {
+  Future<void> _checkIfLiked() async {
+    bool liked = await _lajkoviProvider!.isLiked(widget.recept!.receptId);
     setState(() {
-      isLoading = false;
+      isliked = liked;
     });
+  }
+
+  Future<int> _getLikesCount() async {
+    int count =
+        await LajkoviProvider().getLikesCountForRecipe(widget.recept?.receptId);
+    print("${count}");
+    return likesCount = count;
   }
 
   void _toggleFavorite(Recept recept) async {
@@ -56,13 +72,43 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     if (isFavorite) {
       await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Uklonili ste recept iz omiljenih.')));
+          const SnackBar(content: Text('Uklonili ste recept iz omiljenih.')));
     } else {
       await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Dodali ste recept u omiljene.')));
+          const SnackBar(content: Text('Dodali ste recept u omiljene.')));
     }
     setState(() {});
+  }
+
+  void handleLike() async {
+    bool isLiked = await _lajkoviProvider!.isLiked(widget.recept!.receptId);
+    if (isLiked) {
+      await _lajkoviProvider!.removeLike(widget.recept!.receptId);
+      setState(() {
+        isliked = false;
+        likesCount--;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Uklonili ste recept iz lajkovanih.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      Lajkovi newLajk = Lajkovi(receptId: widget.recept!.receptId);
+      await _lajkoviProvider!.insert(newLajk);
+      setState(() {
+        isliked = true;
+        likesCount++;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Lajkali ste recept.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
@@ -88,7 +134,92 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 ],
               ),
               const SizedBox(height: 10),
-              _buildRecipeDetails()
+              _buildRecipeDetails(),
+              FutureBuilder<bool>(
+                future: _lajkoviProvider?.isLiked(widget.recept!.receptId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasData && snapshot.data!) {
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Ukoliko vam se svidio recept, ostavite like',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up,
+                                  color: Colors.blue),
+                              onPressed: () => handleLike(),
+                            ),
+                            Text(
+                              '$likesCount',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Ukoliko vam se svidio recept, ostavite like',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up_outlined,
+                                  color: Colors.grey),
+                              onPressed: () => handleLike(),
+                            ),
+                            Text(
+                              '$likesCount',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                },
+              )
             ],
           ),
         ),
@@ -185,7 +316,9 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
           ),
         ),
         const SizedBox(height: 20),
-        _buildSastojciList(),
+        SastojciListCard(
+          sastojciList: sastojciList ?? [],
+        ),
         const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -229,85 +362,5 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         ),
       ],
     );
-  }
-
-  Widget _buildSastojciList() {
-    if (sastojciList == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (sastojciList.isEmpty) {
-      return const Center(
-        child: Text(
-          "Nema sastojaka.",
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.grey,
-          ),
-        ),
-      );
-    }
-
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Color.fromARGB(199, 244, 242, 242),
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Potrebni sastojci:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 52, 52, 52),
-              ),
-            ),
-            const SizedBox(
-              width: 13,
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: sastojciList.length,
-              itemBuilder: (context, index) {
-                var sastojak = sastojciList[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 1.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          sastojak.sastojak?.naziv ?? 'N/A',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 19, 51, 34),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String formatQuantity(double quantity) {
-    if (quantity == quantity.toInt()) {
-      return quantity.toInt().toString();
-    } else {
-      return quantity.toStringAsFixed(1);
-    }
   }
 }

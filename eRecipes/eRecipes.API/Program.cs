@@ -18,6 +18,7 @@ builder.Services.AddTransient<IKategorijaService, KategorijaService >();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IOmiljeniReceptService, OmiljeniReceptService>();
 builder.Services.AddTransient<ISastojakService, SastojakService>();
+builder.Services.AddTransient<ILajkoviService, LajkoviService>();
 builder.Services.AddHttpContextAccessor();
 
 //builder.Services.AddCors(options =>
