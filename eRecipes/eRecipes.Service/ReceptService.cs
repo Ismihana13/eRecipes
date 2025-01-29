@@ -20,11 +20,9 @@ namespace eRecipes.Service
     {
         
         ILogger<ReceptService> _logger;
-        // public BaseReceptState BaseReceptState { get; set; }
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IKorisnikService _korisnikService;
         public ReceptService(ERecipesContext context, IMapper mapper, ILogger<ReceptService> logger, IHttpContextAccessor httpContextAccessor, IKorisnikService korisnikService) : base(context, mapper) {
-           // BaseReceptState = baseReceptState;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _korisnikService = korisnikService;
@@ -72,69 +70,6 @@ namespace eRecipes.Service
             }
             base.BeforeInsert(request, entity);
         }
-
-        //public override Model.Recept Insert(ReceptInsertRequest request)
-        //{
-        //   // var state = BaseReceptState.CreateState("initial");
-        //    var entity = Mapper.Map<Database.Recept>(request);
-        //    entity.DatumObjave = DateTime.Now;
-        //    entity.Status = true;
-
-        //    var userIdClaim = _httpContextAccessor.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier);
-        //    if (userIdClaim != null)
-        //    {
-        //        string username = userIdClaim.Value;
-        //        var user = _korisnikService.GetByUsername(username);
-        //        if (user != null)
-        //        {
-        //            entity.KorisnikId = user.KorisnikId;
-        //        }
-        //    }
-        //    return state.Insert(request);
-        //}
-        //public override Model.Recept Update(int id, ReceptUpdateRequest request)
-        //{
-        //    var entity=GetById(id);
-        //    //var state = BaseReceptState.CreateState(entity.StateMachine);
-        //    return state.Update(id, request);
-        //}
-        
-        //public Model.Recept Acivate(int id)
-        //{
-        //    var entity = GetById(id);
-        //    var state = BaseReceptState.CreateState(entity.StateMachine);
-        //    return state.Activate(id);
-        //}
-
-        //public Model.Recept Edit(int id)
-        //{
-        //    var entity = GetById(id);
-        //    var state = BaseReceptState.CreateState(entity.StateMachine);
-        //    return state.Edit(id);
-        //}
-
-        //public Model.Recept Hide(int id)
-        //{
-        //    var entity = GetById(id);
-        //    var state = BaseReceptState.CreateState(entity.StateMachine);
-        //    return state.Hide(id);
-        //}
-
-        //public List<string> AllowedActions(int id)
-        //{
-        //    _logger.LogInformation($"Allowed actions called for: {id}");
-        //    if(id<=0)
-        //    {
-        //        var state = BaseReceptState.CreateState("initial");
-        //        return state.AllowedActions(null);
-        //    }
-        //    else
-        //    {
-        //        var entity = Context.Recepts.Find(id);
-        //        var state = BaseReceptState.CreateState(entity.StateMachine);
-        //        return state.AllowedActions(entity);
-        //    }
-        //}
 
         public Model.Recept DeleteRecept(int id)
         {
@@ -187,6 +122,28 @@ namespace eRecipes.Service
             await Context.SaveChangesAsync();
 
             return "Sastojci su uspješno dodani.";
+        }
+        public List<Model.Recept> GetReceptiByKorisnikId(int korisnikId)
+        {
+            var recepti = Context.Recepts
+                                 .Where(r => r.KorisnikId == korisnikId && r.Status == true) 
+                                 .Include(r => r.VrstaJela)  
+                                 .Include(r => r.Kategorija)
+                                 .ToList();
+
+            return Mapper.Map<List<Model.Recept>>(recepti);
+        }
+        public Model.Recept BrisanjeRecepta(int id)
+        {
+            var recept = Context.Recepts.Find(id);
+            if (recept == null)
+            {
+                throw new Exception("Recept nije pronađen.");
+            }
+
+            Context.Recepts.Remove(recept);
+          Context.SaveChanges(); 
+            return Mapper.Map<Model.Recept>(recept);
         }
     }
 }

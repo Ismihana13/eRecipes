@@ -5,14 +5,19 @@ class WelcomeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Text(
+        const Text(
           'Dobro došli!',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(width: 8),
-        Icon(Icons.person, color: Colors.black, size: 24),
+        const SizedBox(width: 8),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/user',); 
+          },
+          child: const Icon(Icons.person, color: Colors.black, size: 24),
+        ),
       ],
     );
   }

@@ -11,6 +11,7 @@ import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
+import 'package:erecipes_mobile/screens/user_screen.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,8 +35,6 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OmiljeniReceptProvider()),
         ChangeNotifierProvider(create: (_) => SastojakProvider()),
         ChangeNotifierProvider(create: (_) => LajkoviProvider()),
-         
-        // ChangeNotifierProvider(create: (_) => VrstaJelaProvider()),
       ],
       child: MaterialApp(
         initialRoute: LoginScreen.routeName,
@@ -46,11 +45,15 @@ class MainApp extends StatelessWidget {
           RecipeListScreen.routeName: (context) => RecipeListScreen(),
           OmiljeniReceptiScreen.routeName: (context) => const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
-           AddNewRecipeScreen.routeName: (context) => AddNewRecipeScreen(),
-        },  theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white, primary: const Color.fromARGB(255, 48, 99, 54)) ,
-        useMaterial3: true,
-      ),
+          AddNewRecipeScreen.routeName: (context) => AddNewRecipeScreen(),
+          UserScreen.routeName: (context) => UserScreen(),
+        },
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.white,
+              primary: const Color.fromARGB(255, 48, 99, 54)),
+          useMaterial3: true,
+        ),
       ),
     );
   }
@@ -198,7 +201,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ElevatedButton(
                         onPressed: () => handleLogin(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 42, 99, 56),
+                          backgroundColor:
+                              const Color.fromARGB(255, 42, 99, 56),
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

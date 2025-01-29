@@ -17,7 +17,7 @@ class Korisnik{
   Uloga? uloga;
 
    Korisnik({
-    this.ime,
+  required   this.ime,
     this.prezime,
     this.datumRodjenja,
     this.email,

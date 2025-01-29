@@ -1,4 +1,5 @@
 ﻿
+using Azure.Core;
 using eRecipes.Model;
 using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
@@ -48,6 +49,19 @@ namespace eRecipes.API.Controllers
         public override Korisnik Insert(KorisnikInsertRequest request)
         {
             return base.Insert(request);
+        }
+
+        [HttpPut("{id}/UpdateMobile")]
+        public Korisnik UpdateMobile(int id, [FromBody] KorisnikMobileUpdateRequest request)
+        {
+            return ((IKorisnikService)_service).UpdateMobile(id, request);
+        }
+
+        [HttpDelete("{id}/DeleteKorisnikProfil")]
+
+        public Korisnik DeleteKorisnickiProfil(int id)
+        {
+            return ((IKorisnikService)_service).DeleteKorisnickiProfil(id);
         }
         //[HttpPut("{id}/AddUloga")]
         //[Authorize(Roles = "Admin")]

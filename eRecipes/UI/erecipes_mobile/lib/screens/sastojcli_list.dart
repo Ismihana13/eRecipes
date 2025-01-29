@@ -2,13 +2,12 @@ import 'package:erecipes_mobile/models/recept_sastojak.dart';
 import 'package:flutter/material.dart';
 
 class SastojciListCard extends StatelessWidget {
-  final List<ReceptSastojak> sastojciList; // List of ingredients
+  final List<ReceptSastojak> sastojciList; 
 
   SastojciListCard({required this.sastojciList});
 
   @override
   Widget build(BuildContext context) {
-    // Check if the list is empty, no need to check for null because it's required
     if (sastojciList.isEmpty) {
       return const Center(
         child: Text(

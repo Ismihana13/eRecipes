@@ -74,11 +74,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dataContext = scope.ServiceProvider.GetRequiredService<ERecipesContext>();
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<ERecipesContext>();
 
-//    dataContext.Database.Migrate();
-//}
+    dataContext.Database.Migrate();
+}
 
 app.Run();

@@ -16,5 +16,7 @@ namespace eRecipes.Service
         //Model.Korisnik AddUloga(int id, KorisnikUpdateRequest request);
         //Model.Korisnik DeleteUloga(int id, KorisnikUpdateRequest request);
         Model.Korisnik DeleteKorisnik(int id);
+        Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request);
+        Model.Korisnik DeleteKorisnickiProfil(int id);
     }
 }

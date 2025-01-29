@@ -15,6 +15,7 @@ using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
 using Microsoft.Extensions.Logging;
 using Azure.Core;
+using RabbitMQ.Client;
 namespace eRecipes.Service
 {
     public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
@@ -123,6 +124,24 @@ namespace eRecipes.Service
             }
             return this.Mapper.Map<Model.Korisnik>(entity);
         }
+        public Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request)
+        {
+            var user = Context.Korisniks.FirstOrDefault(x => x.KorisnikId == id);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            user.Ime = request.Ime;
+            user.Prezime = request.Prezime;
+            user.Email = request.Email;
+            user.Telefon = request.Telefon;
+
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.Korisnik>(user);
+        }
         //public override Model.Korisnik Insert(KorisnikInsertRequest request)
         //{
         //    var entity = base.Insert(request);
@@ -181,6 +200,19 @@ namespace eRecipes.Service
             var entity = set.FirstOrDefault(k => k.KorisnickoIme == korisnickoIme);
             return Mapper.Map<Model.Korisnik>(entity);
         }
-    }
+        public Model.Korisnik DeleteKorisnickiProfil(int id)
+        {
+            var korisnik = Context.Korisniks.Find(id);
+            if (korisnik == null)
+            {
+                throw new Exception("Korisnik nije pronađen.");
+            }
 
+            Context.Korisniks.Remove(korisnik);
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.Korisnik>(korisnik);
+        }
+
+    }
 }

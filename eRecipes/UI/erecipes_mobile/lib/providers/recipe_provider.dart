@@ -53,5 +53,33 @@ Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
       return "Došlo je do greške: ${response.body}";
     }
   }
+  Future<List<Recept>> getReceptiByKorisnikId(int id) async {
+    var url = "$fullUrl/$id/recepti";  
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    
+    final response = await http!.get(uri, headers: headers);  
 
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => Recept.FromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load recipes');
+    }
+  }
+
+    Future<Recept> deleteRecept(int? id) async {
+    var url = "$fullUrl/$id/BrisanjeRecepta";
+    var uri = Uri.parse(url);
+
+    var headers = getHeaders();
+    var response = await http!.delete(uri, headers: headers); 
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      Recept recipe = fromJson(data) as Recept;
+      return recipe;
+    } else {
+      throw Exception("Failed to delete recipe");
+    }
+  }
 }

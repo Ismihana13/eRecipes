@@ -11,13 +11,11 @@ namespace eRecipes.Service
 {
     public interface IReceptService:ICRUDService<Recept,ReceptSearchObject, ReceptInsertRequest,ReceptUpdateRequest>
     {
-        //public Recept Acivate(int id);
-        //public Recept Edit(int id);
-       // public Recept Hide(int id);
-        //public List<string> AllowedActions(int id);
-        Model.Recept DeleteRecept(int id);
-       public List<Model.ReceptSastojak> GetSastojciForRecept(int id);
-       public Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds);
+       Model.Recept DeleteRecept(int id);
+        List<Model.ReceptSastojak> GetSastojciForRecept(int id);
+        Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds);
+        List<Model.Recept> GetReceptiByKorisnikId(int korisnikId);
+       Model.Recept BrisanjeRecepta(int id);
 
     }
 }
