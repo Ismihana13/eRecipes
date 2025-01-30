@@ -10,14 +10,14 @@ ReceptSastojak _$ReceptSastojakFromJson(Map<String, dynamic> json) =>
     ReceptSastojak(
       receptId: (json['receptId'] as num?)?.toInt(),
       sastojakId: (json['sastojakId'] as num?)?.toInt(),
+      sastojak: json['sastojak'] == null
+          ? null
+          : Sastojak.FromJson(json['sastojak'] as Map<String, dynamic>),
     )
       ..receptSastojakId = (json['receptSastojakId'] as num?)?.toInt()
       ..recept = json['recept'] == null
           ? null
-          : Recept.FromJson(json['recept'] as Map<String, dynamic>)
-      ..sastojak = json['sastojak'] == null
-          ? null
-          : Sastojak.FromJson(json['sastojak'] as Map<String, dynamic>);
+          : Recept.FromJson(json['recept'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ReceptSastojakToJson(ReceptSastojak instance) =>
     <String, dynamic>{

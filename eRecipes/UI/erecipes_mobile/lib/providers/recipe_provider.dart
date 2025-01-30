@@ -82,4 +82,19 @@ Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
       throw Exception("Failed to delete recipe");
     }
   }
+   Future<String> updateSastojci(int receptId, List<int> sastojakIds) async {
+  var url = "$fullUrl/$receptId/updateSastojci";
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+    final response = await http!.put(
+      uri,
+      headers:headers,
+      body: jsonEncode(sastojakIds),
+    );
+    if (response.statusCode == 200) {
+      return "Sastojci su uspješno dodani!";
+    } else {
+      return "Došlo je do greške: ${response.body}";
+    }
+  }
 }

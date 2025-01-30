@@ -70,6 +70,11 @@ namespace eRecipes.Service
             }
             base.BeforeInsert(request, entity);
         }
+        public override void BeforeUpdate(ReceptUpdateRequest request, Recept entity)
+        {
+            entity.DatumObjave = DateTime.Now;
+            base.BeforeUpdate(request, entity);
+        }
 
         public Model.Recept DeleteRecept(int id)
         {
@@ -108,15 +113,21 @@ namespace eRecipes.Service
             {
                 return "Neki od sastojaka nisu pronađeni.";
             }
-
+            var existingSastojaks = await Context.ReceptSastojaks
+                                        .Where(rs => rs.ReceptId == receptId)
+                                        .Select(rs => rs.SastojakId)
+                                        .ToListAsync();
             foreach (var sastojak in sastojci)
             {
-                var receptSastojak = new ReceptSastojak
+                if (!existingSastojaks.Contains(sastojak.SastojakId))
                 {
-                    ReceptId = receptId,
-                    SastojakId = sastojak.SastojakId
-                };
-                Context.ReceptSastojaks.Add(receptSastojak);
+                    var receptSastojak = new ReceptSastojak
+                    {
+                        ReceptId = receptId,
+                        SastojakId = sastojak.SastojakId
+                    };
+                    Context.ReceptSastojaks.Add(receptSastojak);
+                }
             }
 
             await Context.SaveChangesAsync();
@@ -144,6 +155,66 @@ namespace eRecipes.Service
             Context.Recepts.Remove(recept);
           Context.SaveChanges(); 
             return Mapper.Map<Model.Recept>(recept);
+        }
+        public async Task<string> UpdateSastojkeForReceptAsync(int receptId, List<int> sastojakIds)
+        {
+            var recept = await Context.Recepts.Include(r => r.ReceptSastojaks)
+                                               .FirstOrDefaultAsync(r => r.ReceptId == receptId);
+
+            if (recept == null)
+            {
+                return "Recept nije pronađen.";
+            }
+
+            // Dohvati postojeće sastojke povezane s receptom
+            var existingSastojaks = await Context.ReceptSastojaks
+                                                 .Where(rs => rs.ReceptId == receptId)
+                                                 .ToListAsync();
+
+            // Dohvati sve sastojke koji su poslani u listi
+            var sastojci = await Context.Sastojaks
+                                        .Where(s => sastojakIds.Contains(s.SastojakId))
+                                        .ToListAsync();
+
+            // Provjera da li su svi sastojci prisutni u bazi
+            if (sastojci.Count != sastojakIds.Count)
+            {
+                return "Neki od sastojaka nisu pronađeni.";
+            }
+
+            // 1. Brisanje sastojaka koji nisu u novoj listi
+            var sastojakIdsToRemove = existingSastojaks
+                                        .Where(rs => !sastojakIds.Contains(rs.SastojakId))
+                                        .Select(rs => rs.SastojakId)
+                                        .ToList();
+
+            if (sastojakIdsToRemove.Any())
+            {
+                var receptSastojaksToRemove = existingSastojaks
+                                                .Where(rs => sastojakIdsToRemove.Contains(rs.SastojakId))
+                                                .ToList();
+                Context.ReceptSastojaks.RemoveRange(receptSastojaksToRemove);
+            }
+
+            // 2. Dodavanje novih sastojaka koji nisu u bazi
+            var sastojakIdsToAdd = sastojci
+                                   .Where(s => !existingSastojaks.Any(rs => rs.SastojakId == s.SastojakId))
+                                   .ToList();
+
+            foreach (var sastojak in sastojakIdsToAdd)
+            {
+                var receptSastojak = new ReceptSastojak
+                {
+                    ReceptId = receptId,
+                    SastojakId = sastojak.SastojakId
+                };
+                Context.ReceptSastojaks.Add(receptSastojak);
+            }
+
+            // Spremanje promjena u bazu
+            await Context.SaveChangesAsync();
+
+            return "Sastojci su uspješno ažurirani.";
         }
     }
 }

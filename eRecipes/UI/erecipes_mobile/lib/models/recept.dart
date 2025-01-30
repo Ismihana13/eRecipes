@@ -25,6 +25,7 @@ class Recept{
   bool? isFavorite;
  bool? isLiked;
    Recept({
+     this.receptId,
     required this.naziv,
     required this.opisRecepta,
     required this.opisPripreme,

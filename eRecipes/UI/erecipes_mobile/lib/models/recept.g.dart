@@ -7,6 +7,7 @@ part of 'recept.dart';
 // **************************************************************************
 
 Recept _$ReceptFromJson(Map<String, dynamic> json) => Recept(
+      receptId: (json['receptId'] as num?)?.toInt(),
       naziv: json['naziv'] as String?,
       opisRecepta: json['opisRecepta'] as String?,
       opisPripreme: json['opisPripreme'] as String?,
@@ -15,7 +16,6 @@ Recept _$ReceptFromJson(Map<String, dynamic> json) => Recept(
       vrstaJelaId: (json['vrstaJelaId'] as num?)?.toInt(),
       slika: json['slika'] as String?,
     )
-      ..receptId = (json['receptId'] as num?)?.toInt()
       ..korisnikId = (json['korisnikId'] as num?)?.toInt()
       ..premium = json['premium'] as bool?
       ..stateMachine = json['stateMachine'] as String?

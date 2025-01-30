@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SastojciListCard extends StatelessWidget {
   final List<ReceptSastojak> sastojciList; 
 
-  SastojciListCard({required this.sastojciList});
+  const SastojciListCard({super.key, required this.sastojciList});
 
   @override
   Widget build(BuildContext context) {

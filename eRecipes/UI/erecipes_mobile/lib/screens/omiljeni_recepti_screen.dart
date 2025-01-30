@@ -76,7 +76,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-             const Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(height: 10),
@@ -103,7 +103,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Container(
+            SizedBox(
               height: 500,
               child: GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -276,7 +276,6 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         ),
       ];
     }
-
     return data!
         .map((x) => Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -287,7 +286,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.45,
                       height: 150,
                       child: x.recept!.slika == null

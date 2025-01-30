@@ -12,7 +12,6 @@ import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
-import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +42,8 @@ class MainApp extends StatelessWidget {
           LoginScreen.routeName: (context) => LoginScreen(),
           SignUpScreen.routeName: (context) => SignUpScreen(),
           RecipeListScreen.routeName: (context) => RecipeListScreen(),
-          OmiljeniReceptiScreen.routeName: (context) => const OmiljeniReceptiScreen(),
+          OmiljeniReceptiScreen.routeName: (context) =>
+              const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
           AddNewRecipeScreen.routeName: (context) => AddNewRecipeScreen(),
           UserScreen.routeName: (context) => UserScreen(),
@@ -69,11 +69,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _usernameController = new TextEditingController();
-
   TextEditingController _passwordController = new TextEditingController();
-
   late KorisnikProvider _korisnikProvider;
-
   final _formKey = GlobalKey<FormState>();
 
   void handleLogin(BuildContext context) async {
@@ -105,7 +102,18 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
     return Scaffold(
-      appBar: const CustomAppBar(naslov: 'eRecipes'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "eRecipes",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
+      ),
       body: Stack(
         children: [
           Positioned.fill(
