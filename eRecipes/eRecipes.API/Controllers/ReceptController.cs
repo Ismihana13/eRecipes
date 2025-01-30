@@ -61,5 +61,19 @@ namespace eRecipes.API.Controllers
         {
             return ((IReceptService)_service).BrisanjeRecepta(id);
         }
+        [HttpPut("{receptId}/updateSastojci")]
+        public async Task<ActionResult> UpdateSastojkeForRecept(int receptId, [FromBody] List<int> sastojakIds)
+        {
+            // Pozivanje metode koja će ažurirati sastojke
+            var result = await ((IReceptService)_service).UpdateSastojkeForReceptAsync(receptId, sastojakIds);
+
+            if (result == "Recept nije pronađen." || result == "Neki od sastojaka nisu pronađeni.")
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
     }
 }

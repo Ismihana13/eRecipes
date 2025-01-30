@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 
-
 class SignUpScreen extends StatefulWidget {
   SignUpScreen({super.key});
-  
+
   static const String routeName = "/signup";
 
   @override
@@ -16,23 +15,14 @@ class SignUpScreen extends StatefulWidget {
 
 class _SingupScreenState extends State<SignUpScreen> {
   TextEditingController _imeController = TextEditingController();
-
   TextEditingController _prezimeController = TextEditingController();
-
   TextEditingController _emailController = TextEditingController();
-
   TextEditingController _telefonController = TextEditingController();
-
   TextEditingController _usernameController = TextEditingController();
-
   TextEditingController _passwordController = TextEditingController();
-
   TextEditingController _passwordConfirmController = TextEditingController();
-
   TextEditingController _datumRodjenjaController = TextEditingController();
-
   late KorisnikProvider _korisnikProvider;
-
   final _formKey = GlobalKey<FormState>();
 
   void handleSignup(BuildContext context) async {
@@ -51,7 +41,7 @@ class _SingupScreenState extends State<SignUpScreen> {
               : null,
         };
 
-         await _korisnikProvider.insert(korisnikRequest);
+        await _korisnikProvider.insert(korisnikRequest);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -231,14 +221,16 @@ class _SingupScreenState extends State<SignUpScreen> {
           lastDate: DateTime.now(),
         );
         if (selectedDate != null) {
-          _datumRodjenjaController.text = selectedDate.toLocal().toString().split(' ')[0];
+          _datumRodjenjaController.text =
+              selectedDate.toLocal().toString().split(' ')[0];
         }
       },
     );
   }
 
   String? _emailValidator(String? value) {
-    final emailRegExp = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
+    final emailRegExp =
+        RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
     if (value == null || value.isEmpty) {
       return 'Email cannot be empty';
     } else if (!emailRegExp.hasMatch(value)) {

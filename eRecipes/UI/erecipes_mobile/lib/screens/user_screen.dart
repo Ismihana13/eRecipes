@@ -114,7 +114,6 @@ class _UserScreenState extends State<UserScreen> {
             builder: (context) => RecipeListScreen(),
           ),
         );
-
         return true;
       },
       child: Scaffold(
@@ -302,9 +301,8 @@ class _UserScreenState extends State<UserScreen> {
                   recipe.naziv ?? "",
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 16),
-                  maxLines: 2, 
-                  overflow: TextOverflow
-                      .ellipsis, 
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
                 Row(
@@ -315,8 +313,10 @@ class _UserScreenState extends State<UserScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                RecipeDetailsScreen(recept: recipe),
+                            builder: (context) => RecipeDetailsScreen(
+                              recept: recipe,
+                              fromScreen: "user",
+                            ),
                           ),
                         ).then((value) {
                           _fetchUserRecipes();
@@ -335,7 +335,7 @@ class _UserScreenState extends State<UserScreen> {
                     const Spacer(),
                     ElevatedButton(
                       onPressed: () {
-                        _deleteRecipe(recipe .receptId);
+                        _deleteRecipe(recipe.receptId);
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,

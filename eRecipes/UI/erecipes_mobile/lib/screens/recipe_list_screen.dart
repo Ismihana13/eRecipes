@@ -8,7 +8,6 @@ import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
-import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/models/recept.dart';
@@ -35,12 +34,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   TextEditingController _searchController = TextEditingController();
   dynamic _selectedFilter;
 
- @override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  loadData();
-}
-  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadData();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -94,57 +93,66 @@ void didChangeDependencies() {
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: const CustomAppBar(naslov: 'eRecipes'),
-    body: RefreshIndicator(
-      onRefresh: () async {
-        // Implement the refresh logic here
-        await loadData();  // Assuming loadData() is your method to fetch new data
-      },
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(),
-                    WelcomeRow(),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _buildRecipeSearch(),
-            const SizedBox(height: 10),
-            _buildCategoryAndDishTypeFilter(),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 500,
-              child: GridView(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.70,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 30,
-                ),
-                scrollDirection: Axis.vertical,
-                children: _buildRecipeCard(),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "eRecipes",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await loadData();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(),
+                      WelcomeRow(),
+                    ],
+                  ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              _buildRecipeSearch(),
+              const SizedBox(height: 10),
+              _buildCategoryAndDishTypeFilter(),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 500,
+                child: GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.70,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 30,
+                  ),
+                  scrollDirection: Axis.vertical,
+                  children: _buildRecipeCard(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget _buildCategoryAndDishTypeFilter() {
     List<dynamic> combinedList = [];
@@ -298,113 +306,115 @@ Widget build(BuildContext context) {
     );
   }
 
- List<Widget> _buildRecipeCard() {
-  if (data?.result.isEmpty ?? true) {
-    return [
-      const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Text(
-          "Nema recepata.",
-          style: TextStyle(fontSize: 20, color: Colors.grey),
+  List<Widget> _buildRecipeCard() {
+    if (data?.result.isEmpty ?? true) {
+      return [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Nema recepata.",
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
         ),
-      ),
-    ];
-  }
+      ];
+    }
 
-  List<Widget>? list = data?.result
-      .map((x) => Container(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(  // Wrap with SingleChildScrollView
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 120,
-                    width: double.infinity,
-                    child: x.slika == null
-                        ? const Placeholder()
-                        : imageFromString(x.slika!),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          x.naziv ?? "",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                          softWrap: true,
-                          maxLines: 3,
+    List<Widget>? list = data?.result
+            .map((x) => Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 120,
+                          width: double.infinity,
+                          child: x.slika == null
+                              ? const Placeholder()
+                              : imageFromString(x.slika!),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                x.naziv ?? "",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                softWrap: true,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            FutureBuilder(
+                              future: _omiljeniReceptProvider
+                                  ?.isFavorite(x.receptId!),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Icon(Icons.favorite_border,
+                                      color: Colors.red, size: 30);
+                                }
+                                if (snapshot.hasData) {
+                                  bool isFavorite = snapshot.data!;
+                                  return IconButton(
+                                    onPressed: () {
+                                      toggleFavorite(x);
+                                    },
+                                    icon: Icon(
+                                      isFavorite
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: Colors.red,
+                                      size: 30,
+                                    ),
+                                    padding: const EdgeInsets.all(0),
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                  );
+                                } else {
+                                  return const Icon(Icons.favorite_border,
+                                      color: Colors.red, size: 30);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        Text(
+                          (x.opisRecepta ?? "").length > 50
+                              ? (x.opisRecepta?.substring(0, 50) ?? "") + "..."
+                              : (x.opisRecepta ?? ""),
+                          style: const TextStyle(color: Colors.grey),
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      FutureBuilder(
-                        future: _omiljeniReceptProvider?.isFavorite(x.receptId!),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Icon(Icons.favorite_border,
-                                color: Colors.red, size: 30);
-                          }
-                          if (snapshot.hasData) {
-                            bool isFavorite = snapshot.data!;
-                            return IconButton(
-                              onPressed: () {
-                                toggleFavorite(x);
-                              },
-                              icon: Icon(
-                                isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                              padding: const EdgeInsets.all(0),
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                            );
-                          } else {
-                            return const Icon(Icons.favorite_border,
-                                color: Colors.red, size: 30);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  Text(
-                    (x.opisRecepta ?? "").length > 50
-                        ? (x.opisRecepta?.substring(0, 50) ?? "") + "..."
-                        : (x.opisRecepta ?? ""),
-                    style: const TextStyle(color: Colors.grey),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RecipeDetailsScreen(recept: x)),
-                      ).then((value) {
-                        loadData();
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      RecipeDetailsScreen(recept: x)),
+                            ).then((value) {
+                              loadData();
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const Text("Pregled recepta"),
+                        ),
+                        const SizedBox(height: 8.0),
+                      ],
                     ),
-                    child: const Text("Pregled recepta"),
                   ),
-                  const SizedBox(height: 8.0),
-                ],
-              ),
-            ),
-          ))
-      .toList() ??
-      [];
-  return list;
-}
-
+                ))
+            .toList() ??
+        [];
+    return list;
+  }
 }
