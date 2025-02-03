@@ -47,11 +47,12 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
     try {
       var filter = {
         'FTS': query,
+        'Status': true,
       };
       var tmpData = await _omiljeniReceptProvider?.getFavoritesForCurrentUser(
           filter: filter);
-      var tmpKategorije = await _kategorijaProvider?.get();
-      var tmpVrsteJela = await _vrstaJelaProvider?.get();
+      var tmpKategorije = await _kategorijaProvider?.get(filter: filter);
+      var tmpVrsteJela = await _vrstaJelaProvider?.get(filter: filter);
 
       setState(() {
         data = tmpData! as List<OmiljeniRecept>?;

@@ -28,6 +28,7 @@ Recept _$ReceptFromJson(Map<String, dynamic> json) => Recept(
       ..vrstaJela = json['vrstaJela'] == null
           ? null
           : VrstaJela.FromJson(json['vrstaJela'] as Map<String, dynamic>)
+      ..opisPripreme = json['opisPripreme'] as String?
       ..sastojci = (json['sastojci'] as List<dynamic>?)
           ?.map((e) => ReceptSastojak.FromJson(e as Map<String, dynamic>))
           .toList();
@@ -45,5 +46,6 @@ Map<String, dynamic> _$ReceptToJson(Recept instance) => <String, dynamic>{
       'korisnik': instance.korisnik,
       'kategorija': instance.kategorija,
       'vrstaJela': instance.vrstaJela,
+      'opisPripreme': instance.opisPripreme,
       'sastojci': instance.sastojci,
     };

@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
@@ -25,7 +24,7 @@ String formatDate(DateTime? date) {
 
 String formatQuantity(double quantity) {
   if (quantity == quantity.toInt()) {
-    return quantity.toInt().toString(); 
+    return quantity.toInt().toString();
   } else {
     return quantity.toStringAsFixed(1);
   }

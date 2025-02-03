@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 @override
 void initState() {
   super.initState();
-  selectedNavItem = 'Recepti'; // Postavljamo inicijalnu vrednost
+  selectedNavItem = 'Recepti'; 
 }
 
   @override
@@ -97,7 +97,6 @@ void initState() {
                     });
                   },
                 ),
-               
                 NavItem(
                   title: 'Dobro došli!',
                   isSelected: selectedNavItem == 'Dobro došli',
@@ -135,7 +134,7 @@ void initState() {
             child: Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 252, 252, 252),
+                color: const Color.fromARGB(255, 252, 252, 252),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: _buildSelectedContent(),
@@ -151,17 +150,17 @@ void initState() {
       case 'Korisnici':
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: UserListScreen(),
+          child: const UserListScreen(),
         );
       case 'Recepti':
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: RecipeListScreen(),
+          child: const RecipeListScreen(),
         );
       case 'Kategorije':
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: CategoryListScreen(),
+          child: const CategoryListScreen(),
         );
       case 'Izvještaji':
         return const Center(child: Text('Izvještaji Screen Content'));
@@ -181,7 +180,7 @@ class NavItem extends StatelessWidget {
   final bool isSelected;
   final Icon? icon;
 
-  const NavItem({
+  const NavItem({super.key, 
     required this.title,
     required this.onTap,
     required this.isSelected,

@@ -30,61 +30,60 @@ class _EditUserModalState extends State<EditUserModal> {
 
   late Korisnik? _korisnikToEdit;
   late UlogaProvider ulogaProvider;
-  SearchResult<Uloga>? ulogaResult=null;
-  Map<String,dynamic> _initialValue={};
-   bool isLoading=true;
+  SearchResult<Uloga>? ulogaResult = null;
+  Map<String, dynamic> _initialValue = {};
+  bool isLoading = true;
 
   @override
-   void didChangeDependencies(){
+  void didChangeDependencies() {
     super.didChangeDependencies();
-   
-   }
-    @override
+  }
+
+  @override
   void initState() {
-    ulogaProvider=context.read<UlogaProvider>();
+    ulogaProvider = context.read<UlogaProvider>();
     super.initState();
     _korisnikToEdit = widget.korisnikToEdit;
-     nameController.text = _korisnikToEdit!.ime ?? '';
-     surnameController.text = _korisnikToEdit!.prezime ?? '';
-     emailController.text = _korisnikToEdit!.email ?? '';
-     telephoneController.text = _korisnikToEdit!.telefon ?? '';
-     userNameController.text = _korisnikToEdit!.korisnickoIme ?? '';
-     _initialValue={
-       'ulogaId':_korisnikToEdit?.ulogaId.toString(),
-      };
-    initForm();   
-}
+    nameController.text = _korisnikToEdit!.ime ?? '';
+    surnameController.text = _korisnikToEdit!.prezime ?? '';
+    emailController.text = _korisnikToEdit!.email ?? '';
+    telephoneController.text = _korisnikToEdit!.telefon ?? '';
+    userNameController.text = _korisnikToEdit!.korisnickoIme ?? '';
+    _initialValue = {
+      'ulogaId': _korisnikToEdit?.ulogaId.toString(),
+    };
+    initForm();
+  }
 
-    Future initForm() async{
-    ulogaResult= await ulogaProvider.get();
-    print("vrtsa:${ulogaResult?.result.length}");
+  Future initForm() async {
+    ulogaResult = await ulogaProvider.get();
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
   }
- 
- Future<void> _editUser() async {
-  final name = nameController.text;
-  final surname = surnameController.text;
-  final email = emailController.text;
-  final telephone = telephoneController.text;
-  final userName = userNameController.text;
-  final ulogaId = _initialValue['ulogaId'];
 
-  if (_korisnikToEdit != null) {
-    widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
-      'ime': name,
-      'prezime': surname,
-      'email': email,
-      'telefon': telephone,
-      'korisnickoIme': userName,
-      'ulogaId': ulogaId,
-    }); 
-    Navigator.pop(context);
-  } else {
-    print("Error: User to edit is null!");
+  Future<void> _editUser() async {
+    final name = nameController.text;
+    final surname = surnameController.text;
+    final email = emailController.text;
+    final telephone = telephoneController.text;
+    final userName = userNameController.text;
+    final ulogaId = _initialValue['ulogaId'];
+
+    if (_korisnikToEdit != null) {
+      widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
+        'ime': name,
+        'prezime': surname,
+        'email': email,
+        'telefon': telephone,
+        'korisnickoIme': userName,
+        'ulogaId': ulogaId,
+      });
+      Navigator.pop(context);
+    } else {
+      print("Error: User to edit is null!");
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +166,8 @@ class _EditUserModalState extends State<EditUserModal> {
                         if (value!.isEmpty) {
                           return 'Please enter your email';
                         }
-                        if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                        if (!RegExp(
+                                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
                             .hasMatch(value)) {
                           return 'Invalid email format';
                         }
@@ -194,25 +194,26 @@ class _EditUserModalState extends State<EditUserModal> {
                     DropdownButtonFormField<String>(
                       value: _initialValue['ulogaId'],
                       onChanged: (String? value) {
-                      setState(() {
-                        _initialValue['ulogaId'] = value; 
-                      });
-                    },
-                     validator: (String? value) {
-                     if (value == null || value.isEmpty) {
+                        setState(() {
+                          _initialValue['ulogaId'] = value;
+                        });
+                      },
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
                           return 'Please select a role';
-                         }
-                       return null;
+                        }
+                        return null;
                       },
                       items: ulogaResult?.result.map((item) {
-                      return DropdownMenuItem<String>(
-                       value: item.ulogaId.toString(), 
-                      child: Text(item.naziv ?? ''), 
-                     );
-                       }).toList() ?? [],
-                     decoration: const InputDecoration(labelText: "Uloga"),
-                    dropdownColor: const Color.fromRGBO(247, 249, 253, 1),
-                  ),
+                            return DropdownMenuItem<String>(
+                              value: item.ulogaId.toString(),
+                              child: Text(item.naziv ?? ''),
+                            );
+                          }).toList() ??
+                          [],
+                      decoration: const InputDecoration(labelText: "Uloga"),
+                      dropdownColor: const Color.fromRGBO(247, 249, 253, 1),
+                    ),
                     const SizedBox(height: 20),
                     const Divider(),
                     Row(
@@ -228,7 +229,8 @@ class _EditUserModalState extends State<EditUserModal> {
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(97, 142, 246, 1),
+                            backgroundColor:
+                                const Color.fromRGBO(97, 142, 246, 1),
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
@@ -250,5 +252,3 @@ class _EditUserModalState extends State<EditUserModal> {
     );
   }
 }
-
-

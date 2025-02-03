@@ -3,27 +3,29 @@ import 'package:erecipes_desktop/models/recept.dart';
 import 'package:erecipes_desktop/models/recept_sastojak.dart';
 import 'package:erecipes_desktop/providers/base_provider.dart';
 
-class RecipeProvider extends BaseProvider<Recept>{
+class RecipeProvider extends BaseProvider<Recept> {
+  RecipeProvider() : super("Recept");
 
-  RecipeProvider():super("Recept");
-  
- @override
+  @override
   fromJson(data) {
     return Recept.FromJson(data);
   }
-   Future<void> deleteRecept(int? id) async {
-  var url = "$fullUrl/$id/DeleteRecept";
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
 
-  var response = await http!.put(uri, headers: headers);
+  Future<Recept> deleteRecept(int? id) async {
+    var url = "$fullUrl/$id/BrisanjeRecepta";
+    var uri = Uri.parse(url);
 
-  if (isValidResponse(response)) {
-    print("Recept obrisan.");
-  } else {
-    throw Exception("Neuspješno brisanje recepta.");
+    var headers = getHeaders();
+    var response = await http!.delete(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      Recept recipe = fromJson(data) as Recept;
+      return recipe;
+    } else {
+      throw Exception("Failed to delete recipe");
+    }
   }
-}
+
   Future<List<ReceptSastojak>> sastojci(int? id) async {
     var url = "$fullUrl/$id/sastojci";
     var uri = Uri.parse(url);
