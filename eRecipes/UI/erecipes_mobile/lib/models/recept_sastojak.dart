@@ -22,6 +22,6 @@ Sastojak? sastojak;
 
  Map<String,dynamic> toJson() => _$ReceptSastojakToJson(this);
  Sastojak toSastojak() {
-    return this.sastojak!; // Pretpostavljamo da je sastojak sigurno prisutan
+    return this.sastojak!; 
   }
 }

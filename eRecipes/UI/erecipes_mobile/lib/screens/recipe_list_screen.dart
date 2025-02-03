@@ -83,9 +83,13 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   Future loadData({String query = ''}) async {
+     var filter = {
+        'FTS': query,
+        'Status': true,
+      };
     var tmpData = await _recipeProvider?.get();
-    var tmpKategorije = await _kategorijaProvider?.get();
-    var tmpVrsteJela = await _vrstaJelaProvider?.get();
+    var tmpKategorije = await _kategorijaProvider?.get(filter: filter);
+    var tmpVrsteJela = await _vrstaJelaProvider?.get(filter: filter);
     setState(() {
       data = tmpData!;
       kategorije = tmpKategorije!;

@@ -20,6 +20,7 @@ class Recept{
   Korisnik? korisnik;
   Kategorija? kategorija;
   VrstaJela? vrstaJela;
+  String? opisPripreme;
   List<ReceptSastojak>? sastojci; 
   Recept({this.receptId, this.naziv});
 

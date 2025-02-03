@@ -12,14 +12,18 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(MultiProvider(
     providers: [
-      // ChangeNotifierProvider(create: (_)=> KorisnikProvider()),
-      ChangeNotifierProvider<RecipeProvider>(create: (_)=> LoggedRecipeProvider()),
-      ChangeNotifierProvider<KategorijaProvider>(create: (_)=> KategorijaProvider()),
-       ChangeNotifierProvider<VrstaJelaProvider>(create: (_)=> VrstaJelaProvider()),
-      ChangeNotifierProvider<KorisnikProvider>(create: (_)=> KorisnikProvider()),
-         ChangeNotifierProvider<UlogaProvider>(create: (_)=> UlogaProvider()),
+      ChangeNotifierProvider<RecipeProvider>(
+          create: (_) => LoggedRecipeProvider()),
+      ChangeNotifierProvider<KategorijaProvider>(
+          create: (_) => KategorijaProvider()),
+      ChangeNotifierProvider<VrstaJelaProvider>(
+          create: (_) => VrstaJelaProvider()),
+      ChangeNotifierProvider<KorisnikProvider>(
+          create: (_) => KorisnikProvider()),
+      ChangeNotifierProvider<UlogaProvider>(create: (_) => UlogaProvider()),
     ],
-    child: const MyApp(),));
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,27 +33,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: LoginScreen(),
-        onGenerateRoute: (settings) {
-          if (settings.name == HomeScreen.routeName) {
-            return MaterialPageRoute(builder: ((context) => HomeScreen()));
-          } else if (settings.name == LoginScreen.routeName) {
-            return MaterialPageRoute(builder: ((context) => LoginScreen()));
-          }
-        },
+      home: LoginScreen(),
+      onGenerateRoute: (settings) {
+        if (settings.name == HomeScreen.routeName) {
+          return MaterialPageRoute(builder: ((context) => HomeScreen()));
+        } else if (settings.name == LoginScreen.routeName) {
+          return MaterialPageRoute(builder: ((context) => LoginScreen()));
+        }
+      },
     );
   }
 }
-class LoginScreen extends StatelessWidget {
 
-LoginScreen({super.key});
-TextEditingController _usernameController=new TextEditingController();
-TextEditingController _passwordController=new TextEditingController();
-late KorisnikProvider _korisnikProvider;
+class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
+  TextEditingController _usernameController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
+  late KorisnikProvider _korisnikProvider;
   final _formKey = GlobalKey<FormState>();
   static const String routeName = "/login";
 
- void handleLogin(BuildContext context) async {
+  void handleLogin(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
         AuthProvider.username = _usernameController.text;
@@ -62,12 +66,12 @@ late KorisnikProvider _korisnikProvider;
           ),
         );
         Navigator.of(context).pushNamedAndRemoveUntil(
-         HomeScreen.routeName,
+          HomeScreen.routeName,
           (route) => false,
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
+          const SnackBar(
             content: Text('Login failed. Please check your credentials.'),
             duration: Duration(seconds: 3),
           ),
@@ -78,123 +82,133 @@ late KorisnikProvider _korisnikProvider;
 
   @override
   Widget build(BuildContext context) {
-      _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
+    _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'eRecipes',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic),
         ),
         backgroundColor: Color.fromRGBO(1, 100, 34, 1),
       ),
       body: Stack(
-        children:[ 
-           Positioned.fill(
-          child: Image.asset(
-            'assets/images/background.jpg', 
-            fit: BoxFit.cover, 
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.jpg',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),Positioned.fill(
-          child: Container(
-            color: Colors.black.withOpacity(0.5), 
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
           ),
-        ),
-         Center(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Align(
-                alignment: Alignment.center, 
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.4, 
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(193, 236, 250, 234).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(15), 
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2), 
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(1, 100, 34, 1),
+          Center(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(193, 236, 250, 234)
+                          .withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The username field cannot be empty";
-                          } else if (value.length < 3) {
-                            return "Username cannot contain fewer than 3 characters";
-                          }
-                          return null;
-                        },
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          labelText: "Username",
-                          prefixIcon: const Icon(Icons.person, color: Color.fromRGBO(1, 100, 34, 1)), 
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color.fromRGBO(1, 100, 34, 1)),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(1, 100, 34, 1),
                           ),
                         ),
-                        cursorColor: Color.fromRGBO(1, 100, 34, 1),
-                        maxLines: 1,
-                      ),
-                      const SizedBox(height: 20),
-                      // Password polje sa ikonom
-                      TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "The password field cannot be empty";
-                          } else if (value.length < 4) {
-                            return "Password cannot contain fewer than 4 characters";
-                          }
-                          return null;
-                        },
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          prefixIcon: const Icon(Icons.lock, color: Color.fromRGBO(1, 100, 34, 1)), 
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color.fromRGBO(1, 100, 34, 1)),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "The username field cannot be empty";
+                            } else if (value.length < 3) {
+                              return "Username cannot contain fewer than 3 characters";
+                            }
+                            return null;
+                          },
+                          controller: _usernameController,
+                          decoration: const InputDecoration(
+                            labelText: "Username",
+                            prefixIcon: Icon(Icons.person,
+                                color: Color.fromRGBO(1, 100, 34, 1)),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(1, 100, 34, 1)),
+                            ),
                           ),
+                          cursorColor: const Color.fromRGBO(1, 100, 34, 1),
+                          maxLines: 1,
                         ),
-                        cursorColor: Color.fromRGBO(1, 100, 34, 1),
-                        maxLines: 1,
-                      ),
-                      const SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () => handleLogin(context),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(200, 48),
-                          backgroundColor: Color.fromRGBO(1, 100, 34, 1),
+                        const SizedBox(height: 20),
+                        // Password polje sa ikonom
+                        TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "The password field cannot be empty";
+                            } else if (value.length < 4) {
+                              return "Password cannot contain fewer than 4 characters";
+                            }
+                            return null;
+                          },
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            labelText: "Password",
+                            prefixIcon: Icon(Icons.lock,
+                                color: Color.fromRGBO(1, 100, 34, 1)),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(1, 100, 34, 1)),
+                            ),
+                          ),
+                          cursorColor: const Color.fromRGBO(1, 100, 34, 1),
+                          maxLines: 1,
                         ),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    ],
+                        const SizedBox(height: 40),
+                        ElevatedButton(
+                          onPressed: () => handleLogin(context),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 48),
+                            backgroundColor:
+                                const Color.fromRGBO(1, 100, 34, 1),
+                          ),
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }
