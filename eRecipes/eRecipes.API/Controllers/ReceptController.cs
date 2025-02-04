@@ -74,6 +74,13 @@ namespace eRecipes.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("recommend/{korisnikId}")]
+        public  IActionResult GetRecommendations(int korisnikId)
+        {
+            var preporuke = ((IReceptService)_service).Recommend(korisnikId);
+            return Ok(preporuke);
+        }
+
 
     }
 }

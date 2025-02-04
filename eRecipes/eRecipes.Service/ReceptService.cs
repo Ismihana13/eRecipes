@@ -13,6 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using System.CodeDom;
 
 namespace eRecipes.Service
 {
@@ -22,10 +25,12 @@ namespace eRecipes.Service
         ILogger<ReceptService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IKorisnikService _korisnikService;
+        private readonly ReceptRecommender _recommender;
         public ReceptService(ERecipesContext context, IMapper mapper, ILogger<ReceptService> logger, IHttpContextAccessor httpContextAccessor, IKorisnikService korisnikService) : base(context, mapper) {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _korisnikService = korisnikService;
+            _recommender = new ReceptRecommender(Context);
         }
 
         public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
@@ -166,23 +171,16 @@ namespace eRecipes.Service
                 return "Recept nije pronađen.";
             }
 
-            // Dohvati postojeće sastojke povezane s receptom
             var existingSastojaks = await Context.ReceptSastojaks
                                                  .Where(rs => rs.ReceptId == receptId)
                                                  .ToListAsync();
-
-            // Dohvati sve sastojke koji su poslani u listi
             var sastojci = await Context.Sastojaks
                                         .Where(s => sastojakIds.Contains(s.SastojakId))
                                         .ToListAsync();
-
-            // Provjera da li su svi sastojci prisutni u bazi
             if (sastojci.Count != sastojakIds.Count)
             {
                 return "Neki od sastojaka nisu pronađeni.";
             }
-
-            // 1. Brisanje sastojaka koji nisu u novoj listi
             var sastojakIdsToRemove = existingSastojaks
                                         .Where(rs => !sastojakIds.Contains(rs.SastojakId))
                                         .Select(rs => rs.SastojakId)
@@ -195,8 +193,6 @@ namespace eRecipes.Service
                                                 .ToList();
                 Context.ReceptSastojaks.RemoveRange(receptSastojaksToRemove);
             }
-
-            // 2. Dodavanje novih sastojaka koji nisu u bazi
             var sastojakIdsToAdd = sastojci
                                    .Where(s => !existingSastojaks.Any(rs => rs.SastojakId == s.SastojakId))
                                    .ToList();
@@ -210,11 +206,53 @@ namespace eRecipes.Service
                 };
                 Context.ReceptSastojaks.Add(receptSastojak);
             }
-
-            // Spremanje promjena u bazu
             await Context.SaveChangesAsync();
 
             return "Sastojci su uspješno ažurirani.";
         }
+        public List<Recept> Recommend(int korisnikId)
+        {
+            return _recommender.Recommend(korisnikId);
+        }
+
+        List<Model.Recept> IReceptService.Recommend(int korisnikId)
+        {
+            var preporuceniRecepti = _recommender.Recommend(korisnikId); // Ovo vraća List<Database.Recept>
+            return Mapper.Map<List<Model.Recept>>(preporuceniRecepti);
+        }
+
+        //static MLContext mlContext = null;
+        //static object isLocked=new object();
+        //public List<Model.Recept> Recommend(int id)
+        //{
+        //    if (mlContext == null) 
+        //    {
+        //        //train
+        //        lock (isLocked)
+        //        {
+        //            mlContext = new MLContext();
+        //            var tmpData=Context.Kategorijas.Include("Recepts").ToList();
+        //            var data=new List<ProductEntry>();
+        //            foreach (var item in tmpData)
+        //            {
+        //                if(item.Katego)
+        //            }
+
+        //        }
+
+        //    }
+
+        //}
+        //public class Copurchase_prediction
+        //{
+        //    public float Score { get; set; }
+        //}
+        //public class ProductEntry
+        //{
+        //    [KeyType(count:262111)]
+        //    public uint ProductID { get; set; }
+        //    [KeyType(count: 262111)]
+        //    public uint CoPurchaseProductID { get; set; }
+        //}
     }
 }

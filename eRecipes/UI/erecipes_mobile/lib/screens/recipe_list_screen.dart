@@ -316,7 +316,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            "Nema recepata.",
+            "Loading...",
             style: TextStyle(fontSize: 20, color: Colors.grey),
           ),
         ),
