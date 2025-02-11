@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:erecipes_mobile/models/kategorija.dart';
 import 'package:erecipes_mobile/models/omiljeni_recept.dart';
 import 'package:erecipes_mobile/models/vrsta_jela.dart';
+import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
@@ -8,11 +11,13 @@ import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class RecipeListScreen extends StatefulWidget {
@@ -33,7 +38,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   SearchResult<VrstaJela>? vrsteJela;
   TextEditingController _searchController = TextEditingController();
   dynamic _selectedFilter;
-
+  List<Recept> listaRekomed = [];
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -83,18 +88,36 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   Future loadData({String query = ''}) async {
-     var filter = {
-        'FTS': query,
-        'Status': true,
-      };
+    var filter = {
+      'FTS': query,
+      'Status': true,
+    };
     var tmpData = await _recipeProvider?.get();
     var tmpKategorije = await _kategorijaProvider?.get(filter: filter);
     var tmpVrsteJela = await _vrstaJelaProvider?.get(filter: filter);
+    await loadRecommenedData();
     setState(() {
       data = tmpData!;
       kategorije = tmpKategorije!;
       vrsteJela = tmpVrsteJela!;
     });
+  }
+
+  Future loadRecommenedData() async {
+    try {
+      var lista =
+          await _recipeProvider!.recommend(AuthProvider.korisnik!.korisnikId!);
+      setState(() {
+        listaRekomed = lista;
+      });
+    } on Exception catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Greška ${e.toString()}'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
@@ -114,7 +137,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await loadData();
+          await loadData(); 
         },
         child: SingleChildScrollView(
           child: Column(
@@ -128,18 +151,18 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(),
-                      WelcomeRow(),
+                      WelcomeRow(), 
                     ],
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              _buildRecipeSearch(),
+              _buildRecipeSearch(), 
               const SizedBox(height: 10),
-              _buildCategoryAndDishTypeFilter(),
+              _buildCategoryAndDishTypeFilter(), 
               const SizedBox(height: 10),
               SizedBox(
-                height: 500,
+                height: 400,
                 child: GridView(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -148,9 +171,20 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     mainAxisSpacing: 30,
                   ),
                   scrollDirection: Axis.vertical,
-                  children: _buildRecipeCard(),
+                  children: _buildRecipeCard(), 
                 ),
               ),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: CustomTitleText(title: "Preporučeni recepti:"),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+            _buildRecommenedrecipe()
             ],
           ),
         ),
@@ -420,5 +454,98 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             .toList() ??
         [];
     return list;
+  }
+
+  Widget _buildRecommenedrecipe() {
+    if (listaRekomed.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Center(
+          child: Text(
+            "Loading...",
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 300, 
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: listaRekomed.length,
+        itemBuilder: (context, index) {
+          var x = listaRekomed[index];
+          return Container(
+            width: 180,
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+
+              color: const Color.fromARGB(155, 223, 253, 217),
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 5,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 120,
+                  width: double.infinity,
+                  child: x.slika == null
+                      ? const Placeholder()
+                      : imageFromString(x.slika!),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  x.naziv ?? "",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  (x.opisRecepta ?? "").length > 50
+                      ? "${x.opisRecepta?.substring(0, 50)}..."
+                      : (x.opisRecepta ?? ""),
+                  style: const TextStyle(color: Colors.grey),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecipeDetailsScreen(recept: x),
+                      ),
+                    ).then((value) {
+                      loadData();
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: const Text("Pregled recepta"),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }

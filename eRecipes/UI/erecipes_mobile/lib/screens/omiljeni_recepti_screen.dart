@@ -6,6 +6,7 @@ import 'package:erecipes_mobile/models/vrsta_jela.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
@@ -117,6 +118,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                 children: _buildRecipeCard(),
               ),
             ),
+            ElevatedButton(onPressed:(){ Navigator.pop(context);} , child: const Text("Nazad")),
           ],
         ),
       ),
@@ -252,7 +254,13 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: ElevatedButton(
-            onPressed: () {},
+             onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddNewRecipeScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               shape: RoundedRectangleBorder(

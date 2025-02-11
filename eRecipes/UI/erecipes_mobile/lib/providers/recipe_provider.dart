@@ -97,4 +97,21 @@ Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
       return "Došlo je do greške: ${response.body}";
     }
   }
+  Future<List<Recept>> recommend(int id) async{
+    var url = "$fullUrl/recommend/$id";
+     var uri = Uri.parse(url);
+     var headers = createHeaders();
+    var response = await http!.get(uri, headers: headers);
+     if (isValidResponse(response)) {
+      List<Recept> lista = [];
+      var data = jsonDecode(response.body);
+      for (var item in data) {
+        lista.add(fromJson(item));
+      }
+
+      return lista;
+    } else {
+      throw Exception("Greška pri učitavanju.");
+    }
+  }
 }
