@@ -162,6 +162,16 @@ public partial class ERecipesContext : DbContext
             new ReceptSastojak { ReceptSastojakId = 32, ReceptId = 8, SastojakId = 5 }, 
             new ReceptSastojak { ReceptSastojakId = 33, ReceptId = 8, SastojakId = 10 } 
         );
+        modelBuilder.Entity<Lajkovi>().HasData(
+            new Lajkovi { LajkoviId = 1, KorisnikId =2,ReceptId=2,DatumLajka=DateTime.Now },
+            new Lajkovi { LajkoviId = 2, KorisnikId = 1, ReceptId = 3, DatumLajka = DateTime.Now },
+            new Lajkovi { LajkoviId = 3, KorisnikId = 2, ReceptId = 3, DatumLajka = DateTime.Now }
+            );
+        modelBuilder.Entity<OmiljeniRecept>().HasData(
+    new OmiljeniRecept { OmiljeniReceptId = 1, KorisnikId = 2, ReceptId = 2, DatumDodavanja=DateTime.Now },
+    new OmiljeniRecept { OmiljeniReceptId = 2, KorisnikId = 1, ReceptId = 3, DatumDodavanja = DateTime.Now },
+    new OmiljeniRecept { OmiljeniReceptId = 3, KorisnikId = 2, ReceptId = 3, DatumDodavanja = DateTime.Now }
+    );
     }
 
 }
