@@ -1,4 +1,5 @@
 import 'package:erecipes_desktop/providers/auth_provider.dart';
+import 'package:erecipes_desktop/providers/izvjestaj_provider.dart';
 import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
@@ -8,6 +9,7 @@ import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_desktop/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 
 void main() {
   runApp(MultiProvider(
@@ -21,18 +23,19 @@ void main() {
       ChangeNotifierProvider<KorisnikProvider>(
           create: (_) => KorisnikProvider()),
       ChangeNotifierProvider<UlogaProvider>(create: (_) => UlogaProvider()),
+       ChangeNotifierProvider<IzvjestajProvider>(create: (_) => IzvjestajProvider()),
     ],
     child: const MyApp(),
   ));
 }
-
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       home: LoginScreen(),
       onGenerateRoute: (settings) {
         if (settings.name == HomeScreen.routeName) {
@@ -40,11 +43,13 @@ class MyApp extends StatelessWidget {
         } else if (settings.name == LoginScreen.routeName) {
           return MaterialPageRoute(builder: ((context) => LoginScreen()));
         }
+        return null;
       },
     );
   }
 }
 
+// ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
   TextEditingController _usernameController = new TextEditingController();
