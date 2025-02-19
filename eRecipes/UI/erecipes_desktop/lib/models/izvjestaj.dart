@@ -12,7 +12,7 @@ class Izvjestaj{
  DateTime? datumIzvjestaja;
  Recept? recept;
   
-   Izvjestaj();
+   Izvjestaj({required this.receptId});
   
   factory Izvjestaj.FromJson(Map<String,dynamic> json)=> _$IzvjestajFromJson(json);
 

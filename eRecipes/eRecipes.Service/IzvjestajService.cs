@@ -21,6 +21,19 @@ namespace eRecipes.Service
             _context = context;
             _mapper = mapper;
         }
+
+        public async Task<List<Model.Izvjestaj>> GetIzvjestajList(IzvjestajSearchObject? search = null)
+        {
+            var query = _context.Izvjestajs.Include(i => i.Recept).AsQueryable();
+            if (search?.Naziv != null)
+            {
+                query = query.Where(i => i.Recept.Naziv.Contains(search.Naziv));
+            }
+            var result = await query.ToListAsync();
+
+            return _mapper.Map<List<Model.Izvjestaj>>(result);
+        }
+
         public async Task<Model.Izvjestaj> Insert(IzvjestajInsert insert)
         {
             var entity = new Database.Izvjestaj
@@ -31,11 +44,11 @@ namespace eRecipes.Service
              .Where(o => o.ReceptId == insert.ReceptId)
              .Select(o => o.KorisnikId)
              .Distinct()
-             .CountAsync(),  // 🔹 Broj različitih korisnika koji su dodali recept u omiljene
+             .CountAsync(),  
 
                 BrojLajkova = await _context.Lajkovis
              .Where(l => l.ReceptId == insert.ReceptId)
-             .CountAsync()  // 🔹 Ukupan broj lajkova za taj recept
+             .CountAsync()  
             };
             _context.Izvjestajs.Add(entity);
             await _context.SaveChangesAsync();
