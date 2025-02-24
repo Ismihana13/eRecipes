@@ -9,6 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class IzvjestajController 
     {
         IIzvjestajService _service;
@@ -22,12 +23,11 @@ namespace eRecipes.API.Controllers
         {
             return await _service.Insert(insert);
         }
+
         [HttpGet]
         public async Task<List<Model.Izvjestaj>> GetIzvjestaji([FromQuery] IzvjestajSearchObject search)
         {
             return await _service.GetIzvjestajList(search);
-           
         }
-
     }
 }

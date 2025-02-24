@@ -9,7 +9,6 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[AllowAnonymous]
     public class VrstaJelaController : BaseCURDController<VrstaJela,VrstaJelaSearchObject,VrsteJelaUpsertRequest,VrsteJelaUpsertRequest>
     {
         public VrstaJelaController(IVrstaJelaService service) : base(service) { }
@@ -20,7 +19,6 @@ namespace eRecipes.API.Controllers
             return base.Insert(request);
         }
         
-       
         public override PagedResult<VrstaJela> GetList([FromQuery] VrstaJelaSearchObject searchObject)
         {
             return base.GetList(searchObject);

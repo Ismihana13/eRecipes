@@ -17,11 +17,13 @@ namespace eRecipes.API.Controllers
         {
             _service = service;
         }
+
         [HttpGet]
         public virtual PagedResult<TModel> GetList([FromQuery] TSearch searchObject)
         {
             return _service.GetPaged(searchObject);
         }
+
         [HttpGet("{id}")]
         public virtual TModel GetById(int id)
         {

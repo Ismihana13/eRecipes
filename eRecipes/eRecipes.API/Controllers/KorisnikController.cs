@@ -11,9 +11,8 @@ using System.Text;
 
 namespace eRecipes.API.Controllers
 {
-     [ApiController]
+    [ApiController]
     [Route("[controller]")]
-    //[AllowAnonymous]
     public class KorisnikController : BaseCURDController<Model.Korisnik,KorisnikSearchObject,KorisnikInsertRequest,KorisnikUpdateRequest>
     {
         protected IKorisnikService _service;
@@ -45,6 +44,7 @@ namespace eRecipes.API.Controllers
 
             return ((IKorisnikService)_service).Login(usernamePassword.Substring(0, seperatorIndex), usernamePassword[(seperatorIndex + 1)..]);
         }
+
         [AllowAnonymous]
         public override Korisnik Insert(KorisnikInsertRequest request)
         {
@@ -58,23 +58,11 @@ namespace eRecipes.API.Controllers
         }
 
         [HttpDelete("{id}/DeleteKorisnikProfil")]
-
         public Korisnik DeleteKorisnickiProfil(int id)
         {
             return ((IKorisnikService)_service).DeleteKorisnickiProfil(id);
         }
-        //[HttpPut("{id}/AddUloga")]
-        //[Authorize(Roles = "Admin")]
-        //public Korisnik AddUloga(int id, [FromBody] KorisnikUpdateRequest request)
-        //{
-        //    return ((IKorisnikService)_service).AddUloga(id, request);
-        //}
-        //[HttpPut("{id}/DeleteUloga")]
-        //[Authorize(Roles = "Admin")]
-        //public Korisnik DeleteUloga(int id, [FromBody] KorisnikUpdateRequest request)
-        //{
-        //    return ((IKorisnikService)_service).DeleteUloga(id, request);
-        //}
+    
         [HttpPut("{id}/DeleteKorisnik")]
         [Authorize(Roles = "Admin")]
         public Korisnik DeleteKorisnik(int id)

@@ -1,0 +1,26 @@
+﻿
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /src
+EXPOSE 80
+EXPOSE 443
+
+
+COPY ["eRecipes.RabbitMQ/eRecipes.RabbitMQ.csproj", "eRecipes.RabbitMQ/"]
+RUN dotnet restore "eRecipes.RabbitMQ/eRecipes.RabbitMQ.csproj"
+
+
+COPY . .
+WORKDIR "/src/eRecipes.RabbitMQ"
+RUN dotnet build "eRecipes.RabbitMQ.csproj" -c Release -o /app/build
+
+
+FROM build AS publish
+RUN dotnet publish "eRecipes.RabbitMQ.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+
+ENTRYPOINT ["dotnet", "eRecipes.RabbitMQ.dll"]

@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eRecipes.Model", "eRecipes.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eRecipes.Service", "eRecipes.Service\eRecipes.Service.csproj", "{AEF0E724-EF75-438F-A4B6-87BC2A86C922}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eRecipes.Subscriber", "eRecipes.Subscriber\eRecipes.Subscriber.csproj", "{F3A14453-2C49-4E1C-9EDF-B2B01111E7AF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE7F326B-B64D-4B45-9001-7544C86FFA6E}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eRecipes.RabbitMQ", "eRecipes.RabbitMQ\eRecipes.RabbitMQ.csproj", "{087426A1-C460-497D-8305-E2BC251BD279}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{AEF0E724-EF75-438F-A4B6-87BC2A86C922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEF0E724-EF75-438F-A4B6-87BC2A86C922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEF0E724-EF75-438F-A4B6-87BC2A86C922}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3A14453-2C49-4E1C-9EDF-B2B01111E7AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3A14453-2C49-4E1C-9EDF-B2B01111E7AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3A14453-2C49-4E1C-9EDF-B2B01111E7AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3A14453-2C49-4E1C-9EDF-B2B01111E7AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087426A1-C460-497D-8305-E2BC251BD279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087426A1-C460-497D-8305-E2BC251BD279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087426A1-C460-497D-8305-E2BC251BD279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087426A1-C460-497D-8305-E2BC251BD279}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

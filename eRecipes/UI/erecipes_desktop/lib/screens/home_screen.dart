@@ -1,6 +1,7 @@
 import 'package:erecipes_desktop/main.dart';
 import 'package:erecipes_desktop/providers/auth_provider.dart';
 import 'package:erecipes_desktop/screens/category_list_screen.dart';
+import 'package:erecipes_desktop/screens/obavijesti_screen.dart';
 import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:erecipes_desktop/screens/report_screen.dart';
 import 'package:erecipes_desktop/screens/user_list_screen.dart';
@@ -169,7 +170,10 @@ void initState() {
           child: const ReportScreen(),
         );
       case 'Obavjesti':
-        return const Center(child: Text('Obavjesti Screen Content'));
+         return ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child:  ObavijestiScreen(),
+        );
       case 'Logout':
         return const Center(child: Text('You have logged out!'));
       default:
