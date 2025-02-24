@@ -16,9 +16,7 @@ class IzvjestajProvider extends BaseProvider<Izvjestaj> {
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
-    var body = jsonEncode({
-      "ReceptId": receptId
-    });
+    var body = jsonEncode({"ReceptId": receptId});
 
     var response = await http.post(uri, headers: headers, body: body);
 
@@ -29,26 +27,26 @@ class IzvjestajProvider extends BaseProvider<Izvjestaj> {
       throw Exception("Neuspješno kreiranje izvještaja.");
     }
   }
-  Future<List<Izvjestaj>> getSve({dynamic filter})async{
-    var url="$fullUrl";
-    if(filter!=null){
-      var queryString=getQueryString(filter);
-      url="$url?$queryString";
+
+  Future<List<Izvjestaj>> getSve({dynamic filter}) async {
+    var url = "$fullUrl";
+    if (filter != null) {
+      var queryString = getQueryString(filter);
+      url = "$url?$queryString";
     }
-     print("Pozivam GET URL: $url"); 
-    var uri=Uri.parse(url);
-    var headers= createHeaders();
-    var response=await http.get(uri,headers: headers);
-    if(isValidResponse(response)){
-      var data= jsonDecode(response.body);
-      List<Izvjestaj> result=[];
-      for(var item in data){
+    print("Pozivam GET URL: $url");
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<Izvjestaj> result = [];
+      for (var item in data) {
         result.add(fromJson(item));
       }
       return result;
-    }else{
+    } else {
       throw new Exception("Unknown error.");
     }
-
   }
 }

@@ -9,16 +9,13 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-   
     public class UlogaController : BaseCURDController<Uloga,UlogaSearchObject,UlogaUpsertRequest, UlogaUpsertRequest>
     {
         public UlogaController(IUlogaService service) : base(service) { }
         
-       
         public override PagedResult<Uloga> GetList([FromQuery] UlogaSearchObject searchObject)
         {
             return base.GetList(searchObject);
         }
-
     }
 }

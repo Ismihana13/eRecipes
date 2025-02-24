@@ -21,9 +21,12 @@ namespace eRecipes.Service
     public class KorisnikService : BaseCRUDService<Model.Korisnik, KorisnikSearchObject, Database.Korisnik, KorisnikInsertRequest, KorisnikUpdateRequest>, IKorisnikService
     {
         ILogger<KorisnikService> _logger;
-        public KorisnikService(ERecipesContext context, IMapper mapper,ILogger<KorisnikService> logger) : base(context, mapper)
+        private readonly IEmailService _emailService;
+
+        public KorisnikService(ERecipesContext context, IMapper mapper,ILogger<KorisnikService> logger, IEmailService emailService) : base(context, mapper)
         {
             _logger = logger;
+            _emailService = emailService;
         }
 
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject searchObject, IQueryable<Database.Korisnik> query)
@@ -122,6 +125,14 @@ namespace eRecipes.Service
             {
                 return null;
             }
+            Notifier testRabbitaIMaila = new Notifier
+            {
+
+                Datum = DateTime.Now,
+                Email = entity.Email!,
+                Nesto = "Ovdje smo nesto upisali cisto da testiramo da li radi!"
+            };
+            _emailService.SendingObject(testRabbitaIMaila);
             return this.Mapper.Map<Model.Korisnik>(entity);
         }
         public Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request)

@@ -20,6 +20,9 @@ builder.Services.AddTransient<IOmiljeniReceptService, OmiljeniReceptService>();
 builder.Services.AddTransient<ISastojakService, SastojakService>();
 builder.Services.AddTransient<ILajkoviService, LajkoviService>();
 builder.Services.AddTransient<IIzvjestajService, IzvjestajService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IObavijestService, ObavijestService>();
+
 builder.Services.AddHttpContextAccessor();
 
 //builder.Services.AddCors(options =>

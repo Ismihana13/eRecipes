@@ -19,6 +19,7 @@ namespace eRecipes.API.Controllers
         {
             return _service.Insert(request);
         }
+
         [HttpPut("{id}")]
         public virtual TModel Update(int id, TUpdate request)
         {

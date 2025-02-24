@@ -26,12 +26,12 @@ namespace eRecipes.API.Controllers
              await ((ILajkoviService)_service).RemoveLiked(receptId);
                 return Ok(new { message = "Recept je uspešno uklonjen iz lajkanih." });
         }
+
         [HttpGet("isLiked/{receptId}")]
         public async Task<ActionResult<bool>> IsLiked(int receptId)
         {
                 bool isLiked = await ((ILajkoviService)_service).IsLiked(receptId);
                 return Ok(isLiked);
-            
         }
     }
 }

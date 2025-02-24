@@ -26,11 +26,14 @@ namespace eRecipes.Service
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IKorisnikService _korisnikService;
         private readonly ReceptRecommender _recommender;
-        public ReceptService(ERecipesContext context, IMapper mapper, ILogger<ReceptService> logger, IHttpContextAccessor httpContextAccessor, IKorisnikService korisnikService) : base(context, mapper) {
+        private readonly IObavijestService _obavjestService;
+        public ReceptService(ERecipesContext context, IMapper mapper, ILogger<ReceptService> logger, IHttpContextAccessor httpContextAccessor, IKorisnikService korisnikService, IObavijestService obavjestService) : base(context, mapper)
+        {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _korisnikService = korisnikService;
             _recommender = new ReceptRecommender(Context);
+            _obavjestService = obavjestService;
         }
 
         public override IQueryable<Database.Recept> AddFilter(ReceptSearchObject search, IQueryable<Database.Recept> query)
@@ -71,6 +74,16 @@ namespace eRecipes.Service
                 if (user != null)
                 {
                     entity.KorisnikId = user.KorisnikId;
+                    var obavijestRequest = new ObavijestInsertRequest
+                    {
+                        Naslov = "Novi recept dodat!",
+                        Sadrzaj = $"{user.KorisnickoIme} je dodao novi recept: {request.Naziv}",
+                        DatumSlanja = DateTime.Now,
+                        KorisnikId = user.KorisnikId
+                    };
+
+                    // Pozivanje servisa za dodavanje obavijesti
+                    _obavjestService.Insert(obavijestRequest);
                 }
             }
             base.BeforeInsert(request, entity);
@@ -217,42 +230,8 @@ namespace eRecipes.Service
 
         List<Model.Recept> IReceptService.Recommend(int korisnikId)
         {
-            var preporuceniRecepti = _recommender.Recommend(korisnikId); // Ovo vraća List<Database.Recept>
+            var preporuceniRecepti = _recommender.Recommend(korisnikId); 
             return Mapper.Map<List<Model.Recept>>(preporuceniRecepti);
         }
-
-        //static MLContext mlContext = null;
-        //static object isLocked=new object();
-        //public List<Model.Recept> Recommend(int id)
-        //{
-        //    if (mlContext == null) 
-        //    {
-        //        //train
-        //        lock (isLocked)
-        //        {
-        //            mlContext = new MLContext();
-        //            var tmpData=Context.Kategorijas.Include("Recepts").ToList();
-        //            var data=new List<ProductEntry>();
-        //            foreach (var item in tmpData)
-        //            {
-        //                if(item.Katego)
-        //            }
-
-        //        }
-
-        //    }
-
-        //}
-        //public class Copurchase_prediction
-        //{
-        //    public float Score { get; set; }
-        //}
-        //public class ProductEntry
-        //{
-        //    [KeyType(count:262111)]
-        //    public uint ProductID { get; set; }
-        //    [KeyType(count: 262111)]
-        //    public uint CoPurchaseProductID { get; set; }
-        //}
     }
 }
