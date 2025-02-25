@@ -9,7 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[AllowAnonymous]
+
     public class OmiljeniReceptController : BaseCURDController<OmiljeniRecept,OmiljeniReceptSearchObject,OmiljeniReceptUpsertRequest, OmiljeniReceptUpsertRequest>
     {
         public OmiljeniReceptController(IOmiljeniReceptService service) : base(service) { }

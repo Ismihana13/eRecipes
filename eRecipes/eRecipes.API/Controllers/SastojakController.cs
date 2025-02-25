@@ -9,7 +9,6 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[AllowAnonymous]
     public class SastojakController : BaseCURDController<Sastojak,SastojakSearchObject,SastojakUpsertRequest, SastojakUpsertRequest>
     {
         public SastojakController(ISastojakService service) : base(service) { }
@@ -19,8 +18,6 @@ namespace eRecipes.API.Controllers
         {
             return base.Insert(request);
         }
-        
-       
         public override PagedResult<Sastojak> GetList([FromQuery] SastojakSearchObject searchObject)
         {
             return base.GetList(searchObject);
