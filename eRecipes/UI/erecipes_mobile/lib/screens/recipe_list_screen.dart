@@ -9,6 +9,7 @@ import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
+import 'package:erecipes_mobile/screens/locked_recipe.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
@@ -356,105 +357,132 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
       ];
     }
+bool isPremiumUser=AuthProvider.korisnik!.uloga!.naziv=="Premium korisnik";
+  return data!.result.map((x) {
+    bool isPremiumRecipe = x.premium ?? false;
+    bool isLocked = !isPremiumUser && isPremiumRecipe;
 
-    List<Widget>? list = data?.result
-            .map((x) => Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 120,
-                          width: double.infinity,
-                          child: x.slika == null
-                              ? const Placeholder()
-                              : imageFromString(x.slika!),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                x.naziv ?? "",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                                softWrap: true,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            FutureBuilder(
-                              future: _omiljeniReceptProvider
-                                  ?.isFavorite(x.receptId!),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Icon(Icons.favorite_border,
-                                      color: Colors.red, size: 30);
-                                }
-                                if (snapshot.hasData) {
-                                  bool isFavorite = snapshot.data!;
-                                  return IconButton(
-                                    onPressed: () {
-                                      toggleFavorite(x);
-                                    },
-                                    icon: Icon(
-                                      isFavorite
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                      color: Colors.red,
-                                      size: 30,
-                                    ),
-                                    padding: const EdgeInsets.all(0),
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                  );
-                                } else {
-                                  return const Icon(Icons.favorite_border,
-                                      color: Colors.red, size: 30);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        Text(
-                          (x.opisRecepta ?? "").length > 50
-                              ? (x.opisRecepta?.substring(0, 50) ?? "") + "..."
-                              : (x.opisRecepta ?? ""),
-                          style: const TextStyle(color: Colors.grey),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      RecipeDetailsScreen(recept: x)),
-                            ).then((value) {
-                              loadData();
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                          child: const Text("Pregled recepta"),
-                        ),
-                        const SizedBox(height: 8.0),
-                      ],
-                    ),
+   return GestureDetector(
+  onTap: () {
+    if (isLocked) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LockedRecipeScreen()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RecipeDetailsScreen(recept: x)),
+      ).then((_) => loadData());
+    }
+  },
+  child: Stack(
+    children: [
+      // Glavna kartica recepta
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: isLocked ? Colors.grey.withOpacity(0.2) : Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // ✅ Sprječava overflow
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 120,
+              width: double.infinity,
+              child: x.slika == null ? const Placeholder() : imageFromString(x.slika!),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    x.naziv ?? "",
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    softWrap: true,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ))
-            .toList() ??
-        [];
-    return list;
-  }
+                ),
+                FutureBuilder<bool>(
+                  future: _omiljeniReceptProvider?.isFavorite(x.receptId!),
+                  builder: (context, snapshot) {
+                    bool isFavorite = snapshot.data ?? false;
+                    return IconButton(
+                      onPressed: isLocked ? null : () => toggleFavorite(x),
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              (x.opisRecepta ?? "").length > 50
+                  ? "${x.opisRecepta?.substring(0, 50)}..."
+                  : (x.opisRecepta ?? ""),
+              style: const TextStyle(color: Colors.grey),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+
+            // ✅ Rješenje: Expanded oko dugmeta
+            Expanded(
+              child: ElevatedButton(
+                onPressed: isLocked ? null : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecipeDetailsScreen(recept: x),
+                    ),
+                  ).then((_) => loadData());
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: isLocked ? Colors.grey : Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                child: const Text("Pregledaj recept"),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      // 🔒 Poluprozirni sloj sa ikonom katanaca (samo ako je recept zaključan)
+      if (isLocked)
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.5), // Tamni sloj preko cijele kartice
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.lock,
+              color: Colors.white,
+              size: 50, // Veličina katanaca
+            ),
+          ),
+        ),
+    ],
+  ),
+);
+  }).toList();
+}
+
 
   Widget _buildRecommenedrecipe() {
     if (listaRekomed.isEmpty) {

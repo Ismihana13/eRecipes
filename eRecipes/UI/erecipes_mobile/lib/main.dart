@@ -1,3 +1,4 @@
+import 'package:erecipes_mobile/.env';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
@@ -13,10 +14,12 @@ import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+
 import 'package:provider/provider.dart';
 
 void main() {
-  //Stripe.publishableKey = stripePublishableKey;
+  Stripe.publishableKey = stripePublishableKey;
   runApp(const MainApp());
   WidgetsFlutterBinding.ensureInitialized();
 }

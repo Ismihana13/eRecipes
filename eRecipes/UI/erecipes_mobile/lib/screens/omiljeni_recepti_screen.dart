@@ -96,6 +96,11 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             const SizedBox(height: 10),
             _buildCategoryAndDishTypeFilter(),
             const SizedBox(height: 10),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Nazad")),
             const Text(
               'Omiljeni Recepti',
               style: TextStyle(
@@ -118,7 +123,6 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                 children: _buildRecipeCard(),
               ),
             ),
-            ElevatedButton(onPressed:(){ Navigator.pop(context);} , child: const Text("Nazad")),
           ],
         ),
       ),
@@ -254,7 +258,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: ElevatedButton(
-             onPressed: () {
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -315,8 +319,11 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            x.recept!.opisRecepta ?? "",
+                            x.recept!.opisRecepta ?? "Nema opisa.",
                             style: const TextStyle(color: Colors.grey),
+                            maxLines: 2, 
+                            overflow: TextOverflow
+                                .ellipsis, 
                           ),
                           const SizedBox(height: 6),
                           ElevatedButton(
@@ -348,4 +355,14 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             ))
         .toList();
   }
+}
+
+String _getFirstSentence(String text) {
+  if (text.isEmpty) return "Nema opisa."; // Ako je opis prazan
+
+  RegExp regex = RegExp(r'([^.?!]+[.?!])'); // Traži prvu rečenicu
+  Match? match = regex.firstMatch(text);
+
+  return match?.group(0)?.trim() ??
+      text; // Ako nema tačke, prikaži cijeli tekst
 }

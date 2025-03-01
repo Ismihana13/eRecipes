@@ -126,128 +126,126 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     return Scaffold(
       appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(),
-                      WelcomeRow(),
-                    ],
-                  ),
-                ],
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(),
+                    WelcomeRow(),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _buildRecipeDetails(),
+            if (showButton)
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditRecipeScreen(
+                        recept: widget.recept!,
+                        sastojci: sastojciList,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text("Uredi recept"),
               ),
-              const SizedBox(height: 10),
-              _buildRecipeDetails(),
-              if (showButton)
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditRecipeScreen(
-                          recept: widget.recept!,
-                          sastojci: sastojciList,
+            if (showLikesSection)
+              FutureBuilder<bool>(
+                future: _lajkoviProvider?.isLiked(widget.recept!.receptId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasData && snapshot.data!) {
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Ukoliko vam se svidio recept, ostavite like',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up,
+                                  color: Colors.blue),
+                              onPressed: () => handleLike(),
+                            ),
+                            Text(
+                              '$likesCount',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
-                  },
-                  child: const Text("Uredi recept"),
-                ),
-              if (showLikesSection)
-                FutureBuilder<bool>(
-                  future: _lajkoviProvider?.isLiked(widget.recept!.receptId!),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    if (snapshot.hasData && snapshot.data!) {
-                      return Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.all(16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  'Ukoliko vam se svidio recept, ostavite like',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  softWrap: true,
+                  } else {
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Ukoliko vam se svidio recept, ostavite like',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                                softWrap: true,
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.thumb_up,
-                                    color: Colors.blue),
-                                onPressed: () => handleLike(),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up_outlined,
+                                  color: Colors.grey),
+                              onPressed: () => handleLike(),
+                            ),
+                            Text(
+                              '$likesCount',
+                              style: const TextStyle(
+                                fontSize: 18,
                               ),
-                              Text(
-                                '$likesCount',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    } else {
-                      return Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.all(16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  'Ukoliko vam se svidio recept, ostavite like',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  softWrap: true,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.thumb_up_outlined,
-                                    color: Colors.grey),
-                                onPressed: () => handleLike(),
-                              ),
-                              Text(
-                                '$likesCount',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-            ],
-          ),
+                      ),
+                    );
+                  }
+                },
+              ),
+          ],
         ),
       ),
     );
