@@ -43,7 +43,7 @@ class MainApp extends StatelessWidget {
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
           SignUpScreen.routeName: (context) => SignUpScreen(),
-          RecipeListScreen.routeName: (context) =>  RecipeListScreen(),
+          RecipeListScreen.routeName: (context) =>  const RecipeListScreen(),
           OmiljeniReceptiScreen.routeName: (context) =>
               const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
