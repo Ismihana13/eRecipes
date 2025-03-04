@@ -79,7 +79,7 @@ namespace eRecipes.RabbitMQ
         private async Task HandleMessage(Notifier notifier)
         {
 
-            await _emailSender.SendEmailAsync(notifier.Email, "Uspješno sam testirao emailsender !", $"Vaša pruka {notifier.Nesto} na datum {notifier.Datum.ToShortDateString()} .");
+            await _emailSender.SendEmailAsync(notifier.Email, "Hvala što ste se registrovali na eRecipes!", $"{notifier.Tekst} {notifier.Datum.ToShortDateString()} .");
 
         }
 

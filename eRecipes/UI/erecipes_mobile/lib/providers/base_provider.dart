@@ -12,12 +12,12 @@ abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint = "";
   String? fullUrl;
-  
+
   HttpClient client = HttpClient();
   IOClient? http;
 
   BaseProvider(String endpoint) {
-        _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://10.0.2.2:5089/");
     if (_baseUrl!.endsWith("/") == false) {
       _baseUrl = _baseUrl! + "/";
@@ -29,8 +29,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
     http = IOClient(client);
     fullUrl = "$_baseUrl$_endpoint";
   }
-  
- Future<List<T>> Get([dynamic search]) async {
+
+  Future<List<T>> Get([dynamic search]) async {
     var url = "${_baseUrl}${_endpoint}";
 
     if (search != null) {
@@ -52,41 +52,38 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Wrong username or password");
     }
   }
- Future<SearchResult<T>> get({dynamic filter}) async {
-  var url = "$_baseUrl$_endpoint";
 
-  if (filter != null) {
-    var queryString = getQueryString(filter);
-    url = "$url?$queryString";
-  }
+  Future<SearchResult<T>> get({dynamic filter}) async {
+    var url = "$_baseUrl$_endpoint";
 
-  // Ispisivanje URL-a koji se poziva
-  print("URL za GET zahtev sa filterom: $url");
-
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
-
-  var response = await http!.get(uri, headers: headers);
-
-  if (isValidResponse(response)) {
-    var data = jsonDecode(response.body);
-
-    var result = SearchResult<T>();
-
-    result.count = data['count'];
-
-    for (var item in data['resultList']) {
-      result.result.add(fromJson(item));
+    if (filter != null) {
+      var queryString = getQueryString(filter);
+      url = "$url?$queryString";
     }
 
-    return result;
-  } else {
-    throw new Exception("Wrong username or password");
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http!.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+
+      var result = SearchResult<T>();
+
+      result.count = data['count'];
+
+      for (var item in data['resultList']) {
+        result.result.add(fromJson(item));
+      }
+
+      return result;
+    } else {
+      throw new Exception("Wrong username or password");
+    }
   }
-}
 
-
-    Future<T> getById(int id) async {
+  Future<T> getById(int id) async {
     var url = Uri.parse("$_baseUrl$_endpoint/$id");
 
     Map<String, String> headers = getHeaders();
@@ -139,7 +136,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
   bool isValidResponse(Response response) {
     print('Response status: ${response.statusCode}');
-  print('Response body: ${response.body}');
+    print('Response body: ${response.body}');
 
     if (response.statusCode < 299) {
       return true;
@@ -169,8 +166,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Map<String, String> getHeaders() {
-    String username = AuthProvider.username !;
-    String passowrd =AuthProvider.password !;
+    String username = AuthProvider.username!;
+    String passowrd = AuthProvider.password!;
 
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$passowrd'))}";
@@ -182,6 +179,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     return headers;
   }
+
   String getQueryString(Map params,
       {String prefix = '&', bool inRecursion = false}) {
     String query = '';

@@ -30,31 +30,34 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
-  RecipeProvider? _recipeProvider;
-  VrstaJelaProvider? _vrstaJelaProvider;
-  KategorijaProvider? _kategorijaProvider;
-  OmiljeniReceptProvider? _omiljeniReceptProvider;
+  late RecipeProvider? _recipeProvider;
+  late VrstaJelaProvider? _vrstaJelaProvider;
+  late KategorijaProvider? _kategorijaProvider;
+  late OmiljeniReceptProvider? _omiljeniReceptProvider;
+
   SearchResult<Recept>? data;
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
+
   TextEditingController _searchController = TextEditingController();
   dynamic _selectedFilter;
   List<Recept> listaRekomed = [];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _recipeProvider = context.read<RecipeProvider>();
+    _kategorijaProvider = context.read<KategorijaProvider>();
+    _vrstaJelaProvider = context.read<VrstaJelaProvider>();
+    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     loadData();
   }
 
   @override
   void initState() {
     super.initState();
-    _recipeProvider = context.read<RecipeProvider>();
-    _kategorijaProvider = context.read<KategorijaProvider>();
-    _vrstaJelaProvider = context.read<VrstaJelaProvider>();
-    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     _selectedFilter = 'Svi';
-    loadData();
+  
   }
 
   Future toggleFavorite(Recept recept) async {
@@ -138,7 +141,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await loadData(); 
+          await loadData();
         },
         child: SingleChildScrollView(
           child: Column(
@@ -152,15 +155,15 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(),
-                      WelcomeRow(), 
+                      WelcomeRow(),
                     ],
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              _buildRecipeSearch(), 
+              _buildRecipeSearch(),
               const SizedBox(height: 10),
-              _buildCategoryAndDishTypeFilter(), 
+              _buildCategoryAndDishTypeFilter(),
               const SizedBox(height: 10),
               SizedBox(
                 height: 400,
@@ -172,7 +175,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     mainAxisSpacing: 30,
                   ),
                   scrollDirection: Axis.vertical,
-                  children: _buildRecipeCard(), 
+                  children: _buildRecipeCard(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -184,8 +187,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-
-            _buildRecommenedrecipe()
+              _buildRecommenedrecipe()
             ],
           ),
         ),
@@ -357,132 +359,144 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
       ];
     }
-bool isPremiumUser=AuthProvider.korisnik!.uloga!.naziv=="Premium korisnik";
-  return data!.result.map((x) {
-    bool isPremiumRecipe = x.premium ?? false;
-    bool isLocked = !isPremiumUser && isPremiumRecipe;
+    bool isPremiumUser = AuthProvider.korisnik!.uloga!.ulogaId == 3;
+    return data!.result.map((x) {
+      bool isPremiumRecipe = x.premium ?? false;
+      bool isLocked = !isPremiumUser && isPremiumRecipe;
 
-   return GestureDetector(
-  onTap: () {
-    if (isLocked) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LockedRecipeScreen()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => RecipeDetailsScreen(recept: x)),
-      ).then((_) => loadData());
-    }
-  },
-  child: Stack(
-    children: [
-      // Glavna kartica recepta
-      Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: isLocked ? Colors.grey.withOpacity(0.2) : Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // ✅ Sprječava overflow
-          crossAxisAlignment: CrossAxisAlignment.start,
+      return GestureDetector(
+        onTap: () {
+          if (isLocked) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const LockedRecipeScreen()),
+            ).then((azuriraniKorisnik) {
+              if (azuriraniKorisnik != null) {
+                setState(() {
+                  AuthProvider.korisnik = azuriraniKorisnik;
+                });
+              }
+            });
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RecipeDetailsScreen(recept: x)),
+            ).then((_) => loadData());
+          }
+        },
+        child: Stack(
           children: [
-            SizedBox(
-              height: 120,
-              width: double.infinity,
-              child: x.slika == null ? const Placeholder() : imageFromString(x.slika!),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    x.naziv ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    softWrap: true,
-                    maxLines: 3,
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: isLocked ? Colors.grey.withOpacity(0.2) : Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 120,
+                    width: double.infinity,
+                    child: x.slika == null
+                        ? const Placeholder()
+                        : imageFromString(x.slika!),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          x.naziv ?? "",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                          softWrap: true,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      FutureBuilder<bool>(
+                        future:
+                            _omiljeniReceptProvider?.isFavorite(x.receptId!),
+                        builder: (context, snapshot) {
+                          bool isFavorite = snapshot.data ?? false;
+                          return IconButton(
+                            onPressed:
+                                isLocked ? null : () => toggleFavorite(x),
+                            icon: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    (x.opisRecepta ?? "").length > 50
+                        ? "${x.opisRecepta?.substring(0, 50)}..."
+                        : (x.opisRecepta ?? ""),
+                    style: const TextStyle(color: Colors.grey),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                FutureBuilder<bool>(
-                  future: _omiljeniReceptProvider?.isFavorite(x.receptId!),
-                  builder: (context, snapshot) {
-                    bool isFavorite = snapshot.data ?? false;
-                    return IconButton(
-                      onPressed: isLocked ? null : () => toggleFavorite(x),
-                      icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.red,
-                        size: 30,
+                  const SizedBox(height: 4),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: isLocked
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      RecipeDetailsScreen(recept: x),
+                                ),
+                              ).then((_) => loadData());
+                            },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: isLocked ? Colors.grey : Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                    );
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              (x.opisRecepta ?? "").length > 50
-                  ? "${x.opisRecepta?.substring(0, 50)}..."
-                  : (x.opisRecepta ?? ""),
-              style: const TextStyle(color: Colors.grey),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 4),
-
-            // ✅ Rješenje: Expanded oko dugmeta
-            Expanded(
-              child: ElevatedButton(
-                onPressed: isLocked ? null : () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecipeDetailsScreen(recept: x),
+                      child: const Text("Pregledaj recept"),
                     ),
-                  ).then((_) => loadData());
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: isLocked ? Colors.grey : Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                ),
-                child: const Text("Pregledaj recept"),
+                ],
               ),
             ),
+            if (isLocked)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.lock,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                ),
+              ),
           ],
         ),
-      ),
-
-      // 🔒 Poluprozirni sloj sa ikonom katanaca (samo ako je recept zaključan)
-      if (isLocked)
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5), // Tamni sloj preko cijele kartice
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.lock,
-              color: Colors.white,
-              size: 50, // Veličina katanaca
-            ),
-          ),
-        ),
-    ],
-  ),
-);
-  }).toList();
-}
-
+      );
+    }).toList();
+  }
 
   Widget _buildRecommenedrecipe() {
     if (listaRekomed.isEmpty) {
@@ -497,78 +511,128 @@ bool isPremiumUser=AuthProvider.korisnik!.uloga!.naziv=="Premium korisnik";
       );
     }
 
+    bool isPremiumUser = AuthProvider.korisnik!.uloga!.ulogaId == 3;
+
     return SizedBox(
-      height: 300, 
+      height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: listaRekomed.length,
         itemBuilder: (context, index) {
           var x = listaRekomed[index];
-          return Container(
-            width: 180,
-            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
+          bool isPremiumRecipe = x.premium ?? false;
+          bool isLocked = !isPremiumUser && isPremiumRecipe;
 
-              color: const Color.fromARGB(155, 223, 253, 217),
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 5,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 120,
-                  width: double.infinity,
-                  child: x.slika == null
-                      ? const Placeholder()
-                      : imageFromString(x.slika!),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  x.naziv ?? "",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  (x.opisRecepta ?? "").length > 50
-                      ? "${x.opisRecepta?.substring(0, 50)}..."
-                      : (x.opisRecepta ?? ""),
-                  style: const TextStyle(color: Colors.grey),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RecipeDetailsScreen(recept: x),
-                      ),
-                    ).then((value) {
-                      loadData();
+          return GestureDetector(
+            onTap: () {
+              if (isLocked) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LockedRecipeScreen()),
+                ).then((azuriraniKorisnik) {
+                  if (azuriraniKorisnik != null) {
+                    setState(() {
+                      AuthProvider.korisnik = azuriraniKorisnik;
                     });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                  }
+                });
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RecipeDetailsScreen(recept: x)),
+                ).then((_) => loadData());
+              }
+            },
+            child: Stack(
+              children: [
+                Container(
+                  width: 180,
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: isLocked
+                        ? Colors.grey.withOpacity(0.2)
+                        : const Color.fromARGB(155, 223, 253, 217),
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 120,
+                        width: double.infinity,
+                        child: x.slika == null
+                            ? const Placeholder()
+                            : imageFromString(x.slika!),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        x.naziv ?? "",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        (x.opisRecepta ?? "").length > 50
+                            ? "${x.opisRecepta?.substring(0, 50)}..."
+                            : (x.opisRecepta ?? ""),
+                        style: const TextStyle(color: Colors.grey),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: isLocked
+                            ? null
+                            : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RecipeDetailsScreen(recept: x),
+                                  ),
+                                ).then((_) => loadData());
+                              },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              isLocked ? Colors.grey : Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const Text("Pregled recepta"),
+                      ),
+                    ],
+                  ),
+                ),
+                if (isLocked)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.lock,
+                        color: Colors.white,
+                        size: 50,
+                      ),
                     ),
                   ),
-                  child: const Text("Pregled recepta"),
-                ),
               ],
             ),
           );

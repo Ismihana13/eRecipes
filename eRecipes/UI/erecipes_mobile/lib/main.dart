@@ -19,9 +19,9 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = stripePublishableKey;
   runApp(const MainApp());
-  WidgetsFlutterBinding.ensureInitialized();
 }
 
 class MainApp extends StatelessWidget {
@@ -41,15 +41,14 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         initialRoute: LoginScreen.routeName,
         routes: {
-          // HomeScreen.routeName: (context) => HomeScreen(),
-          LoginScreen.routeName: (context) => LoginScreen(),
+          LoginScreen.routeName: (context) => const LoginScreen(),
           SignUpScreen.routeName: (context) => SignUpScreen(),
-          RecipeListScreen.routeName: (context) => RecipeListScreen(),
+          RecipeListScreen.routeName: (context) =>  RecipeListScreen(),
           OmiljeniReceptiScreen.routeName: (context) =>
               const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
-          AddNewRecipeScreen.routeName: (context) => AddNewRecipeScreen(),
-          UserScreen.routeName: (context) => UserScreen(),
+          AddNewRecipeScreen.routeName: (context) => const AddNewRecipeScreen(),
+          UserScreen.routeName: (context) => const UserScreen(),
         },
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -71,29 +70,47 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _usernameController = new TextEditingController();
-  TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   late KorisnikProvider _korisnikProvider;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void handleLogin(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
         AuthProvider.username = _usernameController.text;
         AuthProvider.password = _passwordController.text;
+        _korisnikProvider =
+            Provider.of<KorisnikProvider>(context, listen: false);
+
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Login successful!'),
+            content: Text(
+              'Login successful!',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Color.fromARGB(255, 53, 92, 54),
             duration: Duration(seconds: 3),
           ),
         );
-        Navigator.pushNamed(context, RecipeListScreen.routeName);
+        Navigator.pushReplacementNamed(context, RecipeListScreen.routeName);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Login failed. Please check your credentials.'),
+            content: Text(
+              'Login failed. Please check your credentials.',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
             duration: Duration(seconds: 3),
           ),
         );
@@ -104,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -192,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value!.isEmpty) {
                             return "The password field cannot be empty";
                           } else if (value.length < 4) {
-                            return "Password must be at least 6 characters long";
+                            return "Password must be at least 4 characters long";
                           }
                           return null;
                         },

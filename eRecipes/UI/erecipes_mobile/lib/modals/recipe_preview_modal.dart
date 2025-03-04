@@ -98,7 +98,7 @@ class RecipePreviewModal extends StatelessWidget {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RecipeListScreen()),
+                                builder: (context) =>  RecipeListScreen()),
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

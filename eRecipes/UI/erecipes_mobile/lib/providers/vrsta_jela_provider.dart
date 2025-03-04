@@ -1,11 +1,10 @@
 import 'package:erecipes_mobile/models/vrsta_jela.dart';
 import 'package:erecipes_mobile/providers/base_provider.dart';
 
-class VrstaJelaProvider extends BaseProvider<VrstaJela>{
+class VrstaJelaProvider extends BaseProvider<VrstaJela> {
+  VrstaJelaProvider() : super("VrstaJela");
 
-  VrstaJelaProvider():super("VrstaJela");
-  
- @override
+  @override
   fromJson(data) {
     return VrstaJela.FromJson(data);
   }

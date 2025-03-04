@@ -61,7 +61,6 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         vrsteJela = tmpVrsteJela!;
       });
     } catch (e) {
-      print('Error fetching data: $e');
       setState(() {
         data = null;
         kategorije = null;
@@ -96,11 +95,18 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             const SizedBox(height: 10),
             _buildCategoryAndDishTypeFilter(),
             const SizedBox(height: 10),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Nazad")),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Nazad"),
+                ),
+              ),
+            ),
             const Text(
               'Omiljeni Recepti',
               style: TextStyle(
@@ -243,7 +249,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => OmiljeniReceptiScreen()),
+                    builder: (context) => const OmiljeniReceptiScreen()),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -321,9 +327,8 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                           Text(
                             x.recept!.opisRecepta ?? "Nema opisa.",
                             style: const TextStyle(color: Colors.grey),
-                            maxLines: 2, 
-                            overflow: TextOverflow
-                                .ellipsis, 
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 6),
                           ElevatedButton(
@@ -355,14 +360,4 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             ))
         .toList();
   }
-}
-
-String _getFirstSentence(String text) {
-  if (text.isEmpty) return "Nema opisa."; // Ako je opis prazan
-
-  RegExp regex = RegExp(r'([^.?!]+[.?!])'); // Traži prvu rečenicu
-  Match? match = regex.firstMatch(text);
-
-  return match?.group(0)?.trim() ??
-      text; // Ako nema tačke, prikaži cijeli tekst
 }

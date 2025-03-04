@@ -69,5 +69,11 @@ namespace eRecipes.API.Controllers
         {
             return ((IKorisnikService)_service).DeleteKorisnik(id);
         }
+
+        [HttpPut("{id}/uloga")]
+        public Korisnik UpdateUloga(int id, [FromBody] int novaUlogaId)
+        {
+           return ((IKorisnikService)_service).UpdateUloga(id, novaUlogaId);
+        }
     }
 }

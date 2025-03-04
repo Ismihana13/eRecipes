@@ -76,6 +76,19 @@ namespace eRecipes.Service
             entity.UlogaId = 2;
             entity.Status = true;
             base.BeforeInsert(request, entity);
+            Notifier testRabbitaIMaila = new Notifier
+            {
+                Datum = DateTime.Now,
+                Email = entity.Email!,
+                Tekst = $"Poštovani {entity.Ime} {entity.Prezime},\n\n" +
+                "Uspješno ste kreirali nalog na našoj aplikaciji eRecipes. " +
+                "Hvala što ste odabrali našu platformu!\n\n" +
+                "Stojimo vam na raspolaganju za sva dodatna pitanja.\n\n" +
+                "Srdačan pozdrav,\n" +
+                "eRecipes tim"
+            };
+
+            _emailService.SendingObject(testRabbitaIMaila);
         }
 
         public static string GenerateSalt()
@@ -125,14 +138,14 @@ namespace eRecipes.Service
             {
                 return null;
             }
-            Notifier testRabbitaIMaila = new Notifier
-            {
+            //Notifier testRabbitaIMaila = new Notifier
+            //{
 
-                Datum = DateTime.Now,
-                Email = entity.Email!,
-                Nesto = "Ovdje smo nesto upisali cisto da testiramo da li radi!"
-            };
-            _emailService.SendingObject(testRabbitaIMaila);
+            //    Datum = DateTime.Now,
+            //    Email = entity.Email!,
+            //    Nesto = "Ovdje smo nesto upisali cisto da testiramo da li radi!"
+            //};
+            //_emailService.SendingObject(testRabbitaIMaila);
             return this.Mapper.Map<Model.Korisnik>(entity);
         }
         public Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request)
@@ -153,44 +166,7 @@ namespace eRecipes.Service
 
             return Mapper.Map<Model.Korisnik>(user);
         }
-        //public override Model.Korisnik Insert(KorisnikInsertRequest request)
-        //{
-        //    var entity = base.Insert(request);
-        //    foreach (var uloga in request.UlogeID)
-        //    {
-        //        Database.KorisnikUloga Uloga = new Database.KorisnikUloga();
-        //        Uloga.UlogaId = uloga;
-        //        Uloga.KorisnikId = entity.KorisnikId;
-        //        Uloga.DatumIzmjene = DateTime.Now;
-        //        Context.KorisnikUlogas.Add(Uloga);
-        //    }
-        //    Context.SaveChanges();
-        //    return entity;
-        //}
-        //public Model.Korisnik AddUloga(int id, KorisnikUpdateRequest request)
-        //{
-        //    var user = Context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefault(x => x.KorisnikId == id);
-        //    var uloga = Context.Ulogas.FirstOrDefault(x => x.Naziv.ToLower() == request.Uloga);
-        //    Database.KorisnikUloga nova = new Database.KorisnikUloga()
-        //    {
-        //        DatumIzmjene = DateTime.Now,
-        //        KorisnikId = id,
-        //        UlogaId = uloga.UlogaId
-        //    };
-        //    Context.KorisnikUlogas.Add(nova);
-        //    Context.SaveChanges();
-        //    return Mapper.Map<Model.Korisnik>(user);
-        //}
-        //public Model.Korisnik DeleteUloga(int id, KorisnikUpdateRequest request)
-        //{
-        //    var user = Context.Korisniks.Include("KorisnikUlogas.Uloga").FirstOrDefault(x => x.KorisnikId == id);
-        //    var uloga = Context.Ulogas.FirstOrDefault(x => x.Naziv.ToLower() == request.Uloga);
-        //    var korisnikUloga = Context.KorisnikUlogas.FirstOrDefault(x => x.KorisnikId == user.KorisnikId && x.UlogaId == uloga.UlogaId);
-        //    Context.KorisnikUlogas.Remove(korisnikUloga);
-        //    Context.SaveChanges();
-        //    return Mapper.Map<Model.Korisnik>(user);
-        //}
-
+       
         public Model.Korisnik DeleteKorisnik(int id)
         {
             var set = Context.Set<Database.Korisnik>();
@@ -220,6 +196,19 @@ namespace eRecipes.Service
             }
 
             Context.Korisniks.Remove(korisnik);
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.Korisnik>(korisnik);
+        }
+        public Model.Korisnik UpdateUloga(int id, int novaUlogaId)
+        {
+            var korisnik = Context.Korisniks.Find(id);
+            if (korisnik == null)
+            {
+                throw new Exception("Korisnik nije pronađen.");
+            }
+
+            korisnik.UlogaId = novaUlogaId;
             Context.SaveChanges();
 
             return Mapper.Map<Model.Korisnik>(korisnik);

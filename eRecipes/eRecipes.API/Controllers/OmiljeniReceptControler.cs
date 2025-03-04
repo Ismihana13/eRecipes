@@ -27,6 +27,7 @@ namespace eRecipes.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpDelete("removeFavorite/{receptId}")]
         public async Task<ActionResult> RemoveFavorite(int receptId)
         {

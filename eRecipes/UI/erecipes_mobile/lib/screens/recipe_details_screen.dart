@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class RecipeDetailsScreen extends StatefulWidget {
   static const String routeName = "/recipeDetails";
   Recept? recept;

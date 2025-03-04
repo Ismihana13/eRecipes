@@ -159,6 +159,28 @@ class _SingupScreenState extends State<SignUpScreen> {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account? "),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context,
+                              '/login'); 
+                        },
+                        child: const Text(
+                          "Log in",
+                          style: TextStyle(
+                            color: Color.fromRGBO(1, 100, 34, 1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
