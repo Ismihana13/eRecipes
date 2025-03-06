@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class OmiljeniReceptiScreen extends StatefulWidget {
   static const String routeName = "/omiljeniRecept";
 
-  const OmiljeniReceptiScreen({Key? key}) : super(key: key);
+  const OmiljeniReceptiScreen({super.key});
 
   @override
   State<OmiljeniReceptiScreen> createState() => _LikeScreenState();

@@ -116,7 +116,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NewIngredientModal();
+        return const NewIngredientModal();
       },
     ).then((_) {
       setState(() {

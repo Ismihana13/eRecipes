@@ -12,6 +12,7 @@ import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/locked_recipe.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
@@ -30,34 +31,31 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
-  late RecipeProvider? _recipeProvider;
-  late VrstaJelaProvider? _vrstaJelaProvider;
-  late KategorijaProvider? _kategorijaProvider;
-  late OmiljeniReceptProvider? _omiljeniReceptProvider;
-
+  RecipeProvider? _recipeProvider;
+  VrstaJelaProvider? _vrstaJelaProvider;
+  KategorijaProvider? _kategorijaProvider;
+  OmiljeniReceptProvider? _omiljeniReceptProvider;
   SearchResult<Recept>? data;
   SearchResult<Kategorija>? kategorije;
   SearchResult<VrstaJela>? vrsteJela;
-
   TextEditingController _searchController = TextEditingController();
   dynamic _selectedFilter;
   List<Recept> listaRekomed = [];
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _recipeProvider = context.read<RecipeProvider>();
-    _kategorijaProvider = context.read<KategorijaProvider>();
-    _vrstaJelaProvider = context.read<VrstaJelaProvider>();
-    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     loadData();
   }
 
   @override
   void initState() {
     super.initState();
+    _recipeProvider = context.read<RecipeProvider>();
+    _kategorijaProvider = context.read<KategorijaProvider>();
+    _vrstaJelaProvider = context.read<VrstaJelaProvider>();
+    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     _selectedFilter = 'Svi';
-  
+    loadData();
   }
 
   Future toggleFavorite(Recept recept) async {
@@ -71,23 +69,15 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       setState(() {
         recept.isFavorite = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Uklonili ste recept iz omiljenih.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      CustomSnackBar.showErrorSnackBar(
+          context, 'Uklonili ste recept iz omiljenih.');
     } else {
       await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
       setState(() {
         recept.isFavorite = true;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dodali ste recept u omiljene.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      CustomSnackBar.showSuccessSnackBar(
+          context, 'Dodali ste recept u omiljene.');
     }
   }
 

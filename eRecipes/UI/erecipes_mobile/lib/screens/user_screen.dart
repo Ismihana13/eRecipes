@@ -5,6 +5,7 @@ import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
@@ -48,7 +49,6 @@ class _UserScreenState extends State<UserScreen> {
         });
       }
     } catch (e) {
-      print("Error fetching user recipes: $e");
       setState(() {
         userRecipes = [];
       });
@@ -61,11 +61,7 @@ class _UserScreenState extends State<UserScreen> {
       setState(() {
         AuthProvider.korisnik = updatedUser;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Podaci su uspješno ažurirani.'),
-        ),
-      );
+       CustomSnackBar.showSuccessSnackBar(context,'Podaci su uspješno ažurirani.');
     } catch (e) {
       print("Error updating user: $e");
     }
@@ -80,7 +76,6 @@ class _UserScreenState extends State<UserScreen> {
         const SnackBar(content: Text('Profil je uspješno obrisan.')),
       );
     } catch (e) {
-      print("Greška pri brisanju profila: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Došlo je do greške pri brisanju profila.')),

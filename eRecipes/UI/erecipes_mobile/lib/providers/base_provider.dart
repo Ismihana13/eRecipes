@@ -12,12 +12,12 @@ abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint = "";
   String? fullUrl;
-
+  
   HttpClient client = HttpClient();
   IOClient? http;
 
   BaseProvider(String endpoint) {
-    _baseUrl = const String.fromEnvironment("baseUrl",
+        _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://10.0.2.2:5089/");
     if (_baseUrl!.endsWith("/") == false) {
       _baseUrl = _baseUrl! + "/";
@@ -29,8 +29,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
     http = IOClient(client);
     fullUrl = "$_baseUrl$_endpoint";
   }
-
-  Future<List<T>> Get([dynamic search]) async {
+  
+ Future<List<T>> Get([dynamic search]) async {
     var url = "${_baseUrl}${_endpoint}";
 
     if (search != null) {
@@ -52,38 +52,38 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Wrong username or password");
     }
   }
+ Future<SearchResult<T>> get({dynamic filter}) async {
+  var url = "$_baseUrl$_endpoint";
 
-  Future<SearchResult<T>> get({dynamic filter}) async {
-    var url = "$_baseUrl$_endpoint";
-
-    if (filter != null) {
-      var queryString = getQueryString(filter);
-      url = "$url?$queryString";
-    }
-
-    var uri = Uri.parse(url);
-    var headers = createHeaders();
-
-    var response = await http!.get(uri, headers: headers);
-
-    if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-
-      var result = SearchResult<T>();
-
-      result.count = data['count'];
-
-      for (var item in data['resultList']) {
-        result.result.add(fromJson(item));
-      }
-
-      return result;
-    } else {
-      throw new Exception("Wrong username or password");
-    }
+  if (filter != null) {
+    var queryString = getQueryString(filter);
+    url = "$url?$queryString";
   }
 
-  Future<T> getById(int id) async {
+  var uri = Uri.parse(url);
+  var headers = createHeaders();
+
+  var response = await http!.get(uri, headers: headers);
+
+  if (isValidResponse(response)) {
+    var data = jsonDecode(response.body);
+
+    var result = SearchResult<T>();
+
+    result.count = data['count'];
+
+    for (var item in data['resultList']) {
+      result.result.add(fromJson(item));
+    }
+
+    return result;
+  } else {
+    throw Exception("Wrong username or password");
+  }
+}
+
+
+    Future<T> getById(int id) async {
     var url = Uri.parse("$_baseUrl$_endpoint/$id");
 
     Map<String, String> headers = getHeaders();
@@ -92,7 +92,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      return fromJson(data) as T;
+      return fromJson(data);
     } else {
       throw Exception("Exception... handle this gracefully");
     }
@@ -110,7 +110,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -126,7 +126,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -135,25 +135,18 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   bool isValidResponse(Response response) {
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
     if (response.statusCode < 299) {
       return true;
     } else if (response.statusCode == 401) {
-      throw new Exception("Unauthorized");
+      throw Exception("Unauthorized");
     } else {
-      print(response.body);
-      throw new Exception("Something bad happened please try again");
+      throw Exception("Something bad happened please try again");
     }
   }
 
   Map<String, String> createHeaders() {
     String username = AuthProvider.username ?? "";
     String password = AuthProvider.password ?? "";
-
-    print("passed creds: $username, $password");
-
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";
 
@@ -166,8 +159,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Map<String, String> getHeaders() {
-    String username = AuthProvider.username!;
-    String passowrd = AuthProvider.password!;
+    String username = AuthProvider.username !;
+    String passowrd =AuthProvider.password !;
 
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$passowrd'))}";
@@ -179,7 +172,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     return headers;
   }
-
   String getQueryString(Map params,
       {String prefix = '&', bool inRecursion = false}) {
     String query = '';
@@ -200,7 +192,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
         }
         query += '$prefix$key=$encoded';
       } else if (value is DateTime) {
-        query += '$prefix$key=${(value as DateTime).toIso8601String()}';
+        query += '$prefix$key=${(value).toIso8601String()}';
       } else if (value is List || value is Map) {
         if (value is List) value = value.asMap();
         value.forEach((k, v) {

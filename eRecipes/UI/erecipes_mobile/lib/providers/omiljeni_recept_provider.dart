@@ -52,7 +52,6 @@ class OmiljeniReceptProvider extends BaseProvider<OmiljeniRecept> {
       var favorites = await getFavoritesForCurrentUser();
       return favorites.any((favorite) => favorite.receptId == receptId);
     } catch (e) {
-      print('Error checking favorite status: $e');
       return false;
     }
   }

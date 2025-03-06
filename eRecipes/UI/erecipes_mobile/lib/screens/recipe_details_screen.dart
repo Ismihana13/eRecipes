@@ -8,6 +8,7 @@ import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/screens/edit_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/sastojcli_list.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -71,7 +72,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   Future<int> _getLikesCount() async {
     int count =
         await LajkoviProvider().getLikesCountForRecipe(widget.recept?.receptId);
-    print("${count}");
     return likesCount = count;
   }
 
@@ -82,12 +82,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
     if (isFavorite) {
       await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Uklonili ste recept iz omiljenih.')));
+      CustomSnackBar.showErrorSnackBar(
+          context, 'Uklonili ste recept iz omiljenih.');
     } else {
       await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dodali ste recept u omiljene.')));
+      CustomSnackBar.showSuccessSnackBar(
+          context, 'Dodali ste recept u omiljene.');
     }
     setState(() {});
   }
@@ -100,12 +100,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         isliked = false;
         likesCount--;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Uklonili ste recept iz lajkovanih.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        CustomSnackBar.showErrorSnackBar(context, 'Uklonili ste recept iz lajkovanih.');
     } else {
       Lajkovi newLajk = Lajkovi(receptId: widget.recept!.receptId);
       await _lajkoviProvider!.insert(newLajk);
@@ -113,12 +108,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         isliked = true;
         likesCount++;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lajkali ste recept.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        CustomSnackBar.showSuccessSnackBar(context, 'Lajkali ste recept');
     }
   }
 

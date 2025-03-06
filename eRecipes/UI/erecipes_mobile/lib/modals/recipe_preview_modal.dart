@@ -30,7 +30,7 @@ class RecipePreviewModal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(
-                  child: CustomTitleText(title: 'Pregled recepta'),
+                child: CustomTitleText(title: 'Pregled recepta'),
               ),
               recept.slika != null
                   ? Image.memory(
@@ -92,13 +92,19 @@ class RecipePreviewModal extends StatelessWidget {
                         if (result == "Sastojci su uspješno dodani!") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text("Recept uspješno objavljen!")),
+                              content: Text(
+                                "Recept uspješno objavljen!",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Color.fromARGB(255, 53, 92, 54),
+                              duration: Duration(seconds: 3),
+                            ),
                           );
                           Navigator.of(context).pop();
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  RecipeListScreen()),
+                                builder: (context) => const RecipeListScreen()),
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

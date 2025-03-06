@@ -13,6 +13,7 @@ import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -91,29 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
             Provider.of<KorisnikProvider>(context, listen: false);
 
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Login successful!',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Color.fromARGB(255, 53, 92, 54),
-            duration: Duration(seconds: 3),
-          ),
-        );
+         CustomSnackBar.showSuccessSnackBar(context, 'Login successful!');
         Navigator.pushReplacementNamed(context, RecipeListScreen.routeName);
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Login failed. Please check your credentials.',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        CustomSnackBar.showErrorSnackBar(context, 'Login failed. Please check your credentials.');
       }
     }
   }

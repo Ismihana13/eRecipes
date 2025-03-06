@@ -1,6 +1,7 @@
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,46 +22,45 @@ class LockedRecipeScreen extends StatefulWidget {
 
 class _LockedRecipeState extends State<LockedRecipeScreen> {
   Map<String, dynamic>? paymentIntent;
-   KorisnikProvider? _korisnikProvider;
-@override
-void initState(){
-   super.initState();
-  _korisnikProvider=context.read<KorisnikProvider>();
-}
-  Future<void> makePayment(BuildContext context) async {
-  try {
-    paymentIntent = await createPaymentIntent('10', 'bam'); 
-
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: paymentIntent!['client_secret'],
-        merchantDisplayName: 'eRecipes',
-      ),
-    );
-
-    await Stripe.instance.presentPaymentSheet();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Plaćanje uspješno!")),
-    );
-
-    int korisnikId = AuthProvider.korisnik!.korisnikId ?? 0; 
-    if (korisnikId != 0) {
-      await _korisnikProvider!.updateUserRole(korisnikId, 3); 
-      var azuriraniKorisnik = await _korisnikProvider!.getById(korisnikId);
-      AuthProvider.korisnik = azuriraniKorisnik;
-
-      Navigator.pop(context, azuriraniKorisnik);
-    } else {
-      Navigator.pop(context);
-    }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Greška pri plaćanju: $e")),
-    );
+  KorisnikProvider? _korisnikProvider;
+  @override
+  void initState() {
+    super.initState();
+    _korisnikProvider = context.read<KorisnikProvider>();
   }
-}
 
-  Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
+  Future<void> makePayment(BuildContext context) async {
+    try {
+      paymentIntent = await createPaymentIntent('10', 'bam');
+
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent!['client_secret'],
+          merchantDisplayName: 'eRecipes',
+        ),
+      );
+
+      await Stripe.instance.presentPaymentSheet();
+      CustomSnackBar.showSuccessSnackBar(context, 'Plaćanje uspješno!');
+      CustomSnackBar.showSuccessSnackBar(context, 'Plaćanje uspješno!');
+
+      int korisnikId = AuthProvider.korisnik!.korisnikId ?? 0;
+      if (korisnikId != 0) {
+        await _korisnikProvider!.updateUserRole(korisnikId, 3);
+        var azuriraniKorisnik = await _korisnikProvider!.getById(korisnikId);
+        AuthProvider.korisnik = azuriraniKorisnik;
+
+        Navigator.pop(context, azuriraniKorisnik);
+      } else {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      CustomSnackBar.showErrorSnackBar(context, 'Greška prilikom plaćanja!');
+    }
+  }
+
+  Future<Map<String, dynamic>> createPaymentIntent(
+      String amount, String currency) async {
     try {
       final body = {
         'amount': (int.parse(amount) * 100).toString(),
@@ -70,7 +70,8 @@ void initState(){
       final response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization': 'Bearer sk_test_51QwgmK2VrW2Cys4yWURyrZrauPqzzle6mgBxxqUUH33i8VprWUExv5k11WiBhynV9e6JfhQpPHpnfSS4BD7qgOYK009qcmbjvU', // Tvoj Stripe Secret Key
+          'Authorization':
+              'Bearer sk_test_51QwgmK2VrW2Cys4yWURyrZrauPqzzle6mgBxxqUUH33i8VprWUExv5k11WiBhynV9e6JfhQpPHpnfSS4BD7qgOYK009qcmbjvU', // Tvoj Stripe Secret Key
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: body,

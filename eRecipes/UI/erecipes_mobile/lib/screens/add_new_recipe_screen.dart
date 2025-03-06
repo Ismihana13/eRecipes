@@ -84,21 +84,15 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
     });
   }
 
-  Future<void> getSastojciData() async {
-    setState(() {
-      sastojakResult = _sastojakProvider.get() as SearchResult<Sastojak>?;
-    });
-  }
-
   void openDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return NewIngredientModal();
+        return const NewIngredientModal();
       },
     ).then((_) {
       setState(() {
-        initForm();
+      initForm();
       });
     });
   }
@@ -111,15 +105,8 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
         _image = File(result.files.single.path!);
         _base64Image = base64Encode(_image!.readAsBytesSync());
         _imageText = 'Odabrali ste sliku';
+        _imageError=null;
       });
-    }
-  }
-
-  void checkIngredients() {
-    if (_selectedSastojci.isEmpty) {
-      print("Morate odabrati sastojke!");
-    } else {
-      print("Pregled recepta...");
     }
   }
 
@@ -219,6 +206,30 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                 ),
               ),
             const SizedBox(height: 30),
+            MultiSelectSastojak(
+              label: 'Potrebni sastojci',
+              items: sastojakResult?.result,
+              selectedSastojci: _selectedSastojci,
+              onChanged: (List<Sastojak> selectedItems) {
+                setState(() {
+                  _selectedSastojci = selectedItems;
+                  if (_selectedSastojci.isNotEmpty) {
+                    sastojciError=null;
+                  }
+                });
+              },
+              errorMessage: sastojciError,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                openDialog(); 
+              },
+              child: const Text('Dodaj novi sastojak',
+                  style: TextStyle(fontSize: 16)),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
             _buildDropdown(
                 'Kategorija jela',
                 kategorijaResult?.result,
@@ -231,27 +242,6 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                 _selectedVrstaJelaId,
                 (value) => setState(() => _selectedVrstaJelaId = value)),
             const SizedBox(height: 30),
-            MultiSelectSastojak(
-              label: 'Potrebni sastojci',
-              items: sastojakResult?.result,
-              selectedSastojci: _selectedSastojci,
-              onChanged: (List<Sastojak> selectedItems) {
-                setState(() {
-                  _selectedSastojci = selectedItems;
-                });
-              },
-              errorMessage: sastojciError,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                openDialog();
-              },
-              child: const Text('Dodaj novi sastojak',
-                  style: TextStyle(fontSize: 16)),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
             ElevatedButton(
               onPressed: _onSubmit,
               style: ElevatedButton.styleFrom(
@@ -259,7 +249,7 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
               ),
-              child: const Text('Pregledaj recept'),
+              child: const Text('Pregledaj recept', style: TextStyle(color: Colors.white),),
             ),
           ],
         ),
