@@ -129,7 +129,7 @@ namespace eRecipes.Service
         public Model.Korisnik Login(string username, string password)
         {
             var entity = Context.Korisniks.Include(x=>x.Uloga).FirstOrDefault(x => x.KorisnickoIme == username);
-            if (entity == null) 
+            if (entity == null || entity.Status == false) 
             {
                 return null;
             }
@@ -138,14 +138,6 @@ namespace eRecipes.Service
             {
                 return null;
             }
-            //Notifier testRabbitaIMaila = new Notifier
-            //{
-
-            //    Datum = DateTime.Now,
-            //    Email = entity.Email!,
-            //    Nesto = "Ovdje smo nesto upisali cisto da testiramo da li radi!"
-            //};
-            //_emailService.SendingObject(testRabbitaIMaila);
             return this.Mapper.Map<Model.Korisnik>(entity);
         }
         public Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request)

@@ -90,9 +90,10 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
       builder: (BuildContext context) {
         return const NewIngredientModal();
       },
-    ).then((_) {
+    ).then((_) async{
+      var noviSastojci = await _sastojakProvider.get();
       setState(() {
-      initForm();
+      sastojakResult =  noviSastojci;
       });
     });
   }

@@ -44,7 +44,7 @@ class MainApp extends StatelessWidget {
         routes: {
           LoginScreen.routeName: (context) => const LoginScreen(),
           SignUpScreen.routeName: (context) => SignUpScreen(),
-          RecipeListScreen.routeName: (context) =>  const RecipeListScreen(),
+          RecipeListScreen.routeName: (context) => const RecipeListScreen(),
           OmiljeniReceptiScreen.routeName: (context) =>
               const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
@@ -92,10 +92,17 @@ class _LoginScreenState extends State<LoginScreen> {
             Provider.of<KorisnikProvider>(context, listen: false);
 
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
-         CustomSnackBar.showSuccessSnackBar(context, 'Login successful!');
+        if (AuthProvider.korisnik!.ulogaId == 1) {
+          CustomSnackBar.showErrorSnackBar(
+              context, 'Admin users cannot log in.');
+          return;
+        }
+
+        CustomSnackBar.showSuccessSnackBar(context, 'Login successful!');
         Navigator.pushReplacementNamed(context, RecipeListScreen.routeName);
       } catch (e) {
-        CustomSnackBar.showErrorSnackBar(context, 'Login failed. Please check your credentials.');
+        CustomSnackBar.showErrorSnackBar(
+            context, 'Login failed. Please check your credentials.');
       }
     }
   }
