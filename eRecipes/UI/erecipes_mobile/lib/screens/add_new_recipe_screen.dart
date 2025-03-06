@@ -85,18 +85,21 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
   }
 
   void openDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const NewIngredientModal();
-      },
-    ).then((_) async{
-      var noviSastojci = await _sastojakProvider.get();
-      setState(() {
-      sastojakResult =  noviSastojci;
-      });
-    });
-  }
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return NewIngredientModal(
+        onIngredientAdded: () async {
+          var noviSastojci = await _sastojakProvider.get(); 
+          setState(() {
+            sastojakResult = noviSastojci;
+          });
+        },
+      );
+    },
+  );
+}
+
 
   void getImage() async {
     var result = await FilePicker.platform.pickFiles(type: FileType.image);

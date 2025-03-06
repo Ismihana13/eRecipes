@@ -9,7 +9,7 @@ class SastojakProvider extends BaseProvider<Sastojak> {
     return Sastojak.FromJson(data);
   }
 
-  void addSastojak(Sastojak sastojak) {
+  void addSastojak(Sastojak sastojak)  {
     insert(sastojak);
     notifyListeners();
   }

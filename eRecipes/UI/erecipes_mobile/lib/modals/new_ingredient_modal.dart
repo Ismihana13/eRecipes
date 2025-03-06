@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 
 class NewIngredientModal extends StatefulWidget {
-  const NewIngredientModal({super.key});
+  final VoidCallback onIngredientAdded; 
+
+  const NewIngredientModal({super.key, required this.onIngredientAdded});
 
   @override
   State<NewIngredientModal> createState() => _NewIngredientModalState();
@@ -27,7 +29,7 @@ class _NewIngredientModalState extends State<NewIngredientModal> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Form(
-            key: _formKey, 
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +47,7 @@ class _NewIngredientModalState extends State<NewIngredientModal> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Naziv sastojka ne može biti prazan'; 
+                      return 'Naziv sastojka ne može biti prazan';
                     }
                     return null;
                   },
@@ -69,8 +71,11 @@ class _NewIngredientModalState extends State<NewIngredientModal> {
                           final naziv = nazivrecepta.text;
                           try {
                             Sastojak newSastojak = Sastojak(naziv: naziv);
-                            sastojakProvider.addSastojak(newSastojak);
+                            await sastojakProvider.insert(newSastojak);
+
+                            widget.onIngredientAdded(); 
                             Navigator.pop(context);
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text("Dodali ste novi sastojak u listu sastojaka."),

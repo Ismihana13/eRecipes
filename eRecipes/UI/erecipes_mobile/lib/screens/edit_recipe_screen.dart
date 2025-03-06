@@ -112,18 +112,21 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     }
   }
 
-  void openDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const NewIngredientModal();
-      },
-    ).then((_) {
-      setState(() {
-        initForm();
-      });
-    });
-  }
+   void openDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return NewIngredientModal(
+        onIngredientAdded: () async {
+          var noviSastojci = await _sastojakProvider.get(); 
+          setState(() {
+            sastojakResult = noviSastojci;
+          });
+        },
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
