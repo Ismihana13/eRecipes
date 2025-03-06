@@ -110,6 +110,5 @@ namespace eRecipes.Service
             var lajk = await Context.Lajkovis.FirstOrDefaultAsync(l => l.ReceptId == receptId && l.KorisnikId == user.KorisnikId); 
             return lajk != null;
         }
-
     }
 }

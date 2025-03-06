@@ -205,6 +205,5 @@ namespace eRecipes.Service
 
             return Mapper.Map<Model.Korisnik>(korisnik);
         }
-
     }
 }

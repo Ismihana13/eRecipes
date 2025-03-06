@@ -56,6 +56,7 @@ namespace eRecipes.Service
             Context.SaveChanges();
             return Mapper.Map<Model.Obavijest>(entity);
         }
+
         public Model.Obavijest UpdateProcitano(int id, bool procitano)
         {
             var entity = Context.Obavijests.Find(id);

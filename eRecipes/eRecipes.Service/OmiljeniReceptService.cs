@@ -126,6 +126,5 @@ namespace eRecipes.Service
             Context.OmiljeniRecepts.Remove(favoriteToRemove);
             await Context.SaveChangesAsync();
         }
-
     }
 }

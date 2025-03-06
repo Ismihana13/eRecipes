@@ -15,6 +15,5 @@ namespace eRecipes.Model
         public int? ReceptId { get; set; }
         public string? ReceptNaziv { get; set; }
         public bool Procitano { get; set; } 
-
     }
 }

@@ -14,15 +14,16 @@ namespace eRecipes.Service
 {
     public class KategorijaService : BaseService<Model.Kategorija, KategorijaSearchObject, Database.Kategorija>, IKategorijaService
     {
-
         public KategorijaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
         public int GetBrojRecepataZaKategoriju(int kategorijaId)
         {
             var brojRecepata = Context.Recepts.Count(r => r.KategorijaId == kategorijaId && r.Status == true);
             return brojRecepata;
         }
+
         public override IQueryable<Kategorija> AddFilter(KategorijaSearchObject search, IQueryable<Kategorija> query)
         {
             var filteredQuery = base.AddFilter(search, query);
@@ -36,6 +37,7 @@ namespace eRecipes.Service
             }
             return filteredQuery;
         }
+
         public Model.Kategorija DeleteKategorija(int id)
         {
             var set = Context.Set<Database.Kategorija>();

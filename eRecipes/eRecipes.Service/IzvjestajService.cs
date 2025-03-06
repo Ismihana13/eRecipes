@@ -54,7 +54,6 @@ namespace eRecipes.Service
             await _context.SaveChangesAsync();
 
             return _mapper.Map<Model.Izvjestaj>(entity);
-
         }
     }
 }

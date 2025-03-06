@@ -44,7 +44,7 @@ public partial class ERecipesContext : DbContext
        .HasOne(l => l.Korisnik)
        .WithMany(k => k.Lajkovis)
        .HasForeignKey(l => l.KorisnikId)
-       .OnDelete(DeleteBehavior.Cascade); // Or DeleteBehavior.Restrict if you want to disable cascading deletes here
+       .OnDelete(DeleteBehavior.Cascade); 
 
         modelBuilder.Entity<Lajkovi>()
             .HasOne(l => l.Recept)
@@ -53,19 +53,16 @@ public partial class ERecipesContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<OmiljeniRecept>()
-      .HasOne(o => o.Korisnik)  // Assuming a relationship between OmiljeniRecept and Korisnik
+      .HasOne(o => o.Korisnik)  
       .WithMany(k => k.OmiljeniRecepts)
       .HasForeignKey(o => o.KorisnikId)
-      .OnDelete(DeleteBehavior.Restrict);  // Or DeleteBehavior.SetNull
+      .OnDelete(DeleteBehavior.Restrict);  
 
         modelBuilder.Entity<OmiljeniRecept>()
-            .HasOne(o => o.Recept)  // Assuming a relationship between OmiljeniRecept and Recept
+            .HasOne(o => o.Recept)  
             .WithMany(r => r.OmiljeniRecepts)
             .HasForeignKey(o => o.ReceptId)
             .OnDelete(DeleteBehavior.Restrict);
-
-
-
 
         modelBuilder.Entity<Uloga>().HasData(
           new Uloga { UlogaId = 1, Naziv = "Admin", Opis = "Ovaj moze sta god hoce :D" },
@@ -79,11 +76,13 @@ public partial class ERecipesContext : DbContext
             new Korisnik { KorisnikId = 2, Ime = "Korisnik", Prezime = "Korisnikovic", DatumRodjenja = DateTime.Now.AddYears(-23), Email = "korisnik@mail.com", Telefon = "060-000-001", KorisnickoIme = "korisnik", LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=", LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==", Status = true, UlogaId = 2 },
             new Korisnik { KorisnikId = 3, Ime = "Baja", Prezime = "Bajaspare", DatumRodjenja = DateTime.Now.AddYears(-45), Email = "bajaspare@mail.com", Telefon = "060-000-002", KorisnickoIme = "premium", LozinkaHash = "tPW/IOLa2TZIKYSA50IDeaJKYtg=", LozinkaSalt = "2G2wAwYkdFgpMleomcwelg==", Status = true, UlogaId = 3 }
             );
+
         modelBuilder.Entity<Kategorija>().HasData(
             new Kategorija { KategorijaId = 1, Naziv = "Predjelo", Status = true },
             new Kategorija { KategorijaId = 2, Naziv = "Glavno jelo", Status = true },
             new Kategorija { KategorijaId = 3, Naziv = "Desert", Status = true }
         );
+
         modelBuilder.Entity<VrstaJela>().HasData(
             new VrstaJela { VrstaJelaId = 1, Naziv = "Kolač" },
             new VrstaJela { VrstaJelaId = 2, Naziv = "Juha" },
@@ -96,6 +95,7 @@ public partial class ERecipesContext : DbContext
             new VrstaJela { VrstaJelaId = 9, Naziv = "Slatko" },
              new VrstaJela { VrstaJelaId = 10, Naziv = "Tradicionalno jelo" }
         );
+
         modelBuilder.Entity<Sastojak>().HasData(
             new Sastojak { SastojakId = 1, Naziv = "Jaje" },
             new Sastojak { SastojakId = 2, Naziv = "Brašno" },
@@ -108,6 +108,7 @@ public partial class ERecipesContext : DbContext
             new Sastojak { SastojakId = 9, Naziv = "Vanilin šećer" },
             new Sastojak { SastojakId = 10, Naziv = "Maslinovo ulje" }
         );
+
         modelBuilder.Entity<Recept>().HasData(
             new Recept { ReceptId = 1, Naziv = "Palačinke", OpisRecepta = "Jednostavan recept za ukusne palačinke.", OpisPripreme = "Pomiješati sve sastojke i ispeći na tavi.", VrijemePripreme = 20, KorisnikId = 2, DatumObjave = DateTime.Now, Premium = false, VrstaJelaId = 9, KategorijaId = 3, Status = true, Slika = Convert.FromBase64String(Images.Slike[0]), },
             new Recept { ReceptId = 2, Naziv = "Pizza Margherita", OpisRecepta = "Klasična pizza s rajčicom, sirom i bosiljkom.", OpisPripreme = "Pripremiti tijesto, dodati sastojke i ispeći u pećnici.", VrijemePripreme = 40, KorisnikId = 2, DatumObjave = DateTime.Now, Premium = true, VrstaJelaId = 5, KategorijaId = 2, Status = true, Slika = Convert.FromBase64String(Images.Slike[0]), },
@@ -120,6 +121,7 @@ public partial class ERecipesContext : DbContext
             new Recept { ReceptId = 9, Naziv = "Čokoladni mousse", OpisRecepta = "Lagan i kremast desert sa čokoladom.", OpisPripreme = "Otopiti čokoladu, pomiješati sa šlagom i hladiti.", VrijemePripreme = 30, KorisnikId = 3, DatumObjave = DateTime.Now, Premium = true, VrstaJelaId = 1, KategorijaId = 3, Status = true, Slika = Convert.FromBase64String(Images.Slike[0]) },
             new Recept { ReceptId = 10, Naziv = "Zapečeni krompir", OpisRecepta = "Ukusan krompir zapečen sa sirom i začinima.", OpisPripreme = "Krompir ispeći u pećnici sa sirom, maslacem i začinima.", VrijemePripreme = 45, KorisnikId = 2, DatumObjave = DateTime.Now, Premium = false, VrstaJelaId = 4, KategorijaId = 2, Status = true, Slika = Convert.FromBase64String(Images.Slike[0]) }
          );
+
         modelBuilder.Entity<ReceptSastojak>().HasData(
             new ReceptSastojak { ReceptSastojakId = 1, ReceptId = 1, SastojakId = 1 },  
             new ReceptSastojak { ReceptSastojakId = 2, ReceptId = 1, SastojakId = 2 },  
@@ -162,17 +164,18 @@ public partial class ERecipesContext : DbContext
             new ReceptSastojak { ReceptSastojakId = 32, ReceptId = 8, SastojakId = 5 }, 
             new ReceptSastojak { ReceptSastojakId = 33, ReceptId = 8, SastojakId = 10 } 
         );
+
         modelBuilder.Entity<Lajkovi>().HasData(
             new Lajkovi { LajkoviId = 1, KorisnikId =2,ReceptId=2,DatumLajka=DateTime.Now },
             new Lajkovi { LajkoviId = 2, KorisnikId = 1, ReceptId = 3, DatumLajka = DateTime.Now },
             new Lajkovi { LajkoviId = 3, KorisnikId = 2, ReceptId = 3, DatumLajka = DateTime.Now }
-            );
-        modelBuilder.Entity<OmiljeniRecept>().HasData(
-    new OmiljeniRecept { OmiljeniReceptId = 1, KorisnikId = 2, ReceptId = 2, DatumDodavanja=DateTime.Now },
-    new OmiljeniRecept { OmiljeniReceptId = 2, KorisnikId = 1, ReceptId = 3, DatumDodavanja = DateTime.Now },
-    new OmiljeniRecept { OmiljeniReceptId = 3, KorisnikId = 2, ReceptId = 3, DatumDodavanja = DateTime.Now }
-    );
-    }
+          );
 
+        modelBuilder.Entity<OmiljeniRecept>().HasData(
+            new OmiljeniRecept { OmiljeniReceptId = 1, KorisnikId = 2, ReceptId = 2, DatumDodavanja=DateTime.Now },
+            new OmiljeniRecept { OmiljeniReceptId = 2, KorisnikId = 1, ReceptId = 3, DatumDodavanja = DateTime.Now },
+            new OmiljeniRecept { OmiljeniReceptId = 3, KorisnikId = 2, ReceptId = 3, DatumDodavanja = DateTime.Now }
+        );
+    }
 }
 

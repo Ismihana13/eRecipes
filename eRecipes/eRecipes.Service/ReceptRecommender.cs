@@ -22,7 +22,6 @@ public class ReceptRecommender
     {
         lock (isLocked)
         {
-            // Filtriranje svih recepata koji su lajkovani ili označeni kao omiljeni od strane drugih korisnika
             var interakcije = _context.Lajkovis
                 .Select(x => new UserItemEntry
                 {
@@ -35,11 +34,10 @@ public class ReceptRecommender
                     {
                         UserId = (uint)x.KorisnikId,
                         ItemId = (uint)x.ReceptId,
-                        Rating = 3 // Omiljeni recepti imaju veću težinu
+                        Rating = 3 
                     }))
                 .ToList();
 
-            // Ako nema interakcija, vraćamo praznu listu
             if (interakcije.Count == 0)
             {
                 return new List<Recept>();
@@ -63,7 +61,6 @@ public class ReceptRecommender
             model = estimator.Fit(trainData);
         }
 
-        // Preporučujemo recepte koji su najpopularniji (lajkovani/omiljeni od strane drugih korisnika)
         var sviRecepti = _context.Recepts
             .Where(r => !_context.Lajkovis.Any(l => l.KorisnikId == korisnikId && l.ReceptId == r.ReceptId) &&
                         !_context.OmiljeniRecepts.Any(o => o.KorisnikId == korisnikId && o.ReceptId == r.ReceptId))
@@ -83,13 +80,12 @@ public class ReceptRecommender
             predictionResult.Add(new Tuple<Recept, float>(recept, prediction.Score));
         }
 
-        // Sortiranje po predviđenom score-u i vraćanje top 4 preporučenih recepata
         return predictionResult.OrderByDescending(x => x.Item2).Select(y => y.Item1).Take(4).ToList();
     }
 
     public class UserItemEntry
     {
-        [KeyType(count: 1000)] // Podešavanje broja unosa
+        [KeyType(count: 1000)] 
         public uint UserId { get; set; }
 
         [KeyType(count: 1000)]

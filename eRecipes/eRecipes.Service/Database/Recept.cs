@@ -6,39 +6,22 @@ namespace eRecipes.Service.Database;
 public partial class Recept
 {
     public int ReceptId { get; set; }
-
     public string Naziv { get; set; } = null!;
-
     public string OpisRecepta { get; set; } = null!;
     public string OpisPripreme { get; set; } = null!;
-
     public byte[]? Slika { get; set; } 
-
     public int VrijemePripreme { get; set; }
-
     public int KorisnikId { get; set; }
-
     public DateTime DatumObjave { get; set; } = DateTime.Now;
-
     public bool Premium { get; set; }
-
     public int VrstaJelaId { get; set; }
-
     public int KategorijaId { get; set; }
-
     public bool Status { get; set; } = true;
-
     public virtual ICollection<Izvjestaj> Izvjestajs { get; set; } = new List<Izvjestaj>();
-
     public virtual Kategorija Kategorija { get; set; } = null!;
-
     public virtual Korisnik Korisnik { get; set; } = null!;
-
     public virtual ICollection<Lajkovi> Lajkovis { get; set; } = new List<Lajkovi>();
-
     public virtual ICollection<OmiljeniRecept> OmiljeniRecepts { get; set; } = new List<OmiljeniRecept>();
-
     public virtual ICollection<ReceptSastojak> ReceptSastojaks { get; set; } = new List<ReceptSastojak>();
-
     public virtual VrstaJela VrstaJela { get; set; } = null!;
 }

@@ -6,6 +6,6 @@ namespace eRecipes.Model.SearchObjects
 {
     public class SastojakSearchObject : BaseSearchObject
     {
-        //public string? NazivGTE {  get; set; }
+
     }
 }
