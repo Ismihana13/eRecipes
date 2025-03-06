@@ -9,6 +9,7 @@ import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class RecipeDetailsModal extends StatefulWidget {
   Recept? recept;
   RecipeDetailsModal({super.key, this.recept});

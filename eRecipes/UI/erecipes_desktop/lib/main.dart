@@ -64,6 +64,15 @@ class LoginScreen extends StatelessWidget {
         AuthProvider.username = _usernameController.text;
         AuthProvider.password = _passwordController.text;
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
+        if (AuthProvider.korisnik!.ulogaId == 2 || AuthProvider.korisnik!.korisnikId==3) {
+           ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login failed. Please check your credentials.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+          return;
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Login successful!'),
@@ -97,7 +106,7 @@ class LoginScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
-        backgroundColor: Color.fromRGBO(1, 100, 34, 1),
+        backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
       body: Stack(
         children: [
@@ -168,7 +177,6 @@ class LoginScreen extends StatelessWidget {
                           maxLines: 1,
                         ),
                         const SizedBox(height: 20),
-                        // Password polje sa ikonom
                         TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
