@@ -46,18 +46,17 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     }
   }
 
-  Future<Korisnik> deleteKorisnikPorfil(int id) async {
-    var url = "$fullUrl/$id/DeleteKorisnikProfil";
+  Future<void> deleteKorisnik(int? id) async {
+    var url = "$fullUrl/$id/DeleteKorisnik";
     var uri = Uri.parse(url);
+    var headers = createHeaders();
 
-    var headers = getHeaders();
-    var response = await http!.delete(uri, headers: headers);
+    var response = await http!.put(uri, headers: headers);
+
     if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-      Korisnik user = fromJson(data);
-      return user;
+      print("Korisnik obrisan.");
     } else {
-      throw Exception("Failed to delete user profile");
+      throw Exception("Neuspješno brisanje korisnika.");
     }
   }
 

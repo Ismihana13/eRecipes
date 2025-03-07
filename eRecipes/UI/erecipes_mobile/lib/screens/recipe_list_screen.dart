@@ -86,7 +86,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       'FTS': query,
       'Status': true,
     };
-    var tmpData = await _recipeProvider?.get();
+    var tmpData = await _recipeProvider?.get(filter: filter);
     var tmpKategorije = await _kategorijaProvider?.get(filter: filter);
     var tmpVrsteJela = await _vrstaJelaProvider?.get(filter: filter);
     await loadRecommenedData();
@@ -196,7 +196,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         children: [
           ElevatedButton(
             onPressed: () async {
-              var tmpData = await _recipeProvider?.get();
+              var tmpData = await _recipeProvider?.get(filter: {'Status':true});
               setState(() {
                 _selectedFilter = 'Svi';
                 data = tmpData!;
@@ -231,14 +231,14 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                           if (kategorije?.result.contains(item) ?? false) {
                             newData = await _recipeProvider?.get(
                               filter: {
-                                'KategorijaId': item.kategorijaId.toString()
+                                'KategorijaId': item.kategorijaId.toString(),'Status':true
                               },
                             );
                           } else if (vrsteJela?.result.contains(item) ??
                               false) {
                             newData = await _recipeProvider?.get(
                               filter: {
-                                'VrstaJelaId': item.vrstaJelaId.toString()
+                                'VrstaJelaId': item.vrstaJelaId.toString(),'Status':true
                               },
                             );
                           }
@@ -500,16 +500,27 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
       );
     }
-
+  var filteredRecipes = listaRekomed.where((recipe) => recipe.status == true).toList();
+   if (filteredRecipes.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Center(
+          child: Text(
+            "Loading...",
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
+        ),
+      );
+    }
     bool isPremiumUser = AuthProvider.korisnik!.uloga!.ulogaId == 3;
 
     return SizedBox(
       height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: listaRekomed.length,
+        itemCount: filteredRecipes.length,
         itemBuilder: (context, index) {
-          var x = listaRekomed[index];
+          var x = filteredRecipes[index];
           bool isPremiumRecipe = x.premium ?? false;
           bool isLocked = !isPremiumUser && isPremiumRecipe;
 

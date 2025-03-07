@@ -35,6 +35,10 @@ namespace eRecipes.Service
             {
                 filteredQuery = filteredQuery.Where(x => x.Status == search.Status);
             }
+            if (search.StatusRecepta.HasValue)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Recepts.Any(r => r.Status == search.StatusRecepta));
+            }
             return filteredQuery;
         }
 

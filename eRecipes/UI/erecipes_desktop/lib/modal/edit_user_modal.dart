@@ -185,7 +185,7 @@ class _EditUserModalState extends State<EditUserModal> {
                         if (value!.isEmpty) {
                           return 'Please enter your telephone';
                         }
-                        if (!RegExp(r'^\d{3}-\d{3}-\d{3}$').hasMatch(value)) {
+                        if (!RegExp(r'^\d{3}-\d{3}-\d{3,6}$').hasMatch(value)) {
                           return 'Invalid phone number format';
                         }
                         return null;

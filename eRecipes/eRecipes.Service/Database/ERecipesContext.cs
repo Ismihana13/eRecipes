@@ -172,7 +172,7 @@ public partial class ERecipesContext : DbContext
           );
 
         modelBuilder.Entity<OmiljeniRecept>().HasData(
-            new OmiljeniRecept { OmiljeniReceptId = 1, KorisnikId = 2, ReceptId = 2, DatumDodavanja=DateTime.Now },
+            new OmiljeniRecept { OmiljeniReceptId = 1, KorisnikId = 2, ReceptId = 1, DatumDodavanja=DateTime.Now },
             new OmiljeniRecept { OmiljeniReceptId = 2, KorisnikId = 1, ReceptId = 3, DatumDodavanja = DateTime.Now },
             new OmiljeniRecept { OmiljeniReceptId = 3, KorisnikId = 2, ReceptId = 3, DatumDodavanja = DateTime.Now }
         );

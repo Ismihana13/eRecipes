@@ -173,7 +173,7 @@ namespace eRecipes.Service
             }
 
             Context.Recepts.Remove(recept);
-          Context.SaveChanges(); 
+            Context.SaveChanges(); 
             return Mapper.Map<Model.Recept>(recept);
         }
 

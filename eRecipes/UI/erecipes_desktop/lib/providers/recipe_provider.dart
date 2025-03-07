@@ -11,21 +11,18 @@ class RecipeProvider extends BaseProvider<Recept> {
     return Recept.FromJson(data);
   }
 
-  Future<Recept> deleteRecept(int? id) async {
-    var url = "$fullUrl/$id/BrisanjeRecepta";
+  Future<void> deleteRecept(int? id) async {
+    var url = "$fullUrl/$id/DeleteRecept";
     var uri = Uri.parse(url);
-
-    var headers = getHeaders();
-    var response = await http!.delete(uri, headers: headers);
-    if (isValidResponse(response)) {
-      var data = jsonDecode(response.body);
-      Recept recipe = fromJson(data) as Recept;
-      return recipe;
+    var headers =createHeaders();
+    var response = await http!.put(uri, headers: headers);
+     if (isValidResponse(response)) {
+      print("Recept obrisan.");
     } else {
-      throw Exception("Failed to delete recipe");
+      throw Exception("Neuspješno brisanje recepta.");
     }
   }
-
+  
   Future<List<ReceptSastojak>> sastojci(int? id) async {
     var url = "$fullUrl/$id/sastojci";
     var uri = Uri.parse(url);

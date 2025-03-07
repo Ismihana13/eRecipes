@@ -77,10 +77,12 @@ class RecipeProvider extends BaseProvider<Recept> {
     var response = await http!.delete(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      Recept recipe = fromJson(data) as Recept;
+      Recept recipe = fromJson(data);
       return recipe;
     } else {
-      throw Exception("Failed to delete recipe");
+     var errorMessage = jsonDecode(response.body)["message"] ?? "Došlo je do greške.";
+      print("Došlo je do greške: $errorMessage"); 
+       throw Exception("Failed to delete recipe. Status code: ${response.statusCode}, ${response.body}");
     }
   }
 
@@ -114,6 +116,18 @@ class RecipeProvider extends BaseProvider<Recept> {
       return lista;
     } else {
       throw Exception("Greška pri učitavanju.");
+    }
+  }
+
+   Future<void> deleteRecipeSoft(int? id) async {
+    var url = "$fullUrl/$id/DeleteRecept";
+    var uri = Uri.parse(url);
+    var headers =createHeaders();
+    var response = await http!.put(uri, headers: headers);
+     if (isValidResponse(response)) {
+      print("Recept obrisan.");
+    } else {
+      throw Exception("Neuspješno brisanje recepta.");
     }
   }
 }

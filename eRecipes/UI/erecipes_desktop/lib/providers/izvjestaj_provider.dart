@@ -46,7 +46,7 @@ class IzvjestajProvider extends BaseProvider<Izvjestaj> {
       }
       return result;
     } else {
-      throw new Exception("Unknown error.");
+      throw Exception("Unknown error.");
     }
   }
 }

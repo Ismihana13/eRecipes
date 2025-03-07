@@ -64,7 +64,6 @@ namespace eRecipes.API.Controllers
         }
     
         [HttpPut("{id}/DeleteKorisnik")]
-        [Authorize(Roles = "Admin")]
         public Korisnik DeleteKorisnik(int id)
         {
             return ((IKorisnikService)_service).DeleteKorisnik(id);

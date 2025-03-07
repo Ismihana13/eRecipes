@@ -285,7 +285,8 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
   }
 
   List<Widget> _buildRecipeCard() {
-    if (data?.isEmpty ?? true) {
+    
+    if (data == null || data!.isEmpty) {
       return [
         const Center(
           child: Text(
@@ -295,8 +296,21 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         ),
       ];
     }
-    return data!
-        .map((x) => Container(
+    var filteredData = data!.where((x) => x.recept!.status == true).toList();
+      if (filteredData.isEmpty) {
+    return [
+      const Center(
+        child: Text(
+          "Nema omiljenih recepata.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      ),
+    ];
+  }
+    
+    return filteredData
+        .map((x) => 
+        Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0),
               padding: const EdgeInsets.all(5.0),
               color: const Color.fromARGB(187, 247, 246, 246),
