@@ -64,6 +64,7 @@ namespace eRecipes.API.Controllers
         {
             return ((IReceptService)_service).BrisanjeRecepta(id);
         }
+
         [HttpPut("{receptId}/updateSastojci")]
         public async Task<ActionResult> UpdateSastojkeForRecept(int receptId, [FromBody] List<int> sastojakIds)
         {

@@ -1,6 +1,7 @@
 import 'package:erecipes_desktop/modal/recipe_details_modal.dart';
 import 'package:erecipes_desktop/models/recept.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
+import 'package:erecipes_desktop/providers/auth_provider.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
 import 'package:erecipes_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +115,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       );
     }
 
+    bool isUserOrPremium = _checkIfUserIsAllowedToDelete();
+
     return Container(
       width: double.infinity,
       color: Colors.grey[200],
@@ -160,92 +163,122 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
           ],
           rows: result!.result.map((e) {
             return DataRow(
-              onSelectChanged: (selected) {
-                if (selected == true) {
-                  openRecipeDetailsModal(e);
-                }
-              },
               cells: [
-                DataCell(Center(
-                    child: e.slika != null
-                        ? SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: imageFromString(e.slika!),
-                          )
-                        : const Text(""))),
-                DataCell(Center(
-                    child: Text(e.naziv.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
-                DataCell(Center(
-                    child: Text(
-                        e.korisnik?.korisnickoIme ?? "Nema korisničkog imena",
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
-                DataCell(Center(
-                    child: Text(e.kategorija?.naziv ?? "Nema kategorije",
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
-                DataCell(Center(
-                    child: Text(e.vrstaJela?.naziv ?? "Nema vrste jela",
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
+                DataCell(
+                  GestureDetector(
+                    onTap: () => openRecipeDetailsModal(e),
+                    child: Center(
+                      child: e.slika != null
+                          ? SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: imageFromString(e.slika!),
+                            )
+                          : const Text(""),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  GestureDetector(
+                    onTap: () => openRecipeDetailsModal(e),
+                    child: Center(
+                      child: Text(e.naziv.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  GestureDetector(
+                    onTap: () => openRecipeDetailsModal(e),
+                    child: Center(
+                      child: Text(
+                          e.korisnik?.korisnickoIme ?? "Nema korisničkog imena",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  GestureDetector(
+                    onTap: () => openRecipeDetailsModal(e),
+                    child: Center(
+                      child: Text(e.kategorija?.naziv ?? "Nema kategorije",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  GestureDetector(
+                    onTap: () => openRecipeDetailsModal(e),
+                    child: Center(
+                      child: Text(e.vrstaJela?.naziv ?? "Nema vrste jela",
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ),
                 DataCell(
                   Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        foregroundColor: Colors.black,
-                      ),
-                      onPressed: () async {
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Potvrda'),
-                              content: const Text(
-                                  'Da li ste sigurni da želite obrisati recept?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context, false);
-                                  },
-                                  child: const Text(
-                                    'Ne',
-                                    style: TextStyle(
-                                        color: Color.fromARGB(255, 42, 87, 44)),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context, true);
-                                  },
-                                  child: const Text(
-                                    'Da',
-                                    style: TextStyle(
-                                        color: Color.fromARGB(255, 42, 87, 44)),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        if (confirm == true) {
-                          try {
-                            await provider.deleteRecept(e.receptId);
-                            await _fetchData();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Recept je uspješno obrisan')),
-                            );
-                          } catch (error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Došlo je do greške pri brisanju recepta')),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("Obriši recept"),
-                    ),
+                    child: isUserOrPremium
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              foregroundColor: Colors.black,
+                            ),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Potvrda'),
+                                    content: const Text(
+                                        'Da li ste sigurni da želite obrisati recept?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, false);
+                                        },
+                                        child: const Text(
+                                          'Ne',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 42, 87, 44)),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, true);
+                                        },
+                                        child: const Text(
+                                          'Da',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 42, 87, 44)),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              if (confirm == true) {
+                                try {
+                                  await provider.deleteRecept(e.receptId);
+                                  await _fetchData();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Recept je uspješno obrisan')),
+                                  );
+                                } catch (error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Došlo je do greške pri brisanju recepta')),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text("Obriši recept"),
+                          )
+                        : const Text('Nemate pravo brisanja'),
                   ),
                 ),
               ],
@@ -254,5 +287,10 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
       ),
     );
+  }
+
+  bool _checkIfUserIsAllowedToDelete() {
+    return !(AuthProvider.korisnik!.uloga!.ulogaId == 2 ||
+        AuthProvider.korisnik!.uloga!.ulogaId == 3);
   }
 }

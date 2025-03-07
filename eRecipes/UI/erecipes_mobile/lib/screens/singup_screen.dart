@@ -1,27 +1,30 @@
 import 'package:erecipes_mobile/main.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
-  SignUpScreen({super.key});
+  const SignUpScreen({super.key});
 
   static const String routeName = "/signup";
 
   @override
-  State<SignUpScreen> createState() => _SingupScreenState();
+  State<SignUpScreen> createState() => _SignupScreenState();
 }
 
-class _SingupScreenState extends State<SignUpScreen> {
-  TextEditingController _imeController = TextEditingController();
-  TextEditingController _prezimeController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _telefonController = TextEditingController();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _passwordConfirmController = TextEditingController();
-  TextEditingController _datumRodjenjaController = TextEditingController();
+class _SignupScreenState extends State<SignUpScreen> {
+  final TextEditingController _imeController = TextEditingController();
+  final TextEditingController _prezimeController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _telefonController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+      TextEditingController();
+  final TextEditingController _datumRodjenjaController =
+      TextEditingController();
   late KorisnikProvider _korisnikProvider;
   final _formKey = GlobalKey<FormState>();
 
@@ -42,21 +45,10 @@ class _SingupScreenState extends State<SignUpScreen> {
         };
 
         await _korisnikProvider.insert(korisnikRequest);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful!'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+        CustomSnackBar.showSuccessSnackBar(context, 'Registration successful!');
         Navigator.pushNamed(context, LoginScreen.routeName);
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Registration failed. Error: $e'),
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        CustomSnackBar.showErrorSnackBar(context, 'Registration failed.');
       }
     }
   }
@@ -159,6 +151,27 @@ class _SingupScreenState extends State<SignUpScreen> {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account? "),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/login');
+                        },
+                        child: const Text(
+                          "Log in",
+                          style: TextStyle(
+                            color: Color.fromRGBO(1, 100, 34, 1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -181,7 +194,7 @@ class _SingupScreenState extends State<SignUpScreen> {
       validator: validator ??
           (value) {
             if (value!.isEmpty) {
-              return '$label cannot be empty';
+              return '$label can not be empty';
             }
             return null;
           },
@@ -232,7 +245,7 @@ class _SingupScreenState extends State<SignUpScreen> {
     final emailRegExp =
         RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$");
     if (value == null || value.isEmpty) {
-      return 'Email cannot be empty';
+      return 'Email can not be empty';
     } else if (!emailRegExp.hasMatch(value)) {
       return 'Please enter a valid email';
     }
@@ -240,18 +253,20 @@ class _SingupScreenState extends State<SignUpScreen> {
   }
 
   String? _phoneValidator(String? value) {
-    final phoneRegExp = RegExp(r"^\d{3}-\d{3}-\d{3}$");
+    final phoneRegExp = RegExp(r"^\d{3}-\d{3}-\d{3,6}$");
+
     if (value == null || value.isEmpty) {
       return 'Phone number cannot be empty';
     } else if (!phoneRegExp.hasMatch(value)) {
-      return 'Phone number must be in format xxx-xxx-xxx';
+      return 'Phone number must be in format xxx-xxx-xxx or xxx-xxx-xxxxxx';
     }
+
     return null;
   }
 
   String? _passwordValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password cannot be empty';
+      return 'Password can not be empty';
     } else if (value.length < 6) {
       return 'Password must be at least 6 characters';
     }

@@ -20,12 +20,6 @@ namespace eRecipes.Service
         public virtual TModel Insert(TInsert request)
         {
             TDbEntity entity = Mapper.Map<TDbEntity>(request);
-            //if (request.Lozinka != request.LozinkaPotvrda)
-            //{
-            //    throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste");
-            //} 
-            //entity.LozinkaSalt = GenerateSalt();
-            //entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
 
             BeforeInsert(request, entity);
 

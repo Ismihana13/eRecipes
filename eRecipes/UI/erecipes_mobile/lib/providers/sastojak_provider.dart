@@ -1,18 +1,16 @@
 import 'package:erecipes_mobile/models/sastojak.dart';
 import 'package:erecipes_mobile/providers/base_provider.dart';
 
-class SastojakProvider extends BaseProvider<Sastojak>{
+class SastojakProvider extends BaseProvider<Sastojak> {
+  SastojakProvider() : super("Sastojak");
 
-  SastojakProvider():super("Sastojak");
-  
- @override
+  @override
   fromJson(data) {
     return Sastojak.FromJson(data);
   }
-  void addSastojak(Sastojak sastojak) {
+
+  void addSastojak(Sastojak sastojak)  {
     insert(sastojak);
-    
-    notifyListeners(); // Obavestite slušaoce da se podaci promenili
+    notifyListeners();
   }
-  
 }

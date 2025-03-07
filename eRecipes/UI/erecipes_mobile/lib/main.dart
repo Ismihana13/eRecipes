@@ -1,3 +1,4 @@
+import 'package:erecipes_mobile/.env';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
@@ -12,13 +13,16 @@ import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+
 import 'package:provider/provider.dart';
 
 void main() {
-  //Stripe.publishableKey = stripePublishableKey;
-  runApp(const MainApp());
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = stripePublishableKey;
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -38,15 +42,14 @@ class MainApp extends StatelessWidget {
       child: MaterialApp(
         initialRoute: LoginScreen.routeName,
         routes: {
-          // HomeScreen.routeName: (context) => HomeScreen(),
-          LoginScreen.routeName: (context) => LoginScreen(),
+          LoginScreen.routeName: (context) => const LoginScreen(),
           SignUpScreen.routeName: (context) => SignUpScreen(),
-          RecipeListScreen.routeName: (context) => RecipeListScreen(),
+          RecipeListScreen.routeName: (context) => const RecipeListScreen(),
           OmiljeniReceptiScreen.routeName: (context) =>
               const OmiljeniReceptiScreen(),
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
-          AddNewRecipeScreen.routeName: (context) => AddNewRecipeScreen(),
-          UserScreen.routeName: (context) => UserScreen(),
+          AddNewRecipeScreen.routeName: (context) => const AddNewRecipeScreen(),
+          UserScreen.routeName: (context) => const UserScreen(),
         },
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -68,32 +71,38 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _usernameController = new TextEditingController();
-  TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   late KorisnikProvider _korisnikProvider;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void handleLogin(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
         AuthProvider.username = _usernameController.text;
         AuthProvider.password = _passwordController.text;
-        AuthProvider.korisnik = await _korisnikProvider.Authenticate();
+        _korisnikProvider =
+            Provider.of<KorisnikProvider>(context, listen: false);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful!'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        Navigator.pushNamed(context, RecipeListScreen.routeName);
+        AuthProvider.korisnik = await _korisnikProvider.Authenticate();
+        if (AuthProvider.korisnik!.ulogaId == 1) {
+          CustomSnackBar.showErrorSnackBar(
+              context, 'Admin users cannot log in.');
+          return;
+        }
+
+        CustomSnackBar.showSuccessSnackBar(context, 'Login successful!');
+        Navigator.pushReplacementNamed(context, RecipeListScreen.routeName);
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login failed. Please check your credentials.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+        CustomSnackBar.showErrorSnackBar(
+            context, 'Login failed. Please check your credentials.');
       }
     }
   }
@@ -101,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     _korisnikProvider = Provider.of<KorisnikProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -189,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value!.isEmpty) {
                             return "The password field cannot be empty";
                           } else if (value.length < 4) {
-                            return "Password must be at least 6 characters long";
+                            return "Password must be at least 4 characters long";
                           }
                           return null;
                         },

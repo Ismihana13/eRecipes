@@ -60,9 +60,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     url = "$url?$queryString";
   }
 
-  // Ispisivanje URL-a koji se poziva
-  print("URL za GET zahtev sa filterom: $url");
-
   var uri = Uri.parse(url);
   var headers = createHeaders();
 
@@ -81,7 +78,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     return result;
   } else {
-    throw new Exception("Wrong username or password");
+    throw Exception("Wrong username or password");
   }
 }
 
@@ -95,7 +92,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      return fromJson(data) as T;
+      return fromJson(data);
     } else {
       throw Exception("Exception... handle this gracefully");
     }
@@ -113,7 +110,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -129,7 +126,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -138,25 +135,18 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   bool isValidResponse(Response response) {
-    print('Response status: ${response.statusCode}');
-  print('Response body: ${response.body}');
-
     if (response.statusCode < 299) {
       return true;
     } else if (response.statusCode == 401) {
-      throw new Exception("Unauthorized");
+      throw Exception("Unauthorized");
     } else {
-      print(response.body);
-      throw new Exception("Something bad happened please try again");
+      throw Exception("Something bad happened please try again");
     }
   }
 
   Map<String, String> createHeaders() {
     String username = AuthProvider.username ?? "";
     String password = AuthProvider.password ?? "";
-
-    print("passed creds: $username, $password");
-
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";
 
@@ -202,7 +192,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
         }
         query += '$prefix$key=$encoded';
       } else if (value is DateTime) {
-        query += '$prefix$key=${(value as DateTime).toIso8601String()}';
+        query += '$prefix$key=${(value).toIso8601String()}';
       } else if (value is List || value is Map) {
         if (value is List) value = value.asMap();
         value.forEach((k, v) {

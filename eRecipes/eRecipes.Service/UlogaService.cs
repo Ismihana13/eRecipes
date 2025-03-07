@@ -16,6 +16,5 @@ namespace eRecipes.Service
         public UlogaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
-
     }
 }

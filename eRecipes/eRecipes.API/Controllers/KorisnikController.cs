@@ -64,10 +64,15 @@ namespace eRecipes.API.Controllers
         }
     
         [HttpPut("{id}/DeleteKorisnik")]
-        [Authorize(Roles = "Admin")]
         public Korisnik DeleteKorisnik(int id)
         {
             return ((IKorisnikService)_service).DeleteKorisnik(id);
+        }
+
+        [HttpPut("{id}/uloga")]
+        public Korisnik UpdateUloga(int id, [FromBody] int novaUlogaId)
+        {
+           return ((IKorisnikService)_service).UpdateUloga(id, novaUlogaId);
         }
     }
 }

@@ -5,6 +5,7 @@ import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
@@ -48,7 +49,6 @@ class _UserScreenState extends State<UserScreen> {
         });
       }
     } catch (e) {
-      print("Error fetching user recipes: $e");
       setState(() {
         userRecipes = [];
       });
@@ -61,11 +61,7 @@ class _UserScreenState extends State<UserScreen> {
       setState(() {
         AuthProvider.korisnik = updatedUser;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Podaci su uspješno ažurirani.'),
-        ),
-      );
+       CustomSnackBar.showSuccessSnackBar(context,'Podaci su uspješno ažurirani.');
     } catch (e) {
       print("Error updating user: $e");
     }
@@ -74,13 +70,12 @@ class _UserScreenState extends State<UserScreen> {
   _deleteProfile() async {
     try {
       await korisnikProvider
-          .deleteKorisnikPorfil(AuthProvider.korisnik?.korisnikId ?? 0);
+          .deleteKorisnik(AuthProvider.korisnik?.korisnikId ?? 0);
       Navigator.pushReplacementNamed(context, '/login');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profil je uspješno obrisan.')),
       );
     } catch (e) {
-      print("Greška pri brisanju profila: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Došlo je do greške pri brisanju profila.')),
@@ -88,21 +83,54 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
-  _deleteRecipe(int? receptId) async {
-    try {
-      await recipeProvider.deleteRecept(receptId);
-      _fetchUserRecipes();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Recept je obrisan.')),
+void _showCannotDeleteDialog(int? receptId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text(
+          'Da li ste sigurni da želite obrisati recept?',
+          textAlign: TextAlign.center,
+        ),
+        content: const Text(
+          'Recept je lajkovan i dodat u omiljene od strane drugih korisnika. Probajte ga editovati.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();  
+            },
+            child: const Text('Zatvori'),
+          ),
+          TextButton(
+            onPressed: () async {
+              try {
+                await recipeProvider.deleteRecipeSoft(receptId);
+                Navigator.of(context).pop();  
+                _fetchUserRecipes();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Recept je obrisan.')),
+                );
+              } catch (e) {
+                Navigator.of(context).pop();  
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Došlo je do greške pri brisanju recepta.')),
+                );
+              }
+            },
+            child: const Text('Obriši', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       );
-    } catch (e) {
-      print("Greška pri brisanju recepta: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Došlo je do greške pri brisanju recepta.')),
-      );
-    }
-  }
+    },
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -275,8 +303,20 @@ class _UserScreenState extends State<UserScreen> {
       );
     }
 
+     var filteredData = userRecipes.where((x) => x.status == true).toList();
+      if (filteredData.isEmpty) {
+    return 
+      const Center(
+        child: Text(
+          "Nema omiljenih recepata.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    
+  }
+
     return Column(
-      children: userRecipes.map((recipe) {
+      children: filteredData.map((recipe) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           padding: const EdgeInsets.all(5.0),
@@ -335,7 +375,7 @@ class _UserScreenState extends State<UserScreen> {
                     const Spacer(),
                     ElevatedButton(
                       onPressed: () {
-                        _deleteRecipe(recipe.receptId);
+                        _showCannotDeleteDialog(recipe.receptId);
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,

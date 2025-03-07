@@ -13,10 +13,9 @@ namespace eRecipes.Service
     {
       Model.Korisnik Login(string username, string password);
         Model.Korisnik GetByUsername(string korisnickoIme);
-        //Model.Korisnik AddUloga(int id, KorisnikUpdateRequest request);
-        //Model.Korisnik DeleteUloga(int id, KorisnikUpdateRequest request);
         Model.Korisnik DeleteKorisnik(int id);
         Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request);
         Model.Korisnik DeleteKorisnickiProfil(int id);
+        public Model.Korisnik UpdateUloga(int id, int novaUlogaId);
     }
 }

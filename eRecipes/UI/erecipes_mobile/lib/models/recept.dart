@@ -24,6 +24,7 @@ class Recept{
   Korisnik? korisnik;
   bool? isFavorite;
  bool? isLiked;
+ bool? status;
    Recept({
      this.receptId,
     required this.naziv,
@@ -33,6 +34,7 @@ class Recept{
     this.kategorijaId,
     this.vrstaJelaId,
     this.slika,
+    this.status
   });
 
   factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);

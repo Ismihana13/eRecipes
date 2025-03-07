@@ -13,7 +13,6 @@ namespace eRecipes.API.Controllers
     {
         public SastojakController(ISastojakService service) : base(service) { }
 
-        [Authorize(Roles ="Admin")]
         public override Sastojak Insert(SastojakUpsertRequest request)
         {
             return base.Insert(request);

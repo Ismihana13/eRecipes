@@ -51,7 +51,6 @@ namespace eRecipes.Service
             return query;
         }
 
-
         public TModel GetById(int id)
         {
             var entity = Context.Set<TDbEntity>().Find(id);

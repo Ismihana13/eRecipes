@@ -15,6 +15,7 @@ Recept _$ReceptFromJson(Map<String, dynamic> json) => Recept(
       kategorijaId: (json['kategorijaId'] as num?)?.toInt(),
       vrstaJelaId: (json['vrstaJelaId'] as num?)?.toInt(),
       slika: json['slika'] as String?,
+      status: json['status'] as bool?,
     )
       ..korisnikId = (json['korisnikId'] as num?)?.toInt()
       ..premium = json['premium'] as bool?
@@ -48,4 +49,5 @@ Map<String, dynamic> _$ReceptToJson(Recept instance) => <String, dynamic>{
       'korisnik': instance.korisnik,
       'isFavorite': instance.isFavorite,
       'isLiked': instance.isLiked,
+      'status': instance.status,
     };

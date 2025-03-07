@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IReceptService, ReceptService>();
 builder.Services.AddTransient<IKorisnikService, KorisnikService>();
 builder.Services.AddTransient<IVrstaJelaService, VrstaJelaService>();
-builder.Services.AddTransient<IKategorijaService, KategorijaService >();
+builder.Services.AddTransient<IKategorijaService, KategorijaService>();
 builder.Services.AddTransient<IUlogaService, UlogaService>();
 builder.Services.AddTransient<IOmiljeniReceptService, OmiljeniReceptService>();
 builder.Services.AddTransient<ISastojakService, SastojakService>();
@@ -57,7 +57,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddDbContext<ERecipesContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddMapster();
 builder.Services.AddAuthentication("BasicAuthentication")

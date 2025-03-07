@@ -12,9 +12,7 @@ namespace eRecipes.Model.Requests
         public string? Email { get; set; }
         public string? Telefon { get; set; }
         public string KorisnickoIme { get; set; } = null!;
-        public string Lozinka { get; set; }
-        public string LozinkaPotvrda { get; set; }
-       // public bool? Status { get; set; }
-       // public int? UlogaId { get; set; }
+        public string Lozinka { get; set; } = null!;
+        public string LozinkaPotvrda { get; set; } = null!;
     }
 }

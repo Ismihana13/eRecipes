@@ -2,7 +2,7 @@ import 'package:erecipes_mobile/models/recept_sastojak.dart';
 import 'package:flutter/material.dart';
 
 class SastojciListCard extends StatelessWidget {
-  final List<ReceptSastojak> sastojciList; 
+  final List<ReceptSastojak> sastojciList;
 
   const SastojciListCard({super.key, required this.sastojciList});
 

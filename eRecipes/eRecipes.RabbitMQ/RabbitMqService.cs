@@ -33,12 +33,9 @@ namespace eRecipes.RabbitMQ
                 Password = _password
             };
 
-
             _connection = factory.CreateConnection();
 
-
             _channel = _connection.CreateModel();
-
 
             _channel.QueueDeclare("Notification_added", false, false, false, null);
 
@@ -65,12 +62,10 @@ namespace eRecipes.RabbitMQ
                 }
                 catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
                 {
-                    // Gracefully handle cancellation
                     break;
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     Console.WriteLine($"Error in RabbitMQ listener: {ex.Message}");
                 }
             }
@@ -78,9 +73,7 @@ namespace eRecipes.RabbitMQ
 
         private async Task HandleMessage(Notifier notifier)
         {
-
-            await _emailSender.SendEmailAsync(notifier.Email, "Uspješno sam testirao emailsender !", $"Vaša pruka {notifier.Nesto} na datum {notifier.Datum.ToShortDateString()} .");
-
+            await _emailSender.SendEmailAsync(notifier.Email, "Hvala što ste se registrovali na eRecipes!", $"{notifier.Tekst} {notifier.Datum.ToShortDateString()} .");
         }
 
         private void OnConsumerConsumerCancelled(object sender, ConsumerEventArgs e) { }

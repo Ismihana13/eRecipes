@@ -198,7 +198,7 @@ class _ReportScreenState extends State<ReportScreen> {
               flex: 1,
               child: selectedIzvjestaj == null
                   ? const Center(child: Text("Odaberite izvještaj za pregled"))
-                  : _buildGraph(),
+                  : _buildImprovedGraph(),
             ),
           ],
         ),
@@ -320,22 +320,22 @@ class _ReportScreenState extends State<ReportScreen> {
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  Navigator.pop(
-                                      context); 
+                                  Navigator.pop(context);
                                 },
                                 child: const Text("Ne",
                                     style: TextStyle(color: Colors.red)),
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(
-                                      context); 
-                                  _generateAndDownloadPDF(
-                                      izvjestaj); 
+                                  Navigator.pop(context);
+                                  _generateAndDownloadPDF(izvjestaj);
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green),
-                                child: const Text("Da",style: TextStyle(color: Colors.white),),
+                                child: const Text(
+                                  "Da",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ],
                           );
@@ -352,14 +352,14 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  Widget _buildGraph() {
+  Widget _buildImprovedGraph() {
     return Column(
       children: [
         const Text(
           "Broj lajkovanih i omiljenih recepata",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         Expanded(
           child: BarChart(
             BarChartData(
@@ -367,54 +367,91 @@ class _ReportScreenState extends State<ReportScreen> {
               maxY: 20,
               barGroups: [
                 BarChartGroupData(
-                  x: 1,
+                  x: 0,
                   barRods: [
                     BarChartRodData(
                       toY: selectedIzvjestaj?.brojLajkova!.toDouble() ?? 0,
-                      color: Colors.blue,
-                      width: 15,
+                      color: Colors.blueAccent,
+                      width: 20,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ],
+                  showingTooltipIndicators: [0],
                 ),
                 BarChartGroupData(
-                  x: 2,
+                  x: 1,
                   barRods: [
                     BarChartRodData(
                       toY: selectedIzvjestaj?.brojOmiljenih!.toDouble() ?? 0,
-                      color: Colors.red,
-                      width: 15,
+                      color: Colors.orangeAccent,
+                      width: 20,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ],
+                  showingTooltipIndicators: [0],
                 ),
               ],
               titlesData: FlTitlesData(
                 leftTitles: const AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 30,
-                  ),
+                  sideTitles: SideTitles(showTitles: false, reservedSize: 32),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
                 ),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: (value, meta) {
                       switch (value.toInt()) {
-                        case 1:
+                        case 0:
                           return const Text("Lajkovi");
-                        case 2:
+                        case 1:
                           return const Text("Omiljeni");
+                        default:
+                          return const Text("");
                       }
-                      return const Text("");
                     },
                   ),
                 ),
               ),
               gridData: const FlGridData(show: false),
-              borderData: FlBorderData(show: false),
+              borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.black.withOpacity(0.2))),
             ),
           ),
         ),
+        const SizedBox(height: 10),
+        if (selectedIzvjestaj?.brojLajkova != null &&
+            selectedIzvjestaj?.brojOmiljenih != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildLabelWithValue(
+                  "Lajkovi: ${selectedIzvjestaj?.brojLajkova ?? 0}",
+                  Colors.blueAccent),
+              const SizedBox(width: 20),
+              _buildLabelWithValue(
+                  "Omiljeni: ${selectedIzvjestaj?.brojOmiljenih ?? 0}",
+                  Colors.orangeAccent),
+            ],
+          ),
       ],
+    );
+  }
+
+  Widget _buildLabelWithValue(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style:
+            TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

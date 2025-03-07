@@ -7,6 +7,5 @@ namespace eRecipes.Model.SearchObjects
     public class KorisnikUlogaSearchObject:BaseSearchObject
     {
        
-      
     }
 }

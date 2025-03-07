@@ -11,6 +11,5 @@ namespace eRecipes.Model
         public int? ReceptId { get; set; }
         public Recept Recept { get; set; }
         public DateTime? DatumDodavanja { get; set; }
-
     }
 }

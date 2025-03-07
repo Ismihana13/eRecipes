@@ -53,7 +53,6 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
       setState(() {
         _isLoading = false;
       });
-      print('Error fetching data: $e');
     }
   }
 
@@ -104,8 +103,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
 
   Widget _buildResultView() {
     if (result == null || result!.result.isEmpty) {
-      return Center(
-        child: const Text('No results found'),
+      return const Center(
+        child: Text('No results found'),
       );
     }
 
@@ -153,59 +152,66 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                         backgroundColor: Colors.orange,
                         foregroundColor: Colors.black,
                       ),
-                      onPressed: () async {
-                        final confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Potvrda'),
-                              content: const Text(
-                                  'Da li ste sigurni da želite obrisati kategoriju?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context, false);
-                                  },
-                                  child: const Text(
-                                    'Ne',
-                                    style: TextStyle(
-                                        color: Color.fromARGB(255, 42, 87, 44)),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context, true);
-                                  },
-                                  child: const Text(
-                                    'Da',
-                                    style: TextStyle(
-                                        color: Color.fromARGB(255, 42, 87, 44)),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                      onPressed: e.brojRecepata != 0
+                          ? null 
+                          : () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Potvrda'),
+                                    content: const Text(
+                                        'Da li ste sigurni da želite obrisati kategoriju?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, false);
+                                        },
+                                        child: const Text(
+                                          'Ne',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 42, 87, 44)),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context, true);
+                                        },
+                                        child: const Text(
+                                          'Da',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 42, 87, 44)),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
 
-                        if (confirm == true) {
-                          try {
-                            await provider.deleteKategorija(e.kategorijaId);
-                            await _fetchData();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Kategorija je uspješno obrisana')),
-                            );
-                          } catch (error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Došlo je do greške pri brisanju kategorije')),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("Obriši kategoriju"),
+                              if (confirm == true) {
+                                try {
+                                  await provider
+                                      .deleteKategorija(e.kategorijaId);
+                                  await _fetchData();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Kategorija je uspješno obrisana')),
+                                  );
+                                } catch (error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Došlo je do greške pri brisanju kategorije')),
+                                  );
+                                }
+                              }
+                            },
+                      child: Text(e.brojRecepata != 0
+                          ? "Kategorija se ne smije brisati, jer ima recepte."
+                          : "Obriši kategoriju"),
                     ),
                   ),
                 ),

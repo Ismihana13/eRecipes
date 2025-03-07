@@ -6,8 +6,6 @@ namespace eRecipes.Model.Requests
 {
     public class UlogaUpsertRequest
     {
-       
         public string Naziv { get; set; } = null!;
-
     }
 }

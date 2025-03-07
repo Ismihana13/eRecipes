@@ -4,15 +4,14 @@ import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/recept_sastojak.dart';
 import 'package:erecipes_mobile/providers/base_provider.dart';
 
-class RecipeProvider extends BaseProvider<Recept>{
+class RecipeProvider extends BaseProvider<Recept> {
+  RecipeProvider() : super("Recept");
 
-  RecipeProvider():super("Recept");
-  
- @override
+  @override
   fromJson(data) {
     return Recept.FromJson(data);
   }
-  
+
   Future<List<ReceptSastojak>> sastojci(int? id) async {
     var url = "$fullUrl/$id/sastojci";
     var uri = Uri.parse(url);
@@ -27,24 +26,26 @@ class RecipeProvider extends BaseProvider<Recept>{
       throw Exception('Failed to load ingredients');
     }
   }
+
   Future<void> activateRecipe(int id) async {
-  var url = "$fullUrl/$id/activate";
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
+    var url = "$fullUrl/$id/activate";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http!.put(uri, headers: headers);
 
-  var response = await http!.put(uri, headers: headers); 
-
-  if (!isValidResponse(response)) {
-    throw Exception('Failed to activate recipe');
+    if (!isValidResponse(response)) {
+      throw Exception('Failed to activate recipe');
+    }
   }
-}
-Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
-  var url = "$fullUrl/$receptId/sastojci";
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
+
+  Future<String> addSastojkeToRecept(
+      int receptId, List<int> sastojakIds) async {
+    var url = "$fullUrl/$receptId/sastojci";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
     final response = await http!.post(
       uri,
-      headers:headers,
+      headers: headers,
       body: jsonEncode(sastojakIds),
     );
     if (response.statusCode == 200) {
@@ -53,12 +54,12 @@ Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
       return "Došlo je do greške: ${response.body}";
     }
   }
+
   Future<List<Recept>> getReceptiByKorisnikId(int id) async {
-    var url = "$fullUrl/$id/recepti";  
+    var url = "$fullUrl/$id/recepti";
     var uri = Uri.parse(url);
     var headers = createHeaders();
-    
-    final response = await http!.get(uri, headers: headers);  
+    final response = await http!.get(uri, headers: headers);
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -68,27 +69,30 @@ Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
     }
   }
 
-    Future<Recept> deleteRecept(int? id) async {
+  Future<Recept> deleteRecept(int? id) async {
     var url = "$fullUrl/$id/BrisanjeRecepta";
     var uri = Uri.parse(url);
 
     var headers = getHeaders();
-    var response = await http!.delete(uri, headers: headers); 
+    var response = await http!.delete(uri, headers: headers);
     if (isValidResponse(response)) {
       var data = jsonDecode(response.body);
-      Recept recipe = fromJson(data) as Recept;
+      Recept recipe = fromJson(data);
       return recipe;
     } else {
-      throw Exception("Failed to delete recipe");
+     var errorMessage = jsonDecode(response.body)["message"] ?? "Došlo je do greške.";
+      print("Došlo je do greške: $errorMessage"); 
+       throw Exception("Failed to delete recipe. Status code: ${response.statusCode}, ${response.body}");
     }
   }
-   Future<String> updateSastojci(int receptId, List<int> sastojakIds) async {
-  var url = "$fullUrl/$receptId/updateSastojci";
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
+
+  Future<String> updateSastojci(int receptId, List<int> sastojakIds) async {
+    var url = "$fullUrl/$receptId/updateSastojci";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
     final response = await http!.put(
       uri,
-      headers:headers,
+      headers: headers,
       body: jsonEncode(sastojakIds),
     );
     if (response.statusCode == 200) {
@@ -97,21 +101,33 @@ Future<String> addSastojkeToRecept(int receptId, List<int> sastojakIds) async {
       return "Došlo je do greške: ${response.body}";
     }
   }
-  Future<List<Recept>> recommend(int id) async{
+
+  Future<List<Recept>> recommend(int id) async {
     var url = "$fullUrl/recommend/$id";
-     var uri = Uri.parse(url);
-     var headers = createHeaders();
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
     var response = await http!.get(uri, headers: headers);
-     if (isValidResponse(response)) {
+    if (isValidResponse(response)) {
       List<Recept> lista = [];
       var data = jsonDecode(response.body);
       for (var item in data) {
         lista.add(fromJson(item));
       }
-
       return lista;
     } else {
       throw Exception("Greška pri učitavanju.");
+    }
+  }
+
+   Future<void> deleteRecipeSoft(int? id) async {
+    var url = "$fullUrl/$id/DeleteRecept";
+    var uri = Uri.parse(url);
+    var headers =createHeaders();
+    var response = await http!.put(uri, headers: headers);
+     if (isValidResponse(response)) {
+      print("Recept obrisan.");
+    } else {
+      throw Exception("Neuspješno brisanje recepta.");
     }
   }
 }

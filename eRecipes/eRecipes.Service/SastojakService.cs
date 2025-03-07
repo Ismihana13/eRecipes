@@ -26,6 +26,5 @@ namespace eRecipes.Service
             }
             base.BeforeInsert(request, entity);
         }
-
     }
 }

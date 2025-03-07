@@ -11,7 +11,7 @@ namespace eRecipes.Model
         }
         public string Email { get; set; } = null!;
         public DateTime Datum { get; set; }
-        public string Nesto { get; set; } = null!;
+        public string Tekst { get; set; } = null!;
     }
 }
 

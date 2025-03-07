@@ -16,6 +16,5 @@ namespace eRecipes.Service
         public VrstaJelaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {
         }
-
     }
 }

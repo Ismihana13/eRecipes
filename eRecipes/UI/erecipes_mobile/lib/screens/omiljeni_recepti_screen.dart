@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class OmiljeniReceptiScreen extends StatefulWidget {
   static const String routeName = "/omiljeniRecept";
 
-  const OmiljeniReceptiScreen({Key? key}) : super(key: key);
+  const OmiljeniReceptiScreen({super.key});
 
   @override
   State<OmiljeniReceptiScreen> createState() => _LikeScreenState();
@@ -61,7 +61,6 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         vrsteJela = tmpVrsteJela!;
       });
     } catch (e) {
-      print('Error fetching data: $e');
       setState(() {
         data = null;
         kategorije = null;
@@ -96,6 +95,18 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             const SizedBox(height: 10),
             _buildCategoryAndDishTypeFilter(),
             const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Nazad"),
+                ),
+              ),
+            ),
             const Text(
               'Omiljeni Recepti',
               style: TextStyle(
@@ -118,7 +129,6 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                 children: _buildRecipeCard(),
               ),
             ),
-            ElevatedButton(onPressed:(){ Navigator.pop(context);} , child: const Text("Nazad")),
           ],
         ),
       ),
@@ -239,7 +249,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => OmiljeniReceptiScreen()),
+                    builder: (context) => const OmiljeniReceptiScreen()),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -254,7 +264,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: ElevatedButton(
-             onPressed: () {
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -275,7 +285,8 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
   }
 
   List<Widget> _buildRecipeCard() {
-    if (data?.isEmpty ?? true) {
+    
+    if (data == null || data!.isEmpty) {
       return [
         const Center(
           child: Text(
@@ -285,8 +296,21 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
         ),
       ];
     }
-    return data!
-        .map((x) => Container(
+    var filteredData = data!.where((x) => x.recept!.status == true).toList();
+      if (filteredData.isEmpty) {
+    return [
+      const Center(
+        child: Text(
+          "Nema omiljenih recepata.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      ),
+    ];
+  }
+    
+    return filteredData
+        .map((x) => 
+        Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0),
               padding: const EdgeInsets.all(5.0),
               color: const Color.fromARGB(187, 247, 246, 246),
@@ -315,8 +339,10 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            x.recept!.opisRecepta ?? "",
+                            x.recept!.opisRecepta ?? "Nema opisa.",
                             style: const TextStyle(color: Colors.grey),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 6),
                           ElevatedButton(

@@ -8,11 +8,13 @@ import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/screens/edit_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/sastojcli_list.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class RecipeDetailsScreen extends StatefulWidget {
   static const String routeName = "/recipeDetails";
   Recept? recept;
@@ -70,7 +72,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   Future<int> _getLikesCount() async {
     int count =
         await LajkoviProvider().getLikesCountForRecipe(widget.recept?.receptId);
-    print("${count}");
     return likesCount = count;
   }
 
@@ -81,12 +82,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         await _omiljeniReceptProvider?.isFavorite(recept.receptId!) ?? false;
     if (isFavorite) {
       await _omiljeniReceptProvider?.removeFavorite(recept.receptId!);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Uklonili ste recept iz omiljenih.')));
+      CustomSnackBar.showErrorSnackBar(
+          context, 'Uklonili ste recept iz omiljenih.');
     } else {
       await _omiljeniReceptProvider?.insert(noviOmiljeniRecept);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dodali ste recept u omiljene.')));
+      CustomSnackBar.showSuccessSnackBar(
+          context, 'Dodali ste recept u omiljene.');
     }
     setState(() {});
   }
@@ -99,12 +100,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         isliked = false;
         likesCount--;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Uklonili ste recept iz lajkovanih.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        CustomSnackBar.showErrorSnackBar(context, 'Uklonili ste recept iz lajkovanih.');
     } else {
       Lajkovi newLajk = Lajkovi(receptId: widget.recept!.receptId);
       await _lajkoviProvider!.insert(newLajk);
@@ -112,12 +108,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         isliked = true;
         likesCount++;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lajkali ste recept.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+        CustomSnackBar.showSuccessSnackBar(context, 'Lajkali ste recept');
     }
   }
 
@@ -126,128 +117,126 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     return Scaffold(
       appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(),
-                      WelcomeRow(),
-                    ],
-                  ),
-                ],
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(),
+                    WelcomeRow(),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _buildRecipeDetails(),
+            if (showButton)
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditRecipeScreen(
+                        recept: widget.recept!,
+                        sastojci: sastojciList,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text("Uredi recept"),
               ),
-              const SizedBox(height: 10),
-              _buildRecipeDetails(),
-              if (showButton)
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditRecipeScreen(
-                          recept: widget.recept!,
-                          sastojci: sastojciList,
+            if (showLikesSection)
+              FutureBuilder<bool>(
+                future: _lajkoviProvider?.isLiked(widget.recept!.receptId!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasData && snapshot.data!) {
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Ukoliko vam se svidio recept, ostavite like',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                softWrap: true,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up,
+                                  color: Colors.blue),
+                              onPressed: () => handleLike(),
+                            ),
+                            Text(
+                              '$likesCount',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
-                  },
-                  child: const Text("Uredi recept"),
-                ),
-              if (showLikesSection)
-                FutureBuilder<bool>(
-                  future: _lajkoviProvider?.isLiked(widget.recept!.receptId!),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    if (snapshot.hasData && snapshot.data!) {
-                      return Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.all(16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  'Ukoliko vam se svidio recept, ostavite like',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  softWrap: true,
+                  } else {
+                    return Card(
+                      elevation: 4,
+                      margin: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                'Ukoliko vam se svidio recept, ostavite like',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                                softWrap: true,
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.thumb_up,
-                                    color: Colors.blue),
-                                onPressed: () => handleLike(),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up_outlined,
+                                  color: Colors.grey),
+                              onPressed: () => handleLike(),
+                            ),
+                            Text(
+                              '$likesCount',
+                              style: const TextStyle(
+                                fontSize: 18,
                               ),
-                              Text(
-                                '$likesCount',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    } else {
-                      return Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.all(16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  'Ukoliko vam se svidio recept, ostavite like',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  softWrap: true,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.thumb_up_outlined,
-                                    color: Colors.grey),
-                                onPressed: () => handleLike(),
-                              ),
-                              Text(
-                                '$likesCount',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-            ],
-          ),
+                      ),
+                    );
+                  }
+                },
+              ),
+          ],
         ),
       ),
     );

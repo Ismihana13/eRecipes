@@ -81,13 +81,12 @@ namespace eRecipes.Service
                         DatumSlanja = DateTime.Now,
                         KorisnikId = user.KorisnikId
                     };
-
-                    // Pozivanje servisa za dodavanje obavijesti
                     _obavjestService.Insert(obavijestRequest);
                 }
             }
             base.BeforeInsert(request, entity);
         }
+
         public override void BeforeUpdate(ReceptUpdateRequest request, Recept entity)
         {
             entity.DatumObjave = DateTime.Now;
@@ -115,6 +114,7 @@ namespace eRecipes.Service
                                          .ToList();
             return Mapper.Map<List<Model.ReceptSastojak>>(receptSastojci);
         }
+
         public async Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds)
         {
             var recept = await Context.Recepts.Include(r => r.ReceptSastojaks)
@@ -152,6 +152,7 @@ namespace eRecipes.Service
 
             return "Sastojci su uspješno dodani.";
         }
+
         public List<Model.Recept> GetReceptiByKorisnikId(int korisnikId)
         {
             var recepti = Context.Recepts
@@ -162,6 +163,7 @@ namespace eRecipes.Service
 
             return Mapper.Map<List<Model.Recept>>(recepti);
         }
+
         public Model.Recept BrisanjeRecepta(int id)
         {
             var recept = Context.Recepts.Find(id);
@@ -171,9 +173,10 @@ namespace eRecipes.Service
             }
 
             Context.Recepts.Remove(recept);
-          Context.SaveChanges(); 
+            Context.SaveChanges(); 
             return Mapper.Map<Model.Recept>(recept);
         }
+
         public async Task<string> UpdateSastojkeForReceptAsync(int receptId, List<int> sastojakIds)
         {
             var recept = await Context.Recepts.Include(r => r.ReceptSastojaks)
@@ -223,6 +226,7 @@ namespace eRecipes.Service
 
             return "Sastojci su uspješno ažurirani.";
         }
+
         public List<Recept> Recommend(int korisnikId)
         {
             return _recommender.Recommend(korisnikId);
