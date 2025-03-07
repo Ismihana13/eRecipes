@@ -6,16 +6,23 @@ namespace eRecipes.RabbitMQ
     public class EmailSender : IEmailSender
     {
 
-        private readonly string _gMail = "erecipes.rs2@gmail.com";
-        private readonly string _gPass = "gssj bomq rfwr oybg";
+        private readonly string _gMail = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? "erecipes.rs2@gmail.com";
+        private readonly string _gPass = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? "gssj bomq rfwr oybg";
+        private readonly string _gServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? "smtp.gmail.com";
+        private readonly int _port;
+
 
         public EmailSender()
         {
+            if (!int.TryParse(Environment.GetEnvironmentVariable("SMTP_PORT"), out _port))
+            {
+                throw new ArgumentException("SMTP_PORT environment variable is not a valid integer");
+            }
         }
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var client = new SmtpClient("smtp.gmail.com", 587)
+            var client = new SmtpClient(_gServer, _port)
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,

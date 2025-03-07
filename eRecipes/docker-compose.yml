@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=ismi123!
-      - MSSQL_PID=Developer
+      - SA_PASSWORD=${SQL__PASSWORD}
+      - MSSQL_PID=${SQL__PID}
     ports:
       - 1401:1433
     expose:
@@ -21,8 +21,8 @@ services:
     container_name: rabbitmq
     restart: unless-stopped
     environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=mypass
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ__USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ__PASSWORD}
     ports:
       - 5672:5672
       - 15672:15672
@@ -38,10 +38,14 @@ services:
       context: .
       dockerfile: Dockerfile.notifications
     environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_USERNAME=user
-      - RABBITMQ_PASSWORD=mypass
+      - RABBITMQ_HOST=${RABBITMQ__HOST}
+      - RABBITMQ_USERNAME=${RABBITMQ__USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ__PASSWORD}
       - RABBITMQ_VIRTUALHOST=/
+      - SMTP_SERVER=${SMTP__SERVER}
+      - SMTP_PORT=${SMTP__PORT}
+      - SMTP_USERNAME=${SMTP__USERNAME}
+      - SMTP_PASSWORD=${SMTP__PASSWORD}
     depends_on:
       - rabbitmq
       - erecipes-sql
@@ -57,8 +61,12 @@ services:
       context: .
       dockerfile: Dockerfile 
     environment:
-      - ConnectionStrings__DefaultConnection=Server=erecipes-sql,1433;Database=eRecipes3;User=sa;Password=ismi123!;ConnectRetryCount=0; TrustServerCertificate=True
-      - ASPNETCORE_ENVIRONMENT=Development
+       - ConnectionStrings__DefaultConnection=Server=erecipes-sql,1433;Database=${SQL__DATABASE};User=${SQL__USER};Password=${SQL__PASSWORD};Trust Server Certificate=true;ConnectRetryCount=0
+       - ASPNETCORE_ENVIRONMENT=Development
+       - RABBITMQ_HOST=${RABBITMQ__HOST}
+       - RABBITMQ_USERNAME=${RABBITMQ__USERNAME}
+       - RABBITMQ_PASSWORD=${RABBITMQ__PASSWORD}
+       - RABBITMQ_VIRTUALHOST=/
     ports:
       - 5089:5089
     networks:
