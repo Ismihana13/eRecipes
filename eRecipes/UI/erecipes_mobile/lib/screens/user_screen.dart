@@ -61,7 +61,8 @@ class _UserScreenState extends State<UserScreen> {
       setState(() {
         AuthProvider.korisnik = updatedUser;
       });
-       CustomSnackBar.showSuccessSnackBar(context,'Podaci su uspješno ažurirani.');
+      CustomSnackBar.showSuccessSnackBar(
+          context, 'Podaci su uspješno ažurirani.');
     } catch (e) {
       print("Error updating user: $e");
     }
@@ -83,54 +84,54 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
-void _showCannotDeleteDialog(int? receptId) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text(
-          'Da li ste sigurni da želite obrisati recept?',
-          textAlign: TextAlign.center,
-        ),
-        content: const Text(
-          'Recept je lajkovan i dodat u omiljene od strane drugih korisnika. Probajte ga editovati.',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
+  void _showCannotDeleteDialog(int? receptId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Da li ste sigurni da želite obrisati recept?',
+            textAlign: TextAlign.center,
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();  
-            },
-            child: const Text('Zatvori'),
+          content: const Text(
+            'Recept je lajkovan i dodat u omiljene od strane drugih korisnika. Probajte ga editovati.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+            ),
           ),
-          TextButton(
-            onPressed: () async {
-              try {
-                await recipeProvider.deleteRecipeSoft(receptId);
-                Navigator.of(context).pop();  
-                _fetchUserRecipes();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Recept je obrisan.')),
-                );
-              } catch (e) {
-                Navigator.of(context).pop();  
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Došlo je do greške pri brisanju recepta.')),
-                );
-              }
-            },
-            child: const Text('Obriši', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Zatvori'),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  await recipeProvider.deleteRecipeSoft(receptId);
+                  Navigator.of(context).pop();
+                  _fetchUserRecipes();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Recept je obrisan.')),
+                  );
+                } catch (e) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content:
+                            Text('Došlo je do greške pri brisanju recepta.')),
+                  );
+                }
+              },
+              child: const Text('Obriši', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,8 +198,40 @@ void _showCannotDeleteDialog(int? receptId) {
                     Align(
                       alignment: Alignment.centerRight,
                       child: InkWell(
-                        onTap: () {
-                          _deleteProfile();
+                        onTap: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Potvrda'),
+                                content: const Text(
+                                    'Da li ste sigurni da želite obrisati profil?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                    child: const Text(
+                                      'Ne',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: const Text(
+                                      'Da',
+                                      style: TextStyle(color: Colors.green),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          if (confirm == true) {
+                            await _deleteProfile();
+                          }
                         },
                         child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 3),
@@ -303,17 +336,15 @@ void _showCannotDeleteDialog(int? receptId) {
       );
     }
 
-     var filteredData = userRecipes.where((x) => x.status == true).toList();
-      if (filteredData.isEmpty) {
-    return 
-      const Center(
+    var filteredData = userRecipes.where((x) => x.status == true).toList();
+    if (filteredData.isEmpty) {
+      return const Center(
         child: Text(
           "Nema omiljenih recepata.",
           style: TextStyle(fontSize: 18, color: Colors.grey),
         ),
       );
-    
-  }
+    }
 
     return Column(
       children: filteredData.map((recipe) {

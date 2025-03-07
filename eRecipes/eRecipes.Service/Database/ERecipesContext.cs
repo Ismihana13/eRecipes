@@ -176,6 +176,14 @@ public partial class ERecipesContext : DbContext
             new OmiljeniRecept { OmiljeniReceptId = 2, KorisnikId = 1, ReceptId = 3, DatumDodavanja = DateTime.Now },
             new OmiljeniRecept { OmiljeniReceptId = 3, KorisnikId = 2, ReceptId = 3, DatumDodavanja = DateTime.Now }
         );
+
+        modelBuilder.Entity<Izvjestaj>().HasData(
+            new Izvjestaj { IzvjestajId = 1, ReceptId = 3, BrojLajkova = 2,BrojOmiljenih=2, DatumIzvjestaja = new DateTime(2024, 3, 7) }
+        );
+
+        modelBuilder.Entity<Obavijest>().HasData(
+           new Obavijest { ObavijestId = 1, KorisnikId = 3, ReceptId = 2, Procitano = true, DatumSlanja=DateTime.Now,Naslov="Test", Sadrzaj="TEst" }
+       );
     }
 }
 

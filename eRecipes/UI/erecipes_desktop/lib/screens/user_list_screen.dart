@@ -137,150 +137,151 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   Widget _buildResultView() {
-    if (result == null || result!.result.isEmpty) {
-      return const Center(
-        child: Text('No results found'),
-      );
-    }
-    final loggedInUserId = AuthProvider.korisnik!.korisnikId;
-    return Container(
-      width: double.infinity,
-      color: Colors.grey[200],
-      child: SingleChildScrollView(
-        child: DataTable(
-          columnSpacing: 10,
-          border: TableBorder.all(
-            color: Colors.black,
-            width: 1,
-            borderRadius: BorderRadius.zero,
-          ),
-          columns: const [
-            DataColumn(
-                label: Center(
-                    child: Text("Korisničko ime",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold)))),
-            DataColumn(
-                label: Center(
-                    child: Text("Email",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold)))),
-            DataColumn(
-                label: Center(
-                    child: Text("Uloga",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold)))),
-            DataColumn(
-                label: Center(
-                    child: Text("Uredi korisnika",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold)))),
-            DataColumn(
-                label: Center(
-                    child: Text("Obriši korisnika",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold)))),
-          ],
-          rows: result!.result.map((e) {
-            return DataRow(
-              cells: [
-                DataCell(Center(
-                    child: Text(e.korisnickoIme ?? "Nema korisničkog imena",
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
-                DataCell(Center(
-                    child: Text(e.email ?? "Nema emaila",
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
-                DataCell(Center(
-                    child: Text(e.uloga?.naziv ?? "Nema uloge",
-                        style: const TextStyle(fontWeight: FontWeight.bold)))),
-                DataCell(
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(226, 121, 191, 248),
-                        foregroundColor: Colors.black,
-                      ),
-                      onPressed: () {
-                        openEditUserModal(e);
-                      },
-                      child: const Text('Uredi korisnika'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  Center(
-                    child: e.korisnikId == loggedInUserId
-                        ? const SizedBox()
-                        : ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              foregroundColor: Colors.black,
-                            ),
-                            onPressed: () async {
-                              final confirm = await showDialog<bool>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Potvrda'),
-                                    content: const Text(
-                                        'Da li ste sigurni da želite obrisati korisnika?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, false);
-                                        },
-                                        child: const Text(
-                                          'Ne',
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 42, 87, 44)),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, true);
-                                        },
-                                        child: const Text(
-                                          'Da',
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 42, 87, 44)),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-
-                              if (confirm == true) {
-                                try {
-                                  await provider
-                                      .deleteKorisnik(e.korisnikId);
-                                  await _fetchData();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Korisnik je uspješno obrisan')),
-                                  );
-                                } catch (error) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Došlo je do greške pri brisanju korisnika')),
-                                  );
-                                }
-                              }
-                            },
-                            child: const Text("Obriši korisnika"),
-                          ),
-                  ),
-                ),
-              ],
-            );
-          }).toList(),
-        ),
-      ),
+  if (result == null || result!.result.isEmpty) {
+    return const Center(
+      child: Text('No results found'),
     );
   }
+  final loggedInUserId = AuthProvider.korisnik!.korisnikId;
+  return Container(
+    width: double.infinity,
+    color: Colors.grey[200],
+    child: SingleChildScrollView(
+      child: DataTable(
+        columnSpacing: 10,
+        border: TableBorder.all(
+          color: Colors.black,
+          width: 1,
+          borderRadius: BorderRadius.zero,
+        ),
+        columns: const [
+          DataColumn(
+              label: Center(
+                  child: Text("Korisničko ime",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold)))),
+          DataColumn(
+              label: Center(
+                  child: Text("Email",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold)))),
+          DataColumn(
+              label: Center(
+                  child: Text("Uloga",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold)))),
+          DataColumn(
+              label: Center(
+                  child: Text("Uredi korisnika",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold)))),
+          DataColumn(
+              label: Center(
+                  child: Text("Obriši korisnika",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold)))),
+        ],
+        rows: result!.result
+            .where((e) => e.korisnikId != 1) 
+            .map((e) {
+          return DataRow(
+            cells: [
+              DataCell(Center(
+                  child: Text(e.korisnickoIme ?? "Nema korisničkog imena",
+                      style: const TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(Center(
+                  child: Text(e.email ?? "Nema emaila",
+                      style: const TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(Center(
+                  child: Text(e.uloga?.naziv ?? "Nema uloge",
+                      style: const TextStyle(fontWeight: FontWeight.bold)))),
+              DataCell(
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(226, 121, 191, 248),
+                      foregroundColor: Colors.black,
+                    ),
+                    onPressed: () {
+                      openEditUserModal(e);
+                    },
+                    child: const Text('Uredi korisnika'),
+                  ),
+                ),
+              ),
+              DataCell(
+                Center(
+                  child: e.korisnikId == loggedInUserId
+                      ? const SizedBox()
+                      : ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.black,
+                          ),
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Potvrda'),
+                                  content: const Text(
+                                      'Da li ste sigurni da želite obrisati korisnika?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, false);
+                                      },
+                                      child: const Text(
+                                        'Ne',
+                                        style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 42, 87, 44)),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context, true);
+                                      },
+                                      child: const Text(
+                                        'Da',
+                                        style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 42, 87, 44)),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirm == true) {
+                              try {
+                                await provider.deleteKorisnik(e.korisnikId);
+                                await _fetchData();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Korisnik je uspješno obrisan')),
+                                );
+                              } catch (error) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Došlo je do greške pri brisanju korisnika')),
+                                );
+                              }
+                            }
+                          },
+                          child: const Text("Obriši korisnika"),
+                        ),
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    ),
+  );
+}
 }
