@@ -12,7 +12,7 @@ using eRecipes.Service.Database;
 namespace eRecipes.Service.Migrations
 {
     [DbContext(typeof(ERecipesContext))]
-    [Migration("20250306232605_Init")]
+    [Migration("20250307150450_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -50,6 +50,16 @@ namespace eRecipes.Service.Migrations
                     b.HasIndex("ReceptId");
 
                     b.ToTable("Izvjestajs");
+
+                    b.HasData(
+                        new
+                        {
+                            IzvjestajId = 1,
+                            BrojLajkova = 2,
+                            BrojOmiljenih = 2,
+                            DatumIzvjestaja = new DateTime(2024, 3, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReceptId = 3
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Kategorija", b =>
@@ -145,7 +155,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 1,
-                            DatumRodjenja = new DateTime(1995, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(7822),
+                            DatumRodjenja = new DateTime(1995, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(5560),
                             Email = "admin@mail.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
@@ -159,7 +169,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 2,
-                            DatumRodjenja = new DateTime(2002, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(7895),
+                            DatumRodjenja = new DateTime(2002, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(5629),
                             Email = "korisnik@mail.com",
                             Ime = "Korisnik",
                             KorisnickoIme = "korisnik",
@@ -173,7 +183,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 3,
-                            DatumRodjenja = new DateTime(1980, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(7898),
+                            DatumRodjenja = new DateTime(1980, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(5633),
                             Email = "bajaspare@mail.com",
                             Ime = "Baja",
                             KorisnickoIme = "premium",
@@ -215,21 +225,21 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             LajkoviId = 1,
-                            DatumLajka = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(406),
+                            DatumLajka = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8053),
                             KorisnikId = 2,
                             ReceptId = 2
                         },
                         new
                         {
                             LajkoviId = 2,
-                            DatumLajka = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(409),
+                            DatumLajka = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8056),
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             LajkoviId = 3,
-                            DatumLajka = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(412),
+                            DatumLajka = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8059),
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -270,6 +280,18 @@ namespace eRecipes.Service.Migrations
                     b.HasIndex("ReceptId");
 
                     b.ToTable("Obavijests");
+
+                    b.HasData(
+                        new
+                        {
+                            ObavijestId = 1,
+                            DatumSlanja = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8160),
+                            KorisnikId = 3,
+                            Naslov = "Test",
+                            Procitano = true,
+                            ReceptId = 2,
+                            Sadrzaj = "TEst"
+                        });
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.OmiljeniRecept", b =>
@@ -301,21 +323,21 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             OmiljeniReceptId = 1,
-                            DatumDodavanja = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(433),
+                            DatumDodavanja = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8086),
                             KorisnikId = 2,
                             ReceptId = 1
                         },
                         new
                         {
                             OmiljeniReceptId = 2,
-                            DatumDodavanja = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(436),
+                            DatumDodavanja = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8089),
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             OmiljeniReceptId = 3,
-                            DatumDodavanja = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(439),
+                            DatumDodavanja = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(8092),
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -379,7 +401,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 1,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(8094),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(5864),
                             KategorijaId = 3,
                             KorisnikId = 2,
                             Naziv = "Palačinke",
@@ -394,7 +416,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 2,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(8321),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(6094),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pizza Margherita",
@@ -409,7 +431,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 3,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(8531),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(6304),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Ćevapi",
@@ -424,7 +446,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 4,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(8904),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(6516),
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Tiramisu",
@@ -439,7 +461,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 5,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(9077),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(6724),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pasta Carbonara",
@@ -454,7 +476,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 6,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(9253),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(7074),
                             KategorijaId = 1,
                             KorisnikId = 2,
                             Naziv = "Grčka salata",
@@ -469,7 +491,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 7,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(9425),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(7250),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Sarma",
@@ -484,7 +506,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 8,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(9598),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(7422),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pečena piletina",
@@ -499,7 +521,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 9,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 706, DateTimeKind.Local).AddTicks(9798),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(7598),
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Čokoladni mousse",
@@ -514,7 +536,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 10,
-                            DatumObjave = new DateTime(2025, 3, 7, 0, 26, 4, 707, DateTimeKind.Local).AddTicks(39),
+                            DatumObjave = new DateTime(2025, 3, 7, 16, 4, 50, 47, DateTimeKind.Local).AddTicks(7774),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Zapečeni krompir",
