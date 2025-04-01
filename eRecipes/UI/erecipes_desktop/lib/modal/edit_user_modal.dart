@@ -1,6 +1,7 @@
 import 'package:erecipes_desktop/models/korisnik.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/models/uloga.dart';
+import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,6 +85,61 @@ class _EditUserModalState extends State<EditUserModal> {
       print("Error: User to edit is null!");
     }
   }
+void _resetPassword(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Potvrda resetovanja'),
+        content: const Text(
+          'Da li ste sigurni da želite resetovati lozinku korisnika? Nova lozinka će biti poslata korisniku na email.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); 
+            },
+            child: const Text('Odustani'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop(); // Zatvaranje dijaloga prije poziva API-ja
+              
+              try {
+                final korisnikProvider = context.read<KorisnikProvider>();
+                await korisnikProvider.resetPassword(_korisnikToEdit!.korisnikId!);
+                
+                // Proveri da li je widget još uvek u stablu pre nego što prikažeš SnackBar
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Lozinka je uspješno resetovana i poslana korisniku.'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Greška prilikom resetovanja lozinke: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text(
+              'Resetuj',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +271,15 @@ class _EditUserModalState extends State<EditUserModal> {
                       dropdownColor: const Color.fromRGBO(247, 249, 253, 1),
                     ),
                     const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange),
+                      onPressed: () {
+                        _resetPassword(context);
+                      },
+                      child: const Text('Reset password',
+                          style: TextStyle(color: Colors.white)),
+                    ),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,

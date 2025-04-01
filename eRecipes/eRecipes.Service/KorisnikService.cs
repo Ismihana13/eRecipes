@@ -80,6 +80,7 @@ namespace eRecipes.Service
             {
                 Datum = DateTime.Now,
                 Email = entity.Email!,
+                Naslov = "Hvala što ste se registrovali na eRecipes!",
                 Tekst = $"Poštovani {entity.Ime} {entity.Prezime},\n\n" +
                 "Uspješno ste kreirali nalog na našoj aplikaciji eRecipes. " +
                 "Hvala što ste odabrali našu platformu!\n\n" +
@@ -204,6 +205,41 @@ namespace eRecipes.Service
             Context.SaveChanges();
 
             return Mapper.Map<Model.Korisnik>(korisnik);
+        }
+        public async Task<bool> ResetPassword(int korisnikId)
+        {
+            var entity = await Context.Korisniks.FindAsync(korisnikId);
+            if (entity == null)
+                throw new Exception("Korisnik nije pronađen.");
+
+            string newPassword =GenerateRandomPassword(6);
+            entity.LozinkaSalt = GenerateSalt();
+            entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, newPassword);
+
+            await Context.SaveChangesAsync();
+
+            Notifier emailNotifier = new Notifier
+            {
+                Datum = DateTime.Now,
+                Email = entity.Email!,
+                Naslov = "Promjena lozinke na eRecipes",
+                Tekst = $"Poštovani {entity.Ime} {entity.Prezime},\n\n" +
+                "Administrator je resetovao vašu lozinku. " +
+                $"Vaša nova lozinka je: {newPassword}\n\n" +
+                "Preporučujemo da je promijenite nakon prve prijave.\n\n" +
+                "Srdačan pozdrav,\n" +
+                "eRecipes tim"
+            };
+
+            _emailService.SendingObject(emailNotifier);
+
+            return true;
+        }
+        private static string GenerateRandomPassword(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[RandomNumberGenerator.GetInt32(s.Length)]).ToArray());
         }
     }
 }

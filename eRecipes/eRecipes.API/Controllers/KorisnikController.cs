@@ -74,5 +74,14 @@ namespace eRecipes.API.Controllers
         {
            return ((IKorisnikService)_service).UpdateUloga(id, novaUlogaId);
         }
+        [HttpPost("{id}/ResetPassword")]
+        public async Task<ActionResult> ResetPassword(int id)
+        {
+            bool success = await _service.ResetPassword(id);
+            if (!success)
+                return BadRequest("Resetovanje lozinke nije uspjelo.");
+
+            return Ok("Lozinka je uspješno resetovana.");
+        }
     }
 }

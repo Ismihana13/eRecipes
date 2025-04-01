@@ -73,7 +73,7 @@ namespace eRecipes.RabbitMQ
 
         private async Task HandleMessage(Notifier notifier)
         {
-            await _emailSender.SendEmailAsync(notifier.Email, "Hvala što ste se registrovali na eRecipes!", $"{notifier.Tekst} {notifier.Datum.ToShortDateString()} .");
+            await _emailSender.SendEmailAsync(notifier.Email, notifier.Naslov, $"{notifier.Tekst} {notifier.Datum.ToShortDateString()} .");
         }
 
         private void OnConsumerConsumerCancelled(object sender, ConsumerEventArgs e) { }
