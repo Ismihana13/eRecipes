@@ -12,6 +12,7 @@ namespace eRecipes.Model
         public string Email { get; set; } = null!;
         public DateTime Datum { get; set; }
         public string Tekst { get; set; } = null!;
+        public string Naslov { get; set; } = null!;
     }
 }
 

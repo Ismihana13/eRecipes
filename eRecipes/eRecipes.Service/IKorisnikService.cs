@@ -17,5 +17,6 @@ namespace eRecipes.Service
         Model.Korisnik UpdateMobile(int id, KorisnikMobileUpdateRequest request);
         Model.Korisnik DeleteKorisnickiProfil(int id);
         public Model.Korisnik UpdateUloga(int id, int novaUlogaId);
+        public Task<bool> ResetPassword(int korisnikId);
     }
 }

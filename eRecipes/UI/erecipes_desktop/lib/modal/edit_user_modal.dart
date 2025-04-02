@@ -1,7 +1,9 @@
 import 'package:erecipes_desktop/models/korisnik.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/models/uloga.dart';
+import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
+import 'package:erecipes_desktop/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -71,18 +73,87 @@ class _EditUserModalState extends State<EditUserModal> {
     final ulogaId = _initialValue['ulogaId'];
 
     if (_korisnikToEdit != null) {
-      widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
-        'ime': name,
-        'prezime': surname,
-        'email': email,
-        'telefon': telephone,
-        'korisnickoIme': userName,
-        'ulogaId': ulogaId,
-      });
-      Navigator.pop(context);
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Potvrda'),
+            content: const Text(
+                'Da li ste sigurni da želite ažurirati podatke korisnika?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: const Text('Ne'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: const Text('Da'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (confirm == true) {
+        widget.onUpdatePressed(_korisnikToEdit!.korisnikId!, {
+          'ime': name,
+          'prezime': surname,
+          'email': email,
+          'telefon': telephone,
+          'korisnickoIme': userName,
+          'ulogaId': ulogaId,
+        });
+        Navigator.pop(context);
+      }
     } else {
       print("Error: User to edit is null!");
     }
+  }
+
+  void _resetPassword(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Potvrda resetovanja'),
+          content: const Text(
+              'Da li ste sigurni da želite resetovati lozinku? Nova lozinka će biti poslata korisniku na mail'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Odustani'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+
+                try {
+                  final korisnikProvider = context.read<KorisnikProvider>();
+                  await korisnikProvider
+                      .resetPassword(_korisnikToEdit!.korisnikId!);
+
+                  if (mounted) {
+                    SuccessSnackBar.show(
+                        context, 'Lozinka uspješno resetovana.');
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ErrorSnackBar.show(context, 'Greška: $e');
+                  }
+                }
+              },
+              child: const Text('Resetuj', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -215,6 +286,15 @@ class _EditUserModalState extends State<EditUserModal> {
                       dropdownColor: const Color.fromRGBO(247, 249, 253, 1),
                     ),
                     const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange),
+                      onPressed: () {
+                        _resetPassword(context);
+                      },
+                      child: const Text('Reset password',
+                          style: TextStyle(color: Colors.white)),
+                    ),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
