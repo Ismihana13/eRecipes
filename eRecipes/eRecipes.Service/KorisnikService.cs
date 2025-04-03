@@ -241,5 +241,35 @@ namespace eRecipes.Service
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[RandomNumberGenerator.GetInt32(s.Length)]).ToArray());
         }
+        public async Task<Model.Korisnik> ResetPasswordByEmail(string email)
+        {
+            var entity = await Context.Korisniks.FirstOrDefaultAsync(k => k.Email == email);
+            if (entity == null)
+                throw new Exception("Korisnik nije pronađen.");
+
+            string newPassword = GenerateRandomPassword(6);
+
+            entity.LozinkaSalt = GenerateSalt();
+            entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, newPassword);
+
+            await Context.SaveChangesAsync();
+
+            Notifier emailNotifier = new Notifier
+            {
+                Datum = DateTime.Now,
+                Email = entity.Email!,
+                Naslov = "Promjena lozinke na eRecipes",
+                Tekst = $"Poštovani {entity.Ime} {entity.Prezime},\n\n" +
+                        $"Vaša nova lozinka je: {newPassword}\n\n" +
+                        "Preporučujemo da je promijenite nakon prve prijave.\n\n" +
+                        "Srdačan pozdrav,\n" +
+                        "eRecipes tim"
+            };
+
+            _emailService.SendingObject(emailNotifier);
+
+            return Mapper.Map<Model.Korisnik>(entity);
+        }
+
     }
 }

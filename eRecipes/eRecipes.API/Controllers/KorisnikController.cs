@@ -5,6 +5,7 @@ using eRecipes.Model.Requests;
 using eRecipes.Model.SearchObjects;
 using eRecipes.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Text;
@@ -30,6 +31,17 @@ namespace eRecipes.API.Controllers
                 throw new Exception("Servis nije inicijalizovan.");
             }
             return _service.Login(username, password);
+        }
+        [AllowAnonymous]
+        [HttpGet("check-username")]
+        public IActionResult ProvjeriKorisnickoIme([FromQuery] string korisnickoIme)
+        {
+            var korisnik = _service.GetByUsername(korisnickoIme);
+            if (korisnik == null)
+            {
+                return NotFound(new { message = "Korisnik sa datim korisničkim imenom nije pronađen." });
+            }
+            return Ok(new { message = "Korisničko ime postoji u sistemu." });
         }
 
         [HttpGet("Authenticate")]
@@ -82,6 +94,18 @@ namespace eRecipes.API.Controllers
                 return BadRequest("Resetovanje lozinke nije uspjelo.");
 
             return Ok("Lozinka je uspješno resetovana.");
+        }
+        [AllowAnonymous]
+        [HttpPost("resetPasswordByEmail")]
+        public async Task<IActionResult> ResetPasswordByEmail([FromBody] string email)
+        {
+            var user = await _service.ResetPasswordByEmail(email);
+
+            if (user == null)
+            {
+                return BadRequest("Korisnik sa unesenim emailom nije pronađen.");
+            }
+            return Ok("Link za resetovanje lozinke je poslat na vaš email.");
         }
     }
 }
