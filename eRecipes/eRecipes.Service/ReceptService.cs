@@ -26,8 +26,8 @@ namespace eRecipes.Service
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IKorisnikService _korisnikService;
         private readonly ReceptRecommender _recommender;
-        private readonly IObavijestService _obavjestService;
-        public ReceptService(ERecipesContext context, IMapper mapper, ILogger<ReceptService> logger, IHttpContextAccessor httpContextAccessor, IKorisnikService korisnikService, IObavijestService obavjestService) : base(context, mapper)
+        private readonly INotifikacijeService _obavjestService;
+        public ReceptService(ERecipesContext context, IMapper mapper, ILogger<ReceptService> logger, IHttpContextAccessor httpContextAccessor, IKorisnikService korisnikService, INotifikacijeService obavjestService) : base(context, mapper)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
@@ -74,7 +74,7 @@ namespace eRecipes.Service
                 if (user != null)
                 {
                     entity.KorisnikId = user.KorisnikId;
-                    var obavijestRequest = new ObavijestInsertRequest
+                    var obavijestRequest = new NotifikacijeInsertRequest
                     {
                         Naslov = "Novi recept dodat!",
                         Sadrzaj = $"{user.KorisnickoIme} je dodao novi recept: {request.Naziv}",

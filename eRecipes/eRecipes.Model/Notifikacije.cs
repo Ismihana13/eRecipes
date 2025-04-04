@@ -4,9 +4,9 @@ using System.Text;
 
 namespace eRecipes.Model
 {
-    public class Obavijest
+    public class Notifikacije
     {
-        public int ObavijestId { get; set; }
+        public int NotifikacijeId { get; set; }
         public string Naslov { get; set; } = null!;
         public string Sadrzaj { get; set; } = null!;
         public int KorisnikId { get; set; }

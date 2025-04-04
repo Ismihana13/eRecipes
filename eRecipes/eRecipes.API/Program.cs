@@ -21,7 +21,7 @@ builder.Services.AddTransient<ISastojakService, SastojakService>();
 builder.Services.AddTransient<ILajkoviService, LajkoviService>();
 builder.Services.AddTransient<IIzvjestajService, IzvjestajService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
-builder.Services.AddTransient<IObavijestService, ObavijestService>();
+builder.Services.AddTransient<INotifikacijeService, NotifikacijeService>();
 
 builder.Services.AddHttpContextAccessor();
 

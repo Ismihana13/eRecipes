@@ -1,26 +1,27 @@
 import 'dart:async';
-import 'package:erecipes_desktop/providers/obavijesti_provider.dart';
+import 'package:erecipes_desktop/providers/notifikacije_provider.dart';
 import 'package:erecipes_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:erecipes_desktop/models/obavijest.dart';
+import 'package:erecipes_desktop/models/notifikacije.dart';
 
-class ObavijestiScreen extends StatefulWidget {
+class  NotifikacijeScreen extends StatefulWidget {
   @override
-  _ObavijestiScreenState createState() => _ObavijestiScreenState();
+  _NotifikacijeScreenState createState() => _NotifikacijeScreenState();
 }
 
-class _ObavijestiScreenState extends State<ObavijestiScreen> {
-  late ObavijestProvider _obavjestProvider;
-  List<Obavijest> _obavijesti = [];
+class _NotifikacijeScreenState extends State<NotifikacijeScreen> {
+  late NotifikacijeProvider _notifikacijeProvider;
+  List<Notifikacije> _obavijesti = [];
   bool _isLoading = true;
   Timer? _timer;
   bool? _fileterProcitano;
   String? selectedFilter;
+  int _brojNeprocitanih = 0;
 
   @override
   void initState() {
     super.initState();
-    _obavjestProvider = ObavijestProvider();
+    _notifikacijeProvider = NotifikacijeProvider();
     _fetchData();
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (_fileterProcitano == null) {
@@ -37,13 +38,14 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
 
   void _fetchData({bool? procitano}) async {
     try {
-      final obavijesti = await _obavjestProvider.getSve(
+      final obavijesti = await _notifikacijeProvider.getSve(
         filter: procitano != null ? {'Procitano': procitano} : null,
       );
       setState(() {
         _obavijesti = obavijesti;
         _isLoading = false;
         _fileterProcitano = procitano;
+         _brojNeprocitanih = _obavijesti.where((n) => n.procitano == false).length;
       });
     } catch (e) {
       setState(() {
@@ -69,7 +71,7 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: selectedFilter == null
-                    ? Colors.grey 
+                    ? Colors.grey
                     : const Color.fromARGB(255, 231, 231, 231),
                 foregroundColor: Colors.black,
               ),
@@ -137,7 +139,13 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 4),
-                              Text(obavijest.sadrzaj ?? 'Bez sadržaja'),
+                              SizedBox(
+                                height: 60,
+                                child: SingleChildScrollView(
+                                  child:
+                                      Text(obavijest.sadrzaj ?? 'Bez sadržaja'),
+                                ),
+                              ),
                               const SizedBox(height: 6),
                               Text(
                                 'Datum slanja: ${formatDateAndHours(obavijest.datumSlanja)}',
@@ -158,9 +166,9 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
                                 onPressed: () async {
                                   if (obavijest.procitano == false) {
                                     try {
-                                      await _obavjestProvider
+                                      await _notifikacijeProvider
                                           .oznaciObavijestKaoProcitanu(
-                                              obavijest.obavijestId!, true);
+                                              obavijest.notifikacijeId!, true);
                                       setState(() {
                                         obavijest.procitano = true;
                                       });
@@ -212,8 +220,8 @@ class _ObavijestiScreenState extends State<ObavijestiScreen> {
                                   );
                                   if (confirmDelete == true) {
                                     try {
-                                      await _obavjestProvider.obrisiObavijest(
-                                          obavijest.obavijestId!);
+                                      await _notifikacijeProvider.obrisiObavijest(
+                                          obavijest.notifikacijeId!);
 
                                       setState(() {
                                         _obavijesti.remove(obavijest);

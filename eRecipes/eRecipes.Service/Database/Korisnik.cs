@@ -18,7 +18,7 @@ public partial class Korisnik
     public int UlogaId { get; set; }
     public virtual Uloga Uloga { get; set; } = null!;
     public virtual ICollection<Lajkovi> Lajkovis { get; set; } = new List<Lajkovi>();
-    public virtual ICollection<Obavijest> Obavijests { get; set; } = new List<Obavijest>();
+    public virtual ICollection<Notifikacije> Obavijests { get; set; } = new List<Notifikacije>();
     public virtual ICollection<OmiljeniRecept> OmiljeniRecepts { get; set; } = new List<OmiljeniRecept>();
     public virtual ICollection<Recept> Recepts { get; set; } = new List<Recept>();
 }

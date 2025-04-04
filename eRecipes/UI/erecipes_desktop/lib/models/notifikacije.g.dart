@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'obavijest.dart';
+part of 'notifikacije.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Obavijest _$ObavijestFromJson(Map<String, dynamic> json) => Obavijest(
-      obavijestId: (json['obavijestId'] as num?)?.toInt(),
+Notifikacije _$NotifikacijeFromJson(Map<String, dynamic> json) => Notifikacije(
+      notifikacijeId: (json['notifikacijeId'] as num?)?.toInt(),
       naslov: json['naslov'] as String?,
       sadrzaj: json['sadrzaj'] as String?,
       korisnikId: (json['korisnikId'] as num?)?.toInt(),
@@ -20,8 +20,9 @@ Obavijest _$ObavijestFromJson(Map<String, dynamic> json) => Obavijest(
       procitano: json['procitano'] as bool?,
     );
 
-Map<String, dynamic> _$ObavijestToJson(Obavijest instance) => <String, dynamic>{
-      'obavijestId': instance.obavijestId,
+Map<String, dynamic> _$NotifikacijeToJson(Notifikacije instance) =>
+    <String, dynamic>{
+      'notifikacijeId': instance.notifikacijeId,
       'naslov': instance.naslov,
       'sadrzaj': instance.sadrzaj,
       'korisnikId': instance.korisnikId,

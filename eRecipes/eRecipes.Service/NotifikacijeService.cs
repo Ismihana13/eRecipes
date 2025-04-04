@@ -11,29 +11,29 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class ObavijestService : IObavijestService
+    public class NotifikacijeService : INotifikacijeService
     {
         public ERecipesContext Context { get; set; }
         public IMapper Mapper { get; set; }
-        public ObavijestService(ERecipesContext context, IMapper mapper) 
+        public NotifikacijeService(ERecipesContext context, IMapper mapper) 
         {
             Context = context;
             Mapper = mapper;
         }
 
-        public Model.Obavijest Insert(ObavijestInsertRequest request)
+        public Model.Notifikacije Insert(NotifikacijeInsertRequest request)
         {
-            var entity = Mapper.Map<Database.Obavijest>(request);
+            var entity = Mapper.Map<Database.Notifikacije>(request);
             entity.DatumSlanja=DateTime.Now;
             entity.Procitano = false;
-            Context.Obavijests.Add(entity);
+            Context.Notifikacijes.Add(entity);
             Context.SaveChanges();
-            return Mapper.Map<Model.Obavijest>(entity);
+            return Mapper.Map<Model.Notifikacije>(entity);
         }
 
-        public List<Model.Obavijest> Get(ObavijestSearchObject search)
+        public List<Model.Notifikacije> Get(NotifikacijeSearchObject search)
         {
-            var query = Context.Obavijests
+            var query = Context.Notifikacijes
                                .OrderByDescending(o => o.DatumSlanja) 
                                .AsQueryable();
             if (search.Procitano != null)
@@ -43,30 +43,30 @@ namespace eRecipes.Service
 
             var list = query.ToList();
 
-            return Mapper.Map<List<Model.Obavijest>>(list);
+            return Mapper.Map<List<Model.Notifikacije>>(list);
         }
 
-        public Model.Obavijest Delete(int id)
+        public Model.Notifikacije Delete(int id)
         {
-            var entity = Context.Obavijests.Find(id);
+            var entity = Context.Notifikacijes.Find(id);
             if (entity == null)
                 return null;
 
-            Context.Obavijests.Remove(entity);
+            Context.Notifikacijes.Remove(entity);
             Context.SaveChanges();
-            return Mapper.Map<Model.Obavijest>(entity);
+            return Mapper.Map<Model.Notifikacije>(entity);
         }
 
-        public Model.Obavijest UpdateProcitano(int id, bool procitano)
+        public Model.Notifikacije UpdateProcitano(int id, bool procitano)
         {
-            var entity = Context.Obavijests.Find(id);
+            var entity = Context.Notifikacijes.Find(id);
             if (entity == null)
                 return null;
 
             entity.Procitano = procitano;
             Context.SaveChanges();
 
-            return Mapper.Map<Model.Obavijest>(entity);
+            return Mapper.Map<Model.Notifikacije>(entity);
         }
     }
 }
