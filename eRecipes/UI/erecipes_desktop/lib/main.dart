@@ -3,6 +3,7 @@ import 'package:erecipes_desktop/providers/izvjestaj_provider.dart';
 import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
+import 'package:erecipes_desktop/providers/notifikacije_provider.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
 import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
@@ -24,6 +25,8 @@ void main() {
           create: (_) => KorisnikProvider()),
       ChangeNotifierProvider<UlogaProvider>(create: (_) => UlogaProvider()),
        ChangeNotifierProvider<IzvjestajProvider>(create: (_) => IzvjestajProvider()),
+         ChangeNotifierProvider<NotifikacijeProvider>(
+          create: (_) => NotifikacijeProvider()),
     ],
     child: const MyApp(),
   ));
