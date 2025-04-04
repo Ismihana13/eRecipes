@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomTitleText extends StatelessWidget {
   final String title;
-  const CustomTitleText({Key? key, required this.title}) : super(key: key);
+  const CustomTitleText({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {

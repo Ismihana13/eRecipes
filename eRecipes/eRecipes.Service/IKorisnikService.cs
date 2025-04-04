@@ -18,5 +18,6 @@ namespace eRecipes.Service
         Model.Korisnik DeleteKorisnickiProfil(int id);
         public Model.Korisnik UpdateUloga(int id, int novaUlogaId);
         public Task<bool> ResetPassword(int korisnikId);
+        public Task<Model.Korisnik> ResetPasswordByEmail(string email);
     }
 }

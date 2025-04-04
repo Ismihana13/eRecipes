@@ -11,6 +11,7 @@ import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_list_screen.dart';
+import 'package:erecipes_mobile/screens/reset_password_screen.dart';
 import 'package:erecipes_mobile/screens/singup_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
@@ -50,6 +51,7 @@ class MainApp extends StatelessWidget {
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
           AddNewRecipeScreen.routeName: (context) => const AddNewRecipeScreen(),
           UserScreen.routeName: (context) => const UserScreen(),
+          ResetPasswordScreen.routeName: (context) =>  ResetPasswordScreen(),
         },
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -212,6 +214,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(ResetPasswordScreen.routeName);
+                        },
+                        child: const Text(
+                          "Forgot password?",
+                          style: TextStyle(
+                            color: Color(0xFF2C4D34),
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
