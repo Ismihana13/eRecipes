@@ -91,11 +91,11 @@ void initState() {
                 ),
                 if (isAdministrator())
                 NavItem(
-                  title: 'Obavjesti',
-                  isSelected: selectedNavItem == 'Obavjesti',
+                  title: 'Notifikacije',
+                  isSelected: selectedNavItem == 'Notifikacije',
                   onTap: () {
                     setState(() {
-                      selectedNavItem = 'Obavjesti';
+                      selectedNavItem = 'Notifikacije';
                     });
                   },
                 ),
@@ -169,10 +169,10 @@ void initState() {
           borderRadius: BorderRadius.circular(10),
           child: const ReportScreen(),
         );
-      case 'Obavjesti':
+      case 'Notifikacije':
          return ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child:  ObavijestiScreen(),
+          child:  NotifikacijeScreen(),
         );
       case 'Logout':
         return const Center(child: Text('You have logged out!'));

@@ -1,11 +1,11 @@
 import 'package:erecipes_desktop/models/korisnik.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'obavijest.g.dart';
+part 'notifikacije.g.dart';
 
 @JsonSerializable()
-class Obavijest {
-  int? obavijestId;
+class Notifikacije{
+  int? notifikacijeId;
   String? naslov; 
   String? sadrzaj;
   int? korisnikId;
@@ -13,8 +13,8 @@ class Obavijest {
   DateTime? datumSlanja;
   bool? procitano;
   
-     Obavijest({
-    this.obavijestId,
+     Notifikacije({
+    this.notifikacijeId,
     this.naslov,
     this.sadrzaj,
     this.korisnikId,
@@ -23,7 +23,7 @@ class Obavijest {
     this.procitano,
   });
   
-  factory Obavijest.FromJson(Map<String,dynamic> json)=> _$ObavijestFromJson(json);
+  factory Notifikacije.FromJson(Map<String,dynamic> json)=> _$NotifikacijeFromJson(json);
 
-  Map<String,dynamic> toJson() => _$ObavijestToJson(this);
+  Map<String,dynamic> toJson() => _$NotifikacijeToJson(this);
 }

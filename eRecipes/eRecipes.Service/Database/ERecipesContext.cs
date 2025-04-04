@@ -24,7 +24,7 @@ public partial class ERecipesContext : DbContext
 
     public virtual DbSet<Lajkovi> Lajkovis { get; set; }
 
-    public virtual DbSet<Obavijest> Obavijests { get; set; }
+    public virtual DbSet<Notifikacije> Notifikacijes { get; set; }
 
     public virtual DbSet<OmiljeniRecept> OmiljeniRecepts { get; set; }
 
@@ -181,8 +181,8 @@ public partial class ERecipesContext : DbContext
             new Izvjestaj { IzvjestajId = 1, ReceptId = 3, BrojLajkova = 2,BrojOmiljenih=2, DatumIzvjestaja = new DateTime(2024, 3, 7) }
         );
 
-        modelBuilder.Entity<Obavijest>().HasData(
-           new Obavijest { ObavijestId = 1, KorisnikId = 3, ReceptId = 2, Procitano = true, DatumSlanja=DateTime.Now,Naslov="Test", Sadrzaj="TEst" }
+        modelBuilder.Entity<Notifikacije>().HasData(
+           new Notifikacije { NotifikacijeId = 1, KorisnikId = 3, ReceptId = 2, Procitano = true, DatumSlanja=DateTime.Now,Naslov="Test", Sadrzaj="TEst" }
        );
     }
 }

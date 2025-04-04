@@ -1,17 +1,17 @@
 import 'dart:convert';
 
-import 'package:erecipes_desktop/models/obavijest.dart';
+import 'package:erecipes_desktop/models/notifikacije.dart';
 import 'package:erecipes_desktop/providers/base_provider.dart';
 
-class ObavijestProvider extends BaseProvider<Obavijest> {
-  ObavijestProvider() : super("Obavijest");
+class NotifikacijeProvider extends BaseProvider<Notifikacije> {
+  NotifikacijeProvider() : super("Notifikacije");
 
   @override
   fromJson(data) {
-    return Obavijest.FromJson(data);
+    return Notifikacije.FromJson(data);
   }
 
-  Future<List<Obavijest>> getSve({dynamic filter})async{
+  Future<List<Notifikacije>> getSve({dynamic filter})async{
     var url="$fullUrl";
     if(filter!=null){
       var queryString=getQueryString(filter);
@@ -22,7 +22,7 @@ class ObavijestProvider extends BaseProvider<Obavijest> {
     var response=await http!.get(uri,headers: headers);
     if(isValidResponse(response)){
       var data= jsonDecode(response.body);
-      List<Obavijest> result=[];
+      List<Notifikacije> result=[];
       for(var item in data){
         result.add(fromJson(item));
       }
@@ -32,8 +32,8 @@ class ObavijestProvider extends BaseProvider<Obavijest> {
     }
   }
 
-   Future<void> oznaciObavijestKaoProcitanu(int obavijestId, bool procitano) async {
-    var url = "$fullUrl/$obavijestId/procitano?procitano=$procitano";
+   Future<void> oznaciObavijestKaoProcitanu(int notifikacijeId, bool procitano) async {
+    var url = "$fullUrl/$notifikacijeId/procitano?procitano=$procitano";
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
@@ -52,8 +52,8 @@ class ObavijestProvider extends BaseProvider<Obavijest> {
     }
   }
 
-  Future<void> obrisiObavijest(int obavijestId) async{
-    var url="$fullUrl/$obavijestId";
+  Future<void> obrisiObavijest(int notifikacijeId) async{
+    var url="$fullUrl/$notifikacijeId";
      var uri = Uri.parse(url);
     var headers = getHeaders();
     var response = await http!.delete(uri, headers: headers);

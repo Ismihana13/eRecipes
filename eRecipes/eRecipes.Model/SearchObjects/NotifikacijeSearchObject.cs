@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class ObavijestSearchObject
+    public class NotifikacijeSearchObject
     {
         public bool? Procitano { get; set; }
     }
