@@ -17,159 +17,164 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
   bool isUserFound = false;
   bool isLoading = false;
-void checkUsername(BuildContext context) async {
-  var korisnickoIme = usernameController.text;
-  
-  print("📡 Uneseno korisničko ime: $korisnickoIme");
+  void checkUsername(BuildContext context) async {
+    var korisnickoIme = usernameController.text;
 
-  if (korisnickoIme.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Unesite korisničko ime."),
-        backgroundColor: Colors.red,
-      ),
-    );
-    return;
-  }
-  setState(() {
-    isLoading = true;
-  });
-
-  try {
-    final korisnikProvider = context.read<KorisnikProvider>();
-    bool userExists = await korisnikProvider.checkUsername(korisnickoIme);
-    setState(() {
-      isUserFound = userExists;
-    });
-
-    if (!userExists) {
+    if (korisnickoIme.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Korisničko ime nije pronađeno."),
+          content: Text("Unesite korisničko ime."),
           backgroundColor: Colors.red,
         ),
       );
-    } 
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Greška prilikom provjere korisničkog imena: $e"),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } finally {
+      return;
+    }
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
+
+    try {
+      final korisnikProvider = context.read<KorisnikProvider>();
+      bool userExists = await korisnikProvider.checkUsername(korisnickoIme);
+      setState(() {
+        isUserFound = userExists;
+      });
+
+      if (!userExists) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Korisničko ime nije pronađeno."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Greška prilikom provjere korisničkog imena: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
-}
 
   void sendResetEmail() async {
-  String email = emailController.text;
+    String email = emailController.text;
 
-  if (email.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Molimo unesite email!"), backgroundColor: Colors.red),
-    );
-    return;
-  }
-
-  setState(() {
-    isLoading = true;
-  });
-
-  try {
-    final korisnikProvider = context.read<KorisnikProvider>();
-    bool isSuccess = await korisnikProvider.resetPasswordByEmail(email);
-
-    if (isSuccess) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const CustomTitleText(title: "Uspjesno resetovanje",),
-            content: const Text("Nova lozinka vam je poslata na email, proverite svoj inbox."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/login'); 
-                },
-                child: Text("OK"),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Korisnik sa unesenim emailom nije pronađen."), backgroundColor: Colors.red),
+        const SnackBar(
+            content: Text("Molimo unesite email!"),
+            backgroundColor: Colors.red),
       );
+      return;
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Greška pri resetovanju lozinke: $e"), backgroundColor: Colors.red),
-    );
-  } finally {
+
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
+
+    try {
+      final korisnikProvider = context.read<KorisnikProvider>();
+      bool isSuccess = await korisnikProvider.resetPasswordByEmail(email);
+
+      if (isSuccess) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const CustomTitleText(
+                title: "Uspjesno resetovanje",
+              ),
+              content: const Text(
+                  "Nova lozinka vam je poslata na email, proverite svoj inbox."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Korisnik sa unesenim emailom nije pronađen."),
+              backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text("Greška pri resetovanju lozinke: $e"),
+            backgroundColor: Colors.red),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
-}
 
-
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(title: const Text("Reset Password")),
-    body: Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Poravnanje na lijevo
-        children: [
-          const Text(
-            "Unesite korisničko ime za reset lozinke",
-            textAlign: TextAlign.left, // Poravnanje teksta na lijevo
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: usernameController,
-            decoration: const InputDecoration(
-              labelText: "Korisničko ime",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: isLoading ? null : () => checkUsername(context),
-            child: isLoading
-                ? const CircularProgressIndicator()
-                : const Text("Provjeri korisničko ime"),
-          ),
-          if (isUserFound) ...[
-            const SizedBox(height: 20),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Reset Password")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             const Text(
-              "Unesite email na koji ćemo vam poslati novu lozinku",
-              textAlign: TextAlign.left, // Poravnanje teksta na lijevo
+              "Unesite korisničko ime za reset lozinke",
+              textAlign: TextAlign.left,
               style: TextStyle(fontSize: 16),
             ),
+            const SizedBox(height: 20),
             TextField(
-              controller: emailController,
+              controller: usernameController,
               decoration: const InputDecoration(
-                labelText: "Email",
+                labelText: "Korisničko ime",
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: sendResetEmail,
-              child: const Text("Pošalji reset lozinke"),
+              onPressed: isLoading ? null : () => checkUsername(context),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text("Provjeri korisničko ime"),
             ),
-          ]
-        ],
+            if (isUserFound) ...[
+              const SizedBox(height: 20),
+              const Text(
+                "Unesite email na koji ćemo vam poslati novu lozinku",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 16),
+              ),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: "Email",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: sendResetEmail,
+                child: const Text("Pošalji reset lozinke"),
+              ),
+            ]
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

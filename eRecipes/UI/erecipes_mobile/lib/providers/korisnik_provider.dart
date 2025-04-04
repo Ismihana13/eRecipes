@@ -101,13 +101,13 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
     }
   }
 
- Future<bool> resetPasswordByEmail(String email) async {
-   var url = "$fullUrl/resetPasswordByEmail";
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
+  Future<bool> resetPasswordByEmail(String email) async {
+    var url = "$fullUrl/resetPasswordByEmail";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
 
     final response = await http!.post(
-     uri,
+      uri,
       headers: headers,
       body: json.encode(email),
     );
@@ -118,6 +118,4 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       return false;
     }
   }
-
-
 }
