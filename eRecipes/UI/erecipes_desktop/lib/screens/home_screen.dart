@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:erecipes_desktop/main.dart';
 import 'package:erecipes_desktop/providers/auth_provider.dart';
+import 'package:erecipes_desktop/providers/notifikacije_provider.dart';
 import 'package:erecipes_desktop/screens/category_list_screen.dart';
-import 'package:erecipes_desktop/screens/obavijesti_screen.dart';
+import 'package:erecipes_desktop/screens/notifikacije_screen.dart';
 import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:erecipes_desktop/screens/report_screen.dart';
 import 'package:erecipes_desktop/screens/user_list_screen.dart';
@@ -17,31 +20,57 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String selectedNavItem = 'Recepti';
-  
-@override
-void initState() {
-  super.initState();
-  selectedNavItem = 'Recepti'; 
-}
+  late NotifikacijeProvider _notifikacijeProvider;
+  int _brojNeprocitanih = 0;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+     _fetchBrojNeprocitanih();
+    selectedNavItem = 'Recepti';
+    _notifikacijeProvider = NotifikacijeProvider();
+   _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      _fetchBrojNeprocitanih();
+    });
+  }
+    @override
+  void dispose() {
+    // Ne zaboravi da otkažeš timer kada se ekran uništi
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _fetchBrojNeprocitanih() async {
+    final brojNeprocitanih =
+        await _notifikacijeProvider.getSve(filter: {'Procitano': false});
+    setState(() {
+      _brojNeprocitanih = brojNeprocitanih.length;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-  bool isAdministrator() {
-  return AuthProvider.korisnik?.uloga?.naziv
-          ?.split(',')
-          .map((e) => e.trim().toLowerCase())
-          .contains('admin') ?? false;
-  }
+    bool isAdministrator() {
+      return AuthProvider.korisnik?.uloga?.naziv
+              ?.split(',')
+              .map((e) => e.trim().toLowerCase())
+              .contains('admin') ??
+          false;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'eRecipes',
           style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic),
         ),
         backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
-      backgroundColor:  Colors.white,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(
@@ -60,69 +89,74 @@ void initState() {
                   },
                 ),
                 if (isAdministrator())
-                NavItem(
-                  title: 'Kategorije',
-                  isSelected: selectedNavItem == 'Kategorije',
-                  onTap: () {
-                    setState(() {
-                      selectedNavItem = 'Kategorije';
-                    });
-                  },
-                ),
-              if (isAdministrator())
-                NavItem(
-                  title: 'Izvještaji',
-                  isSelected: selectedNavItem == 'Izvještaji',
-                  onTap: () {
-                    setState(() {
-                      selectedNavItem = 'Izvještaji';
-                    });
-                  },
-                ),
+                  NavItem(
+                    title: 'Kategorije',
+                    isSelected: selectedNavItem == 'Kategorije',
+                    onTap: () {
+                      setState(() {
+                        selectedNavItem = 'Kategorije';
+                      });
+                    },
+                  ),
                 if (isAdministrator())
-                NavItem(
-                  title: 'Korisnici',
-                  isSelected: selectedNavItem == 'Korisnici',
-                  onTap: () {
-                    setState(() {
-                      selectedNavItem = 'Korisnici';
-                    });
-                  },
-                ),
+                  NavItem(
+                    title: 'Izvještaji',
+                    isSelected: selectedNavItem == 'Izvještaji',
+                    onTap: () {
+                      setState(() {
+                        selectedNavItem = 'Izvještaji';
+                      });
+                    },
+                  ),
                 if (isAdministrator())
-                NavItem(
-                  title: 'Notifikacije',
-                  isSelected: selectedNavItem == 'Notifikacije',
-                  onTap: () {
-                    setState(() {
-                      selectedNavItem = 'Notifikacije';
-                    });
-                  },
-                ),
+                  NavItem(
+                    title: 'Korisnici',
+                    isSelected: selectedNavItem == 'Korisnici',
+                    onTap: () {
+                      setState(() {
+                        selectedNavItem = 'Korisnici';
+                      });
+                    },
+                  ),
+                if (isAdministrator())
+                  NavItem(
+                    title: 'Notifikacije',
+                    isSelected: selectedNavItem == 'Notifikacije',
+                    onTap: () {
+                      setState(() {
+                        selectedNavItem = 'Notifikacije';
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.notifications,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    unreadCount: _brojNeprocitanih, // Prikaz broja nepročitanih
+                  ),
                 NavItem(
                   title: 'Dobro došli!',
                   isSelected: selectedNavItem == 'Dobro došli',
                   onTap: () {
-                    setState(() {
-                     
-                    });
+                    setState(() {});
                   },
-                 icon: const Icon(
+                  icon: const Icon(
                     Icons.person,
                     color: Colors.black,
                     size: 20,
                   ),
-                ), NavItem(
+                ),
+                NavItem(
                   title: 'Logout',
                   isSelected: selectedNavItem == 'Logout',
                   onTap: () {
                     AuthProvider.username = '';
                     AuthProvider.password = '';
                     AuthProvider.korisnik = null;
-                     Navigator.of(context).pushNamedAndRemoveUntil(
-                              LoginScreen.routeName,
-                              (route) => false,
-                            );
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      LoginScreen.routeName,
+                      (route) => false,
+                    );
                     setState(() {
                       selectedNavItem = 'Logout';
                     });
@@ -165,19 +199,20 @@ void initState() {
           child: const CategoryListScreen(),
         );
       case 'Izvještaji':
-          return ClipRRect(
+        return ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: const ReportScreen(),
         );
       case 'Notifikacije':
-         return ClipRRect(
+        return ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child:  NotifikacijeScreen(),
+          child: NotifikacijeScreen(),
         );
       case 'Logout':
         return const Center(child: Text('You have logged out!'));
       default:
-        return const Center(child: Text('Select an item from the navigation bar'));
+        return const Center(
+            child: Text('Select an item from the navigation bar'));
     }
   }
 }
@@ -187,15 +222,18 @@ class NavItem extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSelected;
   final Icon? icon;
+  final int? unreadCount; // Dodan parametar za broj nepročitanih
 
-  const NavItem({super.key, 
+  const NavItem({
+    super.key,
     required this.title,
     required this.onTap,
     required this.isSelected,
     this.icon,
+    this.unreadCount, // Inicijalizacija parametra
   });
 
- @override
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
@@ -208,13 +246,30 @@ class NavItem extends StatelessWidget {
               title,
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, 
-                color: isSelected ? Colors.black : Colors.black, 
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.black : Colors.black,
               ),
             ),
             if (icon != null) ...[
               const SizedBox(width: 8),
               icon!,
+            ],
+            if (unreadCount != null && unreadCount! > 0) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  unreadCount.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
             ],
           ],
         ),
