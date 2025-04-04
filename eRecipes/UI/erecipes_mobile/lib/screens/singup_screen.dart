@@ -31,6 +31,14 @@ class _SignupScreenState extends State<SignUpScreen> {
   void handleSignup(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
+        bool usernameExists =
+            await _korisnikProvider.checkUsername(_usernameController.text);
+
+        if (usernameExists) {
+          CustomSnackBar.showErrorSnackBar(
+              context, 'Korisničko ime je već zauzeto.');
+          return;
+        }
         final korisnikRequest = {
           'ime': _imeController.text,
           'prezime': _prezimeController.text,
