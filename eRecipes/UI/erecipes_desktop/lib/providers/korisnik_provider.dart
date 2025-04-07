@@ -54,4 +54,23 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       throw Exception("Neuspješno mijenjanje lozinke.");
     }
   }
+  Future<Korisnik> updateMobile(int id, Map<String, dynamic> request) async {
+    var url = "$fullUrl/$id/UpdateMobile";
+    var uri = Uri.parse(url);
+    var headers = getHeaders();
+    var jsonRequest = jsonEncode(request);
+
+    try {
+      var response = await http!.put(uri, headers: headers, body: jsonRequest);
+      if (isValidResponse(response)) {
+        var data = jsonDecode(response.body);
+        Korisnik updatedUser = fromJson(data);
+        return updatedUser;
+      } else {
+        throw Exception("Failed to update mobile: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Failed to update mobile: $e");
+    }
+  }
 }

@@ -8,6 +8,7 @@ import 'package:erecipes_desktop/providers/recipe_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
 import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_desktop/screens/home_screen.dart';
+import 'package:erecipes_desktop/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,31 +69,18 @@ class LoginScreen extends StatelessWidget {
         AuthProvider.password = _passwordController.text;
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
         if (AuthProvider.korisnik!.ulogaId == 2 || AuthProvider.korisnik!.korisnikId==3) {
-           ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login failed. Please check your credentials.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+          ErrorSnackBar.show(context,
+            'Login failed. Please check your credentials.');
           return;
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login successful!'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+         SuccessSnackBar.show(context, "Login successful!");
         Navigator.of(context).pushNamedAndRemoveUntil(
           HomeScreen.routeName,
           (route) => false,
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login failed. Please check your credentials.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+        ErrorSnackBar.show(context,
+            'Login failed. Please check your credentials.');
       }
     }
   }
