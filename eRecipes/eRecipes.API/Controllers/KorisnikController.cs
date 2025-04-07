@@ -62,6 +62,11 @@ namespace eRecipes.API.Controllers
         {
             return base.Insert(request);
         }
+       
+        public override Korisnik Update(int id,KorisnikUpdateRequest request)
+        {
+            return base.Update(id,request);
+        }
 
         [HttpPut("{id}/UpdateMobile")]
         public Korisnik UpdateMobile(int id, [FromBody] KorisnikMobileUpdateRequest request)
