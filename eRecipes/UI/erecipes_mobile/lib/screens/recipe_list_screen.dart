@@ -41,6 +41,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   TextEditingController _searchController = TextEditingController();
   dynamic _selectedFilter;
   List<Recept> listaRekomed = [];
+  bool isEmpty = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -192,76 +194,89 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
+      child: Column(
         children: [
-          ElevatedButton(
-            onPressed: () async {
-              var tmpData = await _recipeProvider?.get(filter: {'Status':true});
-              setState(() {
-                _selectedFilter = 'Svi';
-                data = tmpData!;
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _selectedFilter == 'Svi'
-                  ? Colors.grey[800]
-                  : const Color.fromARGB(207, 243, 243, 243),
-              foregroundColor:
-                  _selectedFilter == 'Svi' ? Colors.white : Colors.black,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0)),
-            ),
-            child: const Text('Svi'),
-          ),
-          if (combinedList.isNotEmpty)
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: combinedList.map((item) {
-                    bool isSelected = _selectedFilter == item;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          setState(() {
-                            _selectedFilter = item;
-                          });
-                          SearchResult<Recept>? newData;
-                          if (kategorije?.result.contains(item) ?? false) {
-                            newData = await _recipeProvider?.get(
-                              filter: {
-                                'KategorijaId': item.kategorijaId.toString(),'Status':true
-                              },
-                            );
-                          } else if (vrsteJela?.result.contains(item) ??
-                              false) {
-                            newData = await _recipeProvider?.get(
-                              filter: {
-                                'VrstaJelaId': item.vrstaJelaId.toString(),'Status':true
-                              },
-                            );
-                          }
-                          setState(() {
-                            data = newData;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isSelected
-                              ? Colors.grey[800]
-                              : const Color.fromARGB(207, 243, 243, 243),
-                          foregroundColor:
-                              isSelected ? Colors.white : Colors.black,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0)),
-                        ),
-                        child: Text(item.naziv),
-                      ),
-                    );
-                  }).toList(),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  var tmpData = await _recipeProvider?.get(
+                      filter: {'Status': true, 'FTS': _searchController.text});
+                  setState(() {
+                    _selectedFilter = 'Svi';
+                    data = tmpData!;
+                    isEmpty = data?.result.isEmpty ?? true;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _selectedFilter == 'Svi'
+                      ? Colors.grey[800]
+                      : const Color.fromARGB(207, 243, 243, 243),
+                  foregroundColor:
+                      _selectedFilter == 'Svi' ? Colors.white : Colors.black,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
                 ),
+                child: const Text('Svi'),
               ),
-            ),
+              if (combinedList.isNotEmpty)
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: combinedList.map((item) {
+                        bool isSelected = _selectedFilter == item;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              setState(() {
+                                _selectedFilter = item;
+                                isEmpty = data?.result.isEmpty ?? true;
+                              });
+                              SearchResult<Recept>? newData;
+                              if (kategorije?.result.contains(item) ?? false) {
+                                newData = await _recipeProvider?.get(
+                                  filter: {
+                                    'KategorijaId':
+                                        item.kategorijaId.toString(),
+                                    'FTS': _searchController.text,
+                                    'Status': true
+                                  },
+                                );
+                              } else if (vrsteJela?.result.contains(item) ??
+                                  false) {
+                                newData = await _recipeProvider?.get(
+                                  filter: {
+                                    'VrstaJelaId': item.vrstaJelaId.toString(),
+                                    'FTS': _searchController.text,
+                                    'Status': true
+                                  },
+                                );
+                              }
+                              setState(() {
+                                data = newData;
+                                isEmpty = data?.result.isEmpty ?? true;
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isSelected
+                                  ? Colors.grey[800]
+                                  : const Color.fromARGB(207, 243, 243, 243),
+                              foregroundColor:
+                                  isSelected ? Colors.white : Colors.black,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                            ),
+                            child: Text(item.naziv),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -278,17 +293,32 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: "Search",
+                  hintText: "Search recipes by name",
                   prefixIcon: const Icon(Icons.search),
                   contentPadding: const EdgeInsets.symmetric(vertical: 5),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                 ),
                 onChanged: (value) async {
-                  var tmpData = await _recipeProvider
-                      ?.get(filter: {'FTS': _searchController.text});
+                  var filter = {
+                    'FTS': _searchController.text,
+                    'Status': true,
+                  };
+                  if (_selectedFilter != null) {
+                    if (kategorije?.result.contains(_selectedFilter) ?? false) {
+                      filter['KategorijaId'] =
+                          _selectedFilter.kategorijaId.toString();
+                    } else if (vrsteJela?.result.contains(_selectedFilter) ??
+                        false) {
+                      filter['VrstaJelaId'] =
+                          _selectedFilter.vrstaJelaId.toString();
+                    }
+                  }
+
+                  var tmpData = await _recipeProvider?.get(filter: filter);
                   setState(() {
                     data = tmpData;
+                    isEmpty = data?.result.isEmpty ?? true;
                   });
                 },
               ),
@@ -338,17 +368,28 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   List<Widget> _buildRecipeCard() {
-    if (data?.result.isEmpty ?? true) {
+    if (isEmpty == true) {
       return [
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            "Loading...",
+            "Nema recepata...",
             style: TextStyle(fontSize: 20, color: Colors.grey),
           ),
         ),
       ];
     }
+    if (data?.result.isEmpty ?? true) {
+      return [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ];
+    }
+
     bool isPremiumUser = AuthProvider.korisnik!.uloga!.ulogaId == 3;
     return data!.result.map((x) {
       bool isPremiumRecipe = x.premium ?? false;
@@ -500,8 +541,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
       );
     }
-  var filteredRecipes = listaRekomed.where((recipe) => recipe.status == true).toList();
-   if (filteredRecipes.isEmpty) {
+    var filteredRecipes =
+        listaRekomed.where((recipe) => recipe.status == true).toList();
+    if (filteredRecipes.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
         child: Center(
