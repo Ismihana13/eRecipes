@@ -9,7 +9,6 @@ import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
-import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:provider/provider.dart';
 
@@ -146,7 +145,6 @@ class _UserScreenState extends State<UserScreen> {
         return true;
       },
       child: Scaffold(
-        appBar: const CustomAppBar(naslov: 'eRecipes'),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,67 +278,91 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  _buildUserData() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (AuthProvider.korisnik?.ime != null)
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 18, color: Colors.black),
+  Widget _buildUserData() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (AuthProvider.korisnik?.ime != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
                   children: [
-                    const TextSpan(
-                      text: 'Ime i prezime: ',
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                    TextSpan(
-                      text:
-                          '${AuthProvider.korisnik?.ime} ${AuthProvider.korisnik?.prezime}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Icon(Icons.person, size: 18, color: Colors.grey),
+                    SizedBox(width: 6),
+                    Text(
+                      'Ime i prezime',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ),
-              ),
-            const SizedBox(height: 7),
-            if (AuthProvider.korisnik?.email != null)
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 18, color: Colors.black),
+                const SizedBox(height: 4),
+                Text(
+                  '${AuthProvider.korisnik?.ime} ${AuthProvider.korisnik?.prezime}',
+                  style: const TextStyle(
+                    color: Color.fromARGB(204, 11, 32, 9),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Divider(thickness: 0.5),
+              ],
+            ),
+          if (AuthProvider.korisnik?.email != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
                   children: [
-                    const TextSpan(
-                      text: 'Email: ',
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                    TextSpan(
-                      text: '${AuthProvider.korisnik?.email}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Icon(Icons.email, size: 18, color: Colors.grey),
+                    SizedBox(width: 6),
+                    Text(
+                      'Email',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ),
-              ),
-            const SizedBox(height: 7),
-            if (AuthProvider.korisnik?.telefon != null)
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 18, color: Colors.black),
+                const SizedBox(height: 4),
+                Text(
+                  '${AuthProvider.korisnik?.email}',
+                  style: const TextStyle(
+                    color: Color.fromARGB(204, 11, 32, 9),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Divider(thickness: 0.5),
+              ],
+            ),
+          if (AuthProvider.korisnik?.telefon != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
                   children: [
-                    const TextSpan(
-                      text: 'Telefon: ',
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    ),
-                    TextSpan(
-                      text: '${AuthProvider.korisnik?.telefon}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Icon(Icons.phone, size: 18, color: Colors.grey),
+                    SizedBox(width: 6),
+                    Text(
+                      'Telefon',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ),
-              ),
-          ],
-        ),
+                const SizedBox(height: 4),
+                Text(
+                  '${AuthProvider.korisnik?.telefon}',
+                  style: const TextStyle(
+                    color: Color.fromARGB(204, 11, 32, 9),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Divider(thickness: 0.5),
+              ],
+            ),
+        ],
       ),
     );
   }

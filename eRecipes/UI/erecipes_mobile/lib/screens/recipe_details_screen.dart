@@ -360,7 +360,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Autor recepta: ${widget.recept?.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
+                'Autor recepta: ${widget.recept!.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
+                
                 style:
                     const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
               ),
