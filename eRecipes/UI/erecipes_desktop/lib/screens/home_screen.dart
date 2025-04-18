@@ -5,12 +5,14 @@ import 'package:erecipes_desktop/providers/auth_provider.dart';
 import 'package:erecipes_desktop/providers/notifikacije_provider.dart';
 import 'package:erecipes_desktop/screens/category_list_screen.dart';
 import 'package:erecipes_desktop/screens/notifikacije_screen.dart';
+import 'package:erecipes_desktop/screens/profile_screen.dart';
 import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:erecipes_desktop/screens/report_screen.dart';
 import 'package:erecipes_desktop/screens/user_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,31 +21,33 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+   late   NotifikacijeProvider notifikacijeProvider;
   String selectedNavItem = 'Recepti';
-  late NotifikacijeProvider _notifikacijeProvider;
   int _brojNeprocitanih = 0;
   late Timer _timer;
 
   @override
   void initState() {
     super.initState();
-     _fetchBrojNeprocitanih();
+    notifikacijeProvider = context.read<NotifikacijeProvider>();
+    _fetchBrojNeprocitanih();
     selectedNavItem = 'Recepti';
-    _notifikacijeProvider = NotifikacijeProvider();
-   _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       _fetchBrojNeprocitanih();
     });
   }
-    @override
+
+  @override
   void dispose() {
-    // Ne zaboravi da otkažeš timer kada se ekran uništi
+
     _timer.cancel();
     super.dispose();
   }
 
   void _fetchBrojNeprocitanih() async {
     final brojNeprocitanih =
-        await _notifikacijeProvider.getSve(filter: {'Procitano': false});
+        await notifikacijeProvider.getSve(filter: {'Procitano': false});
     setState(() {
       _brojNeprocitanih = brojNeprocitanih.length;
     });
@@ -132,13 +136,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.black,
                       size: 20,
                     ),
-                    unreadCount: _brojNeprocitanih, // Prikaz broja nepročitanih
+                    unreadCount: _brojNeprocitanih, 
                   ),
                 NavItem(
                   title: 'Dobro došli!',
                   isSelected: selectedNavItem == 'Dobro došli',
                   onTap: () {
-                    setState(() {});
+                    setState(() {
+                        selectedNavItem = 'Dobro došli';
+                      });
                   },
                   icon: const Icon(
                     Icons.person,
@@ -210,6 +216,8 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       case 'Logout':
         return const Center(child: Text('You have logged out!'));
+        case 'Dobro došli':
+      return  ProfileScreen();
       default:
         return const Center(
             child: Text('Select an item from the navigation bar'));
@@ -222,7 +230,7 @@ class NavItem extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSelected;
   final Icon? icon;
-  final int? unreadCount; // Dodan parametar za broj nepročitanih
+  final int? unreadCount; 
 
   const NavItem({
     super.key,
@@ -230,7 +238,7 @@ class NavItem extends StatelessWidget {
     required this.onTap,
     required this.isSelected,
     this.icon,
-    this.unreadCount, // Inicijalizacija parametra
+    this.unreadCount, 
   });
 
   @override

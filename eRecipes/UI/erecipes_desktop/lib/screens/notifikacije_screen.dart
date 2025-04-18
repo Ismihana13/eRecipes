@@ -16,7 +16,6 @@ class _NotifikacijeScreenState extends State<NotifikacijeScreen> {
   Timer? _timer;
   bool? _fileterProcitano;
   String? selectedFilter;
-  int _brojNeprocitanih = 0;
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _NotifikacijeScreenState extends State<NotifikacijeScreen> {
         _obavijesti = obavijesti;
         _isLoading = false;
         _fileterProcitano = procitano;
-         _brojNeprocitanih = _obavijesti.where((n) => n.procitano == false).length;
       });
     } catch (e) {
       setState(() {
