@@ -140,7 +140,7 @@ class _UserScreenState extends State<UserScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RecipeListScreen(),
+            builder: (context) => const RecipeListScreen(),
           ),
         );
         return true;
@@ -151,9 +151,28 @@ class _UserScreenState extends State<UserScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10),
-              const Center(child: CustomTitleText(title: 'Moj profil')),
-              const SizedBox(height: 20),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(width: 24),
+                    const CustomTitleText(title: 'Moj profil'),
+                    GestureDetector(
+                      onTap: () {
+                        AuthProvider.username = null;
+                        AuthProvider.password = null;
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      child: const Icon(Icons.exit_to_app,
+                          color: Colors.black, size: 24),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(

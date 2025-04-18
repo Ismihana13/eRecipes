@@ -12,9 +12,8 @@ import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/locked_recipe.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
+import 'package:erecipes_mobile/screens/user_screen.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
-import 'package:erecipes_mobile/widgets/custom_title_text.dart';
-import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/search_result.dart';
@@ -42,6 +41,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   dynamic _selectedFilter;
   List<Recept> listaRekomed = [];
   bool isEmpty = false;
+  int _selectedIndex = 0;
+  bool _showRecommended = true;
 
   @override
   void didChangeDependencies() {
@@ -116,6 +117,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     }
   }
 
+  final List<Widget> _screens = [
+    const RecipeListScreen(),
+    const AddNewRecipeScreen(),
+    const UserScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,60 +138,135 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
         backgroundColor: const Color.fromRGBO(1, 100, 34, 1),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await loadData();
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(),
-                      WelcomeRow(),
-                    ],
+      body: _selectedIndex == 0
+          ? RefreshIndicator(
+              onRefresh: () async {
+                await loadData();
+              },
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 5),
+                        _buildRecipeSearch(),
+                        _buildCategoryAndDishTypeFilter(),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            "Preporučeni recepti:",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xCC0D3E09),
+                            ),
+                          ),
+                        ),
+                        if (listaRekomed.isNotEmpty && _showRecommended) ...[
+                          const SizedBox(height: 10),
+                          _buildRecommenedrecipe(), // horizontalni scroll
+                        ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(150, 25),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _showRecommended = !_showRecommended;
+                                });
+                              },
+                              child: _showRecommended
+                                  ? const Icon(Icons.arrow_upward,
+                                      color: Colors.red)
+                                  : const Icon(Icons.arrow_downward,
+                                      color: Color.fromARGB(255, 63, 152, 55)),
+                            ),
+                          ],
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Text(
+                            "Ostali recepti:",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xCC0D3E09),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    sliver: SliverGrid(
+                      delegate: SliverChildListDelegate(
+                        _buildRecipeCard(),
+                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.70,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 30,
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 20),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              _buildRecipeSearch(),
-              const SizedBox(height: 10),
-              _buildCategoryAndDishTypeFilter(),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 400,
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.70,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 30,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  children: _buildRecipeCard(),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: CustomTitleText(title: "Preporučeni recepti:"),
-                ),
-              ),
-              const SizedBox(height: 10),
-              _buildRecommenedrecipe()
-            ],
+            )
+          : _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_rounded),
+            label: 'Recepti',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 71, 125, 73),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.add, color: Colors.white),
+            ),
+            label: 'Dodaj',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.person_2),
+            label: 'Profil',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.green,
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.pushNamed(context, '/addNewRecipe');
+          } else {
+            setState(() {
+              _selectedIndex = index;
+            });
+          }
+        },
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   Widget _buildCategoryAndDishTypeFilter() {
@@ -283,87 +365,91 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   Widget _buildRecipeSearch() {
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3.0),
-            child: SizedBox(
-              height: 40,
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: "Search recipes by name",
-                  prefixIcon: const Icon(Icons.search),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
-                ),
-                onChanged: (value) async {
-                  var filter = {
-                    'FTS': _searchController.text,
-                    'Status': true,
-                  };
-                  if (_selectedFilter != null) {
-                    if (kategorije?.result.contains(_selectedFilter) ?? false) {
-                      filter['KategorijaId'] =
-                          _selectedFilter.kategorijaId.toString();
-                    } else if (vrsteJela?.result.contains(_selectedFilter) ??
-                        false) {
-                      filter['VrstaJelaId'] =
-                          _selectedFilter.vrstaJelaId.toString();
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+              child: SizedBox(
+                height: 40,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search recipes by name",
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                  onChanged: (value) async {
+                    var filter = {
+                      'FTS': _searchController.text,
+                      'Status': true,
+                    };
+                    if (_selectedFilter != null) {
+                      if (kategorije?.result.contains(_selectedFilter) ??
+                          false) {
+                        filter['KategorijaId'] =
+                            _selectedFilter.kategorijaId.toString();
+                      } else if (vrsteJela?.result.contains(_selectedFilter) ??
+                          false) {
+                        filter['VrstaJelaId'] =
+                            _selectedFilter.vrstaJelaId.toString();
+                      }
                     }
-                  }
 
-                  var tmpData = await _recipeProvider?.get(filter: filter);
-                  setState(() {
-                    data = tmpData;
-                    isEmpty = data?.result.isEmpty ?? true;
-                  });
-                },
+                    var tmpData = await _recipeProvider?.get(filter: filter);
+                    setState(() {
+                      data = tmpData;
+                      isEmpty = data?.result.isEmpty ?? true;
+                    });
+                  },
+                ),
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OmiljeniReceptiScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 242, 104, 150),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OmiljeniReceptiScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 242, 104, 150),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
+              child: const Icon(Icons.favorite, color: Colors.white),
             ),
-            child: const Icon(Icons.favorite, color: Colors.white),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddNewRecipeScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+          /*Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddNewRecipeScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
-            child: const Icon(Icons.add, color: Colors.white),
-          ),
-        ),
-      ],
+          ),*/
+        ],
+      ),
     );
   }
 
@@ -557,7 +643,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     bool isPremiumUser = AuthProvider.korisnik!.uloga!.ulogaId == 3;
 
     return SizedBox(
-      height: 300,
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: filteredRecipes.length,
@@ -588,95 +674,103 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 ).then((_) => loadData());
               }
             },
-            child: Stack(
-              children: [
-                Container(
-                  width: 180,
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: isLocked
-                        ? Colors.grey.withOpacity(0.2)
-                        : const Color.fromARGB(155, 223, 253, 217),
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                      ),
-                    ],
+            child: Container(
+              width: 160,
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: const Color.fromARGB(255, 205, 205, 205), width: 2),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 120,
-                        width: double.infinity,
-                        child: x.slika == null
-                            ? const Placeholder()
-                            : imageFromString(x.slika!),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        x.naziv ?? "",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        (x.opisRecepta ?? "").length > 50
-                            ? "${x.opisRecepta?.substring(0, 50)}..."
-                            : (x.opisRecepta ?? ""),
-                        style: const TextStyle(color: Colors.grey),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: isLocked
-                            ? null
-                            : () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RecipeDetailsScreen(recept: x),
-                                  ),
-                                ).then((_) => loadData());
-                              },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor:
-                              isLocked ? Colors.grey : Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  bottomLeft: Radius.circular(12)),
+                              child: x.slika == null
+                                  ? const Placeholder()
+                                  : imageFromString(x.slika!),
+                            ),
                           ),
-                        ),
-                        child: const Text("Pregled recepta"),
-                      ),
-                    ],
-                  ),
-                ),
-                if (isLocked)
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      alignment: Alignment.center,
-                      child: const Icon(
-                        Icons.lock,
-                        color: Colors.white,
-                        size: 50,
+                          if (isLocked)
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Center(
+                                child: Icon(Icons.lock,
+                                    color: Colors.white, size: 40),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  ),
-              ],
+                    const SizedBox(height: 5),
+                    Text(
+                      x.naziv ?? '',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      x.opisPripreme ?? '',
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 5),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor:
+                              Colors.white, 
+                        ),
+                        onPressed: () {
+                          if (isLocked) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const LockedRecipeScreen(),
+                              ),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RecipeDetailsScreen(recept: x),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Pregledaj'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
