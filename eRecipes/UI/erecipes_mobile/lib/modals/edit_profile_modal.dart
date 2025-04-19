@@ -1,3 +1,4 @@
+import 'package:erecipes_mobile/modals/change_password_dialog.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:flutter/material.dart';
 
@@ -21,14 +22,13 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController telephoneController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
-
+  final TextEditingController passwordController = TextEditingController();
   Future<void> uploadEdit() async {
     try {
       final ime = nameController.text;
       final prezime = surnameController.text;
       final email = emailController.text;
       final telefon = telephoneController.text;
-
       Map<String, dynamic> newEdit = {
         "ime": ime,
         "prezime": prezime,
@@ -49,6 +49,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     surnameController.text = widget.userData['surname'] ?? '';
     emailController.text = widget.userData['email'] ?? '';
     telephoneController.text = widget.userData['telephone'] ?? '';
+    passwordController.text = widget.userData['lozinka'] ?? '';
   }
 
   @override
@@ -97,6 +98,23 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                 },
               ),
               TextFormField(
+                controller: passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Prezime',
+                  hintText: 'Example: Smith',
+                  hintStyle: TextStyle(color: Colors.grey),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your surname';
+                  }
+                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                    return 'Surname can only contain letters';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
                   controller: emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
@@ -129,6 +147,26 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   }
                   return null;
                 },
+              ),
+              TextButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => ChangePasswordDialog(
+                      oldPassword: passwordController
+                          .text, 
+                      onPasswordChange: (oldPass, newPass) {
+                      },
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Izmijeni lozinku',
+                  style: TextStyle(
+                    color: Color.fromRGBO(97, 142, 246, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
