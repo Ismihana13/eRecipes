@@ -23,6 +23,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   final TextEditingController telephoneController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  int? role;
   Future<void> uploadEdit() async {
     try {
       final ime = nameController.text;
@@ -50,7 +51,9 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     emailController.text = widget.userData['email'] ?? '';
     telephoneController.text = widget.userData['telephone'] ?? '';
     passwordController.text = widget.userData['lozinka'] ?? '';
+    role = widget.userData['ulogaId'] ?? '';
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,23 +85,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
               ),
               TextFormField(
                 controller: surnameController,
-                decoration: const InputDecoration(
-                  labelText: 'Prezime',
-                  hintText: 'Example: Smith',
-                  hintStyle: TextStyle(color: Colors.grey),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your surname';
-                  }
-                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-                    return 'Surname can only contain letters';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Prezime',
                   hintText: 'Example: Smith',

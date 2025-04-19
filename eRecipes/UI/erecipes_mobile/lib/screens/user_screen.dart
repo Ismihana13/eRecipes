@@ -196,6 +196,7 @@ class _UserScreenState extends State<UserScreen> {
                                       AuthProvider.korisnik?.prezime ?? '',
                                   'email': AuthProvider.korisnik?.email ?? '',
                                   'lozinka': AuthProvider.password,
+                                  'ulogaId':AuthProvider.korisnik?.ulogaId,
                                   'telephone': AuthProvider.korisnik?.telefon
                                           ?.toString() ??
                                       '',

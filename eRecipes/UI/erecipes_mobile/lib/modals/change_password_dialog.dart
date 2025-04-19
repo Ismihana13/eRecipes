@@ -1,13 +1,18 @@
+import 'package:erecipes_mobile/main.dart';
+import 'package:erecipes_mobile/providers/auth_provider.dart';
+import 'package:erecipes_mobile/providers/korisnik_provider.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   final Function(String oldPassword, String newPassword) onPasswordChange;
-  final String? oldPassword; // 👈 dodano
+  final String? oldPassword; 
 
   const ChangePasswordDialog({
     required this.onPasswordChange,
-    required this.oldPassword, // 👈 dodano
+    required this.oldPassword, 
   });
 
   @override
@@ -34,42 +39,48 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       });
     } else {
       setState(() {
+      
         isOldPasswordInvalid = true;
       });
     }
   }
-
-  void _submit() {
+  void _submitPasswordChange() async {
+  if (_formKey.currentState!.validate()) {
     final newPassword = newPasswordController.text;
     final confirmPassword = confirmNewPasswordController.text;
 
-    // Provjera validnosti novih lozinki
-    setState(() {
-      isNewPasswordInvalid = newPassword.length < 6;
-      isConfirmPasswordInvalid = newPassword != confirmPassword;
-    });
+    final request = {
+      'ime': AuthProvider.korisnik!.ime,
+      'prezime': AuthProvider.korisnik!.prezime,
+      'datumRodjenja': AuthProvider.korisnik!.datumRodjenja?.toIso8601String(),
+      'email': AuthProvider.korisnik!.email,
+      'telefon': AuthProvider.korisnik!.telefon,
+      'korisnickoIme': AuthProvider.korisnik!.korisnickoIme,
+      'lozinka': newPassword,
+      'lozinkaPotvrda': confirmPassword,
+      'ulogaId': AuthProvider.korisnik!.ulogaId,
+    };
 
-    if (_formKey.currentState!.validate()) {
-      if (isNewPasswordInvalid) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Nova lozinka mora imati najmanje 6 karaktera.')),
-        );
-        return;
-      }
-
-      if (isConfirmPasswordInvalid) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Nova lozinka i potvrda se ne poklapaju.')),
-        );
-        return;
-      }
-
-      widget.onPasswordChange(oldPasswordController.text, newPassword);
-      Navigator.pop(context);
+    try {
+      await context.read<KorisnikProvider>().update(
+            AuthProvider.korisnik!.korisnikId!,
+            request,
+          );
+          AuthProvider.username="";
+      AuthProvider.password="";
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        LoginScreen.routeName,
+        (route) => false,
+      );
+          CustomSnackBar.showSuccessSnackBar(context,  "Uspješno ste promijenili lozinku.");
+    } catch (e) {
+      CustomSnackBar.showErrorSnackBar(
+        context,
+        'Neuspješna promjena lozinke. Pokušajte ponovo.}',
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +148,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
           ),
         if (showNewPasswordFields)
           ElevatedButton(
-            onPressed: _submit,
+            onPressed: _submitPasswordChange,
             child: const Text("Spremi"),
           ),
       ],
