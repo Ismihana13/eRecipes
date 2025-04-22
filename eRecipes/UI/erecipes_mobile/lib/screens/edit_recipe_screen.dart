@@ -15,7 +15,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
-import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -133,56 +132,45 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     return Scaffold(
       appBar: const CustomAppBar(naslov: "eRecipes"),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              const CustomTitleText(title: 'Uredi recept'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    SizedBox(),
-                    WelcomeRow(),
+                    SizedBox(
+                      height: 300,
+                      width: double.infinity,
+                      child: _base64Image == null
+                          ? (widget.recept.slika == null
+                              ? const Placeholder()
+                              : Image.memory(
+                                  base64Decode(widget.recept.slika!),
+                                  fit: BoxFit.cover,
+                                ))
+                          : Image.memory(
+                              base64Decode(_base64Image!),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      child: ElevatedButton(
+                        onPressed: getImage,
+                        child: const Text('Promjeni sliku'),
+                      ),
+                    ),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const CustomTitleText(title: 'Uredi recept'),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    height: 300,
-                    width: double.infinity,
-                    child: _base64Image == null
-                        ? (widget.recept.slika == null
-                            ? const Placeholder()
-                            : Image.memory(
-                                base64Decode(widget.recept.slika!),
-                                fit: BoxFit.cover,
-                              ))
-                        : Image.memory(
-                            base64Decode(_base64Image!),
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    child: ElevatedButton(
-                      onPressed: getImage,
-                      child: const Text('Promjeni sliku'),
-                    ),
-                  ),
-                ],
               ),
-            ),
-            _buildRecipedetails(),
-          ],
+              _buildRecipedetails(),
+            ],
+          ),
         ),
       ),
     );
@@ -331,7 +319,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
           duration: Duration(seconds: 2),
         ),
       );
-      Navigator.pushNamed(context, '/user');
+     Navigator.pop(context, 2);
     }
   }
 }

@@ -164,7 +164,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         ),
                         if (listaRekomed.isNotEmpty && _showRecommended) ...[
                           const SizedBox(height: 10),
-                          _buildRecommenedrecipe(), // horizontalni scroll
+                          _buildRecommenedrecipe(),
                         ],
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -418,7 +418,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const OmiljeniReceptiScreen()),
-                );
+                ).then((_) {
+                  loadData();
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 242, 104, 150),
@@ -743,8 +745,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
-                          foregroundColor:
-                              Colors.white, 
+                          foregroundColor: Colors.white,
                         ),
                         onPressed: () {
                           if (isLocked) {
