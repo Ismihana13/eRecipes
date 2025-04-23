@@ -2,7 +2,6 @@ import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
-import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -93,13 +92,6 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 10),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                WelcomeRow(),
-              ],
-            ),
             const SizedBox(height: 20),
             Image.asset(
               'assets/images/images.png',

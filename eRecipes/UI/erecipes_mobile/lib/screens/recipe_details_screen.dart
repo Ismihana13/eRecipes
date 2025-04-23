@@ -9,7 +9,6 @@ import 'package:erecipes_mobile/screens/edit_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/sastojcli_list.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
-import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -118,22 +117,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
       appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            const SizedBox(height: 10),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(),
-                    WelcomeRow(),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
+          children: [  
+            const SizedBox(height: 5),
             _buildRecipeDetails(),
             if (showButton)
               ElevatedButton(
@@ -243,139 +228,143 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   }
 
   Widget _buildRecipeDetails() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: 250,
-          child: widget.recept?.slika == null
-              ? const Placeholder()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                  child: imageFromStringDetails(widget.recept!.slika!),
-                ),
-        ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  widget.recept?.naziv ?? 'Naziv recepta nije dostupan',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 250,
+            child: widget.recept?.slika == null
+                ? const Placeholder()
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                    child: imageFromStringDetails(widget.recept!.slika!),
                   ),
-                  softWrap: true,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.recept?.naziv ?? 'Naziv recepta nije dostupan',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    softWrap: true,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              Row(
-                children: [
-                  if (widget.recept?.vrijemePripreme != null) ...[
-                    const Icon(Icons.access_time,
-                        color: Colors.black, size: 24),
+                Row(
+                  children: [
+                    if (widget.recept?.vrijemePripreme != null) ...[
+                      const Icon(Icons.access_time,
+                          color: Colors.black, size: 24),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${widget.recept?.vrijemePripreme} min',
+                        style: const TextStyle(
+                            fontSize: 16, fontStyle: FontStyle.italic),
+                        softWrap: true,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                     const SizedBox(width: 8),
-                    Text(
-                      '${widget.recept?.vrijemePripreme} min',
-                      style: const TextStyle(
-                          fontSize: 16, fontStyle: FontStyle.italic),
-                      softWrap: true,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                    FutureBuilder<bool>(
+                      future: _omiljeniReceptProvider
+                          ?.isFavorite(widget.recept!.receptId!),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (snapshot.hasData && snapshot.data!) {
+                          return IconButton(
+                            icon: const Icon(Icons.favorite, color: Colors.red),
+                            iconSize: 35,
+                            onPressed: () => _toggleFavorite(widget.recept!),
+                          );
+                        } else {
+                          return IconButton(
+                            icon: const Icon(Icons.favorite_border,
+                                color: Colors.red),
+                            iconSize: 35,
+                            onPressed: () => _toggleFavorite(widget.recept!),
+                          );
+                        }
+                      },
                     ),
                   ],
-                  const SizedBox(width: 8),
-                  FutureBuilder<bool>(
-                    future: _omiljeniReceptProvider
-                        ?.isFavorite(widget.recept!.receptId!),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.hasData && snapshot.data!) {
-                        return IconButton(
-                          icon: const Icon(Icons.favorite, color: Colors.red),
-                          iconSize: 35,
-                          onPressed: () => _toggleFavorite(widget.recept!),
-                        );
-                      } else {
-                        return IconButton(
-                          icon: const Icon(Icons.favorite_border,
-                              color: Colors.red),
-                          iconSize: 35,
-                          onPressed: () => _toggleFavorite(widget.recept!),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            widget.recept?.opisRecepta ?? 'Opis recepta nije dostupan',
-            style: const TextStyle(
-              fontStyle: FontStyle.italic,
-              fontSize: 16.0,
-              fontWeight: FontWeight.normal,
-              color: Color.fromARGB(255, 92, 92, 92),
+                ),
+              ],
             ),
           ),
-        ),
-        const SizedBox(height: 20),
-        SastojciListCard(
-          sastojciList: sastojciList ?? [],
-        ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Način pripreme:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              widget.recept?.opisRecepta ?? 'Opis recepta nije dostupan',
+              style: const TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: 16.0,
+                fontWeight: FontWeight.normal,
+                color: Color.fromARGB(255, 92, 92, 92),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          SastojciListCard(
+            sastojciList: sastojciList ?? [],
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Način pripreme:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                widget.recept?.opisPripreme ?? 'Način pripreme nije dostupan',
-              ),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  widget.recept?.opisPripreme ?? 'Način pripreme nije dostupan',
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Autor recepta: ${widget.recept?.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
-                style:
-                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-              ),
-              Text(
-                widget.recept?.datumObjave != null
-                    ? DateFormat('dd.MM.yyyy.')
-                        .format(widget.recept!.datumObjave!)
-                    : 'Datum nije dostupan',
-                style:
-                    const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-              ),
-            ],
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Autor recepta: ${widget.recept!.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
+                  
+                  style:
+                      const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                ),
+                Text(
+                  widget.recept?.datumObjave != null
+                      ? DateFormat('dd.MM.yyyy.')
+                          .format(widget.recept!.datumObjave!)
+                      : 'Datum nije dostupan',
+                  style:
+                      const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

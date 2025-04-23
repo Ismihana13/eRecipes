@@ -14,7 +14,6 @@ import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:erecipes_mobile/widgets/input_text.dart';
 import 'package:erecipes_mobile/widgets/multiselect_sastojal.dart';
-import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -122,20 +121,6 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(),
-                    WelcomeRow(),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
             const CustomTitleText(title: 'Dodajte novi recept'),
             isLoading
                 ? const CircularProgressIndicator()
@@ -147,115 +132,118 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
   }
 
   Widget _buildFormForRecipe() {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            InputText(
-              controller: _recipeNameController,
-              label: 'Naslov recepta',
-              hint: 'Unesite naziv recepta',
-            ),
-            const SizedBox(height: 20),
-            InputText(
-              controller: _recipeDescriptionController,
-              label: 'Opis recepta',
-              hint: 'Unesite opis recepta',
-              maxLines: 4,
-            ),
-            const SizedBox(height: 20),
-            InputText(
-              controller: _preparationDescriptionController,
-              label: 'Opis pripreme',
-              hint: 'Unesite opis pripreme',
-              maxLines: 4,
-            ),
-            const SizedBox(height: 20),
-            InputText(
-              controller: _preparationTimeController,
-              label: 'Vrijeme pripreme (u minutama)',
-              hint: 'Unesite vrijeme pripreme',
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 30),
-            Row(
-              children: [
-                Expanded(
-                    child: FormBuilderField(
-                  name: "imageId",
-                  builder: (field) {
-                    return InputDecorator(
-                      decoration:
-                          const InputDecoration(labelText: "Odaberite sliku"),
-                      child: ListTile(
-                        leading: const Icon(Icons.image),
-                        title: Text(_imageText),
-                        trailing: const Icon(Icons.file_upload),
-                        onTap: getImage,
-                      ),
-                    );
-                  },
-                ))
-              ],
-            ),
-            if (_imageError != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  _imageError!,
-                  style: const TextStyle(color: Colors.red, fontSize: 12),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              InputText(
+                controller: _recipeNameController,
+                label: 'Naslov recepta',
+                hint: 'Unesite naziv recepta',
+              ),
+              const SizedBox(height: 20),
+              InputText(
+                controller: _recipeDescriptionController,
+                label: 'Opis recepta',
+                hint: 'Unesite opis recepta',
+                maxLines: 4,
+              ),
+              const SizedBox(height: 20),
+              InputText(
+                controller: _preparationDescriptionController,
+                label: 'Opis pripreme',
+                hint: 'Unesite opis pripreme',
+                maxLines: 4,
+              ),
+              const SizedBox(height: 20),
+              InputText(
+                controller: _preparationTimeController,
+                label: 'Vrijeme pripreme (u minutama)',
+                hint: 'Unesite vrijeme pripreme',
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                      child: FormBuilderField(
+                    name: "imageId",
+                    builder: (field) {
+                      return InputDecorator(
+                        decoration:
+                            const InputDecoration(labelText: "Odaberite sliku"),
+                        child: ListTile(
+                          leading: const Icon(Icons.image),
+                          title: Text(_imageText),
+                          trailing: const Icon(Icons.file_upload),
+                          onTap: getImage,
+                        ),
+                      );
+                    },
+                  ))
+                ],
+              ),
+              if (_imageError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    _imageError!,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  ),
                 ),
+              const SizedBox(height: 30),
+              MultiSelectSastojak(
+                label: 'Potrebni sastojci',
+                items: sastojakResult?.result,
+                selectedSastojci: _selectedSastojci,
+                onChanged: (List<Sastojak> selectedItems) {
+                  setState(() {
+                    _selectedSastojci = selectedItems;
+                    if (_selectedSastojci.isNotEmpty) {
+                      sastojciError=null;
+                    }
+                  });
+                },
+                errorMessage: sastojciError,
               ),
-            const SizedBox(height: 30),
-            MultiSelectSastojak(
-              label: 'Potrebni sastojci',
-              items: sastojakResult?.result,
-              selectedSastojci: _selectedSastojci,
-              onChanged: (List<Sastojak> selectedItems) {
-                setState(() {
-                  _selectedSastojci = selectedItems;
-                  if (_selectedSastojci.isNotEmpty) {
-                    sastojciError=null;
-                  }
-                });
-              },
-              errorMessage: sastojciError,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                openDialog(); 
-              },
-              child: const Text('Dodaj novi sastojak',
-                  style: TextStyle(fontSize: 16)),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            _buildDropdown(
-                'Kategorija jela',
-                kategorijaResult?.result,
-                _selectedKategorijaId,
-                (value) => setState(() => _selectedKategorijaId = value)),
-            const SizedBox(height: 30),
-            _buildDropdown(
-                'Vrsta jela',
-                vrstaJelaResult?.result,
-                _selectedVrstaJelaId,
-                (value) => setState(() => _selectedVrstaJelaId = value)),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: _onSubmit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0)),
+              ElevatedButton(
+                onPressed: () {
+                  openDialog(); 
+                },
+                child: const Text('Dodaj novi sastojak',
+                    style: TextStyle(fontSize: 16)),
               ),
-              child: const Text('Pregledaj recept', style: TextStyle(color: Colors.white),),
-            ),
-          ],
+              const SizedBox(
+                height: 30,
+              ),
+              _buildDropdown(
+                  'Kategorija jela',
+                  kategorijaResult?.result,
+                  _selectedKategorijaId,
+                  (value) => setState(() => _selectedKategorijaId = value)),
+              const SizedBox(height: 30),
+              _buildDropdown(
+                  'Vrsta jela',
+                  vrstaJelaResult?.result,
+                  _selectedVrstaJelaId,
+                  (value) => setState(() => _selectedVrstaJelaId = value)),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _onSubmit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                ),
+                child: const Text('Pregledaj recept', style: TextStyle(color: Colors.white),),
+              ),
+            ],
+          ),
         ),
       ),
     );

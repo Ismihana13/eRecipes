@@ -6,10 +6,8 @@ import 'package:erecipes_mobile/models/vrsta_jela.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
-import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
-import 'package:erecipes_mobile/widgets/welcome_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -76,25 +74,9 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 10),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(),
-                    WelcomeRow(),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             _buildRecipeSearch(),
-            const SizedBox(height: 10),
             _buildCategoryAndDishTypeFilter(),
-            const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -117,7 +99,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 500,
+              height: 600,
               child: GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
@@ -145,9 +127,14 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
       child: Row(
         children: [
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              var tmpData = await _omiljeniReceptProvider
+                  ?.getFavoritesForCurrentUser(
+                      filter: {'FTS': _searchController.text});
               setState(() {
                 _selectedFilter = 'Svi';
+
+                data = tmpData;
                 loadData();
               });
             },
@@ -181,7 +168,8 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                             newData = await _omiljeniReceptProvider
                                 ?.getFavoritesForCurrentUser(
                               filter: {
-                                'KategorijaId': item.kategorijaId.toString()
+                                'KategorijaId': item.kategorijaId.toString(),
+                                'FTS': _searchController.text,
                               },
                             );
                           } else if (vrsteJela?.result.contains(item) ??
@@ -189,7 +177,8 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
                             newData = await _omiljeniReceptProvider
                                 ?.getFavoritesForCurrentUser(
                               filter: {
-                                'VrstaJelaId': item.vrstaJelaId.toString()
+                                'VrstaJelaId': item.vrstaJelaId.toString(),
+                                'FTS': _searchController.text,
                               },
                             );
                           }
@@ -219,73 +208,94 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
   }
 
   Widget _buildRecipeSearch() {
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 3.0),
-            child: SizedBox(
-              height: 40,
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: "Search",
-                  prefixIcon: const Icon(Icons.search),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+              child: SizedBox(
+                height: 40,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: "Search recipes by name",
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                  onChanged: (value) async {
+                    var filter = {
+                      'FTS': _searchController.text,
+                    };
+                    if (_selectedFilter != null) {
+                      if (kategorije?.result.contains(_selectedFilter) ??
+                          false) {
+                        filter['KategorijaId'] =
+                            _selectedFilter.kategorijaId.toString();
+                      } else if (vrsteJela?.result.contains(_selectedFilter) ??
+                          false) {
+                        filter['VrstaJelaId'] =
+                            _selectedFilter.vrstaJelaId.toString();
+                      }
+                    }
+                    var tmpData = await _omiljeniReceptProvider
+                        ?.getFavoritesForCurrentUser(filter: filter);
+                    setState(() {
+                      data = tmpData;
+                    });
+                    loadData(query: value);
+                  },
                 ),
-                onChanged: (value) {
-                  loadData(query: value);
-                },
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const OmiljeniReceptiScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 242, 104, 150),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const OmiljeniReceptiScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 242, 104, 150),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
+              child: const Icon(Icons.favorite, color: Colors.white),
             ),
-            child: const Icon(Icons.favorite, color: Colors.white),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddNewRecipeScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
+          /* Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddNewRecipeScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
-            child: const Icon(Icons.add, color: Colors.white),
-          ),
-        ),
-      ],
+          ),*/
+        ],
+      ),
     );
   }
 
   List<Widget> _buildRecipeCard() {
-    
     if (data == null || data!.isEmpty) {
       return [
         const Center(
@@ -297,20 +307,19 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
       ];
     }
     var filteredData = data!.where((x) => x.recept!.status == true).toList();
-      if (filteredData.isEmpty) {
-    return [
-      const Center(
-        child: Text(
-          "Nema omiljenih recepata.",
-          style: TextStyle(fontSize: 18, color: Colors.grey),
+    if (filteredData.isEmpty) {
+      return [
+        const Center(
+          child: Text(
+            "Nema omiljenih recepata.",
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
         ),
-      ),
-    ];
-  }
-    
+      ];
+    }
+
     return filteredData
-        .map((x) => 
-        Container(
+        .map((x) => Container(
               margin: const EdgeInsets.symmetric(vertical: 8.0),
               padding: const EdgeInsets.all(5.0),
               color: const Color.fromARGB(187, 247, 246, 246),

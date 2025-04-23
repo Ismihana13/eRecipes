@@ -31,7 +31,6 @@ namespace eRecipes.Service
             {
                 filteredQuery = filteredQuery.Where(x => x.Recept.Naziv.ToLower().StartsWith(search.FTS.ToLower()));
             }
-            
             return filteredQuery;
         }
         public override void BeforeInsert(OmiljeniReceptUpsertRequest request, OmiljeniRecept entity)

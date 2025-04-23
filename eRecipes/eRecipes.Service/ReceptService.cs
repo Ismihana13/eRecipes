@@ -41,7 +41,11 @@ namespace eRecipes.Service
             var filteredQuery = base.AddFilter(search, query);
             if (!string.IsNullOrWhiteSpace(search?.FTS))
             {
-                filteredQuery = filteredQuery.Where(x => x.Naziv.ToLower().StartsWith(search.FTS.ToLower()));
+                var ftsLower = search.FTS.ToLower();
+                filteredQuery = filteredQuery.Where(x =>
+                    x.Naziv.ToLower().Contains(ftsLower) ||
+                    x.OpisRecepta.ToLower().Contains(ftsLower)
+                );
             }
             if (search.Status.HasValue)
             {
