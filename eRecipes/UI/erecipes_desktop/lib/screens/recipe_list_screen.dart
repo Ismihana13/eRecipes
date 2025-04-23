@@ -90,7 +90,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 child: TextField(
                   controller: _ftsEditingController,
                   decoration: const InputDecoration(
-                    labelText: 'Search',
+                    labelText: 'Search by name and description',
                     border: OutlineInputBorder(),
                     suffixIcon: Icon(Icons.search),
                     contentPadding:

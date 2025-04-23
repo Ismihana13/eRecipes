@@ -377,7 +377,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: "Search recipes by name",
+                    hintText: "Search recipes by name and description",
                     prefixIcon: const Icon(Icons.search),
                     contentPadding: const EdgeInsets.symmetric(vertical: 5),
                     border: OutlineInputBorder(

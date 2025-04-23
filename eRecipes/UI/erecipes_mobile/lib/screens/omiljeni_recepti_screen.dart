@@ -99,7 +99,7 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
             ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 500,
+              height: 600,
               child: GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
