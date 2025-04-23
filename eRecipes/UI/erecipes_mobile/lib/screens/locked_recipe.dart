@@ -1,7 +1,12 @@
+import 'package:erecipes_mobile/models/recept.dart';
+import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
+import 'package:erecipes_mobile/providers/recipe_provider.dart';
+import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
+import 'package:erecipes_mobile/widgets/custom_title_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -22,10 +27,25 @@ class LockedRecipeScreen extends StatefulWidget {
 class _LockedRecipeState extends State<LockedRecipeScreen> {
   Map<String, dynamic>? paymentIntent;
   KorisnikProvider? _korisnikProvider;
+  RecipeProvider? _recipeProvider;
+  SearchResult<Recept>? data;
+
   @override
   void initState() {
     super.initState();
     _korisnikProvider = context.read<KorisnikProvider>();
+    _recipeProvider = context.read<RecipeProvider>();
+    loadData();
+  }
+
+  Future loadData() async {
+    var filter = {
+      'Status': true,
+    };
+    var tmpData = await _recipeProvider?.get(filter: filter);
+    setState(() {
+      data = tmpData!;
+    });
   }
 
   Future<void> makePayment(BuildContext context) async {
@@ -41,19 +61,98 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
 
       await Stripe.instance.presentPaymentSheet();
       CustomSnackBar.showSuccessSnackBar(context, 'Plaćanje uspješno!');
-      CustomSnackBar.showSuccessSnackBar(context, 'Plaćanje uspješno!');
 
       int korisnikId = AuthProvider.korisnik!.korisnikId ?? 0;
       if (korisnikId != 0) {
         await _korisnikProvider!.updateUserRole(korisnikId, 3);
         var azuriraniKorisnik = await _korisnikProvider!.getById(korisnikId);
         AuthProvider.korisnik = azuriraniKorisnik;
-
         Navigator.pop(context, azuriraniKorisnik);
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Center(
+                  child: CustomTitleText(title: 'Uspješna kupovina')),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Kupovinom ovog paketa dobili ste pristup svim premium receptima!',
+                        style: TextStyle(fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      if (data != null &&
+                          data!.result
+                              .where((recept) => recept.premium == true)
+                              .isNotEmpty)
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          itemCount: data!.result
+                              .where((recept) => recept.premium == true)
+                              .length,
+                          itemBuilder: (context, index) {
+                            var recept = data!.result
+                                .where((recept) => recept.premium == true)
+                                .toList()[index];
+                            return Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.grey[200],
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 75,
+                                    child: recept.slika == null
+                                        ? const Placeholder()
+                                        : imageFromString(recept.slika!),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    recept.naziv ?? "Bez naziva",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      else
+                        const Text('Nema premium recepata dostupnih.'),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Zatvori'),
+                ),
+              ],
+            );
+          },
+        );
       } else {
         Navigator.pop(context);
       }
     } catch (e) {
+      print("Greška prilikom plaćanja: $e");
       CustomSnackBar.showErrorSnackBar(context, 'Greška prilikom plaćanja!');
     }
   }
