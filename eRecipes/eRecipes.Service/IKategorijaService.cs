@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IKategorijaService : IService<Kategorija,KategorijaSearchObject>
+    public interface IKategorijaService : ICRUDService<Kategorija,KategorijaSearchObject, KategorijaUpsertRequest, KategorijaUpsertRequest>
     {
         int GetBrojRecepataZaKategoriju(int kategorijaId);
         Model.Kategorija DeleteKategorija(int id);

@@ -9,8 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [AllowAnonymous]
-    public class KategorijaController : BaseController<Kategorija,KategorijaSearchObject>
+    public class KategorijaController : BaseCURDController<Kategorija,KategorijaSearchObject, KategorijaUpsertRequest, KategorijaUpsertRequest>
     {
         public KategorijaController(IKategorijaService service) : base(service) { }
 

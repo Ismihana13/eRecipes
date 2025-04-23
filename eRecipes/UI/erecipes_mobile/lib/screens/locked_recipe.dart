@@ -169,7 +169,7 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
           'Authorization':
-              'Bearer sk_test_51QwgmK2VrW2Cys4yWURyrZrauPqzzle6mgBxxqUUH33i8VprWUExv5k11WiBhynV9e6JfhQpPHpnfSS4BD7qgOYK009qcmbjvU', // Tvoj Stripe Secret Key
+              'Bearer sk_test_51QwgmK2VrW2Cys4yWURyrZrauPqzzle6mgBxxqUUH33i8VprWUExv5k11WiBhynV9e6JfhQpPHpnfSS4BD7qgOYK009qcmbjvU',
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: body,
