@@ -6,6 +6,7 @@ import 'package:erecipes_mobile/providers/lajkovi_provider.dart';
 import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
+import 'package:erecipes_mobile/providers/uplata_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OmiljeniReceptProvider()),
         ChangeNotifierProvider(create: (_) => SastojakProvider()),
         ChangeNotifierProvider(create: (_) => LajkoviProvider()),
+        ChangeNotifierProvider(create: (_) => UplataProvider()),
       ],
       child: MaterialApp(
         initialRoute: LoginScreen.routeName,

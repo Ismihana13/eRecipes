@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public interface IKategorijaService : ICRUDService<Kategorija,KategorijaSearchObject, KategorijaUpsertRequest, KategorijaUpsertRequest>
+    public interface IUplataService : ICRUDService<Uplata,UplataSearchObject,UplataUpsertRequest, UplataUpsertRequest>
     {
-        int GetBrojRecepataZaKategoriju(int kategorijaId);
-        Model.Kategorija DeleteKategorija(int id);
+        
     }
 }

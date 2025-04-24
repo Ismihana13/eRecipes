@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace eRecipes.Service
 {
-    public class KategorijaService : BaseService<Model.Kategorija, KategorijaSearchObject, Database.Kategorija>, IKategorijaService
+    public class KategorijaService : BaseCRUDService<Model.Kategorija, KategorijaSearchObject, Database.Kategorija, KategorijaUpsertRequest, KategorijaUpsertRequest>, IKategorijaService
     {
         public KategorijaService(ERecipesContext context, IMapper mapper) : base(context, mapper)
         {

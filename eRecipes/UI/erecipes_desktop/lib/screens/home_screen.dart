@@ -8,6 +8,7 @@ import 'package:erecipes_desktop/screens/notifikacije_screen.dart';
 import 'package:erecipes_desktop/screens/profile_screen.dart';
 import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
 import 'package:erecipes_desktop/screens/report_screen.dart';
+import 'package:erecipes_desktop/screens/uplate_screen.dart';
 import 'package:erecipes_desktop/screens/user_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-   late   NotifikacijeProvider notifikacijeProvider;
+  late NotifikacijeProvider notifikacijeProvider;
   String selectedNavItem = 'Recepti';
   int _brojNeprocitanih = 0;
   late Timer _timer;
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     notifikacijeProvider = context.read<NotifikacijeProvider>();
     _fetchBrojNeprocitanih();
     selectedNavItem = 'Recepti';
-    
+
     _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       _fetchBrojNeprocitanih();
     });
@@ -40,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-
     _timer.cancel();
     super.dispose();
   }
@@ -124,6 +124,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 if (isAdministrator())
                   NavItem(
+                    title: 'Uplate',
+                    isSelected: selectedNavItem == 'Uplate',
+                    onTap: () {
+                      setState(() {
+                        selectedNavItem = 'Uplate';
+                      });
+                    },
+                  ),
+                if (isAdministrator())
+                  NavItem(
                     title: 'Notifikacije',
                     isSelected: selectedNavItem == 'Notifikacije',
                     onTap: () {
@@ -136,15 +146,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.black,
                       size: 20,
                     ),
-                    unreadCount: _brojNeprocitanih, 
+                    unreadCount: _brojNeprocitanih,
                   ),
                 NavItem(
                   title: 'Dobro došli!',
                   isSelected: selectedNavItem == 'Dobro došli',
                   onTap: () {
                     setState(() {
-                        selectedNavItem = 'Dobro došli';
-                      });
+                      selectedNavItem = 'Dobro došli';
+                    });
                   },
                   icon: const Icon(
                     Icons.person,
@@ -199,6 +209,11 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(10),
           child: const RecipeListScreen(),
         );
+      case 'Uplate':
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child:  UplataScreen(),
+        );
       case 'Kategorije':
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
@@ -216,8 +231,8 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       case 'Logout':
         return const Center(child: Text('You have logged out!'));
-        case 'Dobro došli':
-      return  ProfileScreen();
+      case 'Dobro došli':
+        return ProfileScreen();
       default:
         return const Center(
             child: Text('Select an item from the navigation bar'));
@@ -230,7 +245,7 @@ class NavItem extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSelected;
   final Icon? icon;
-  final int? unreadCount; 
+  final int? unreadCount;
 
   const NavItem({
     super.key,
@@ -238,7 +253,7 @@ class NavItem extends StatelessWidget {
     required this.onTap,
     required this.isSelected,
     this.icon,
-    this.unreadCount, 
+    this.unreadCount,
   });
 
   @override

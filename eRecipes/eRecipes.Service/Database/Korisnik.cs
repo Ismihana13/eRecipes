@@ -21,4 +21,5 @@ public partial class Korisnik
     public virtual ICollection<Notifikacije> Obavijests { get; set; } = new List<Notifikacije>();
     public virtual ICollection<OmiljeniRecept> OmiljeniRecepts { get; set; } = new List<OmiljeniRecept>();
     public virtual ICollection<Recept> Recepts { get; set; } = new List<Recept>();
+    public virtual ICollection<Uplata> Uplatas { get; set; } = new List<Uplata>();
 }
