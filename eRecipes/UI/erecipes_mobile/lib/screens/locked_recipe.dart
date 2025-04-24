@@ -3,6 +3,7 @@ import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/providers/auth_provider.dart';
 import 'package:erecipes_mobile/providers/korisnik_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
+import 'package:erecipes_mobile/providers/uplata_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/widgets/app_bar.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
@@ -27,6 +28,7 @@ class LockedRecipeScreen extends StatefulWidget {
 class _LockedRecipeState extends State<LockedRecipeScreen> {
   Map<String, dynamic>? paymentIntent;
   KorisnikProvider? _korisnikProvider;
+  UplataProvider? _uplataProvider;
   RecipeProvider? _recipeProvider;
   SearchResult<Recept>? data;
 
@@ -35,6 +37,7 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
     super.initState();
     _korisnikProvider = context.read<KorisnikProvider>();
     _recipeProvider = context.read<RecipeProvider>();
+      _uplataProvider = context.read<UplataProvider>();
     loadData();
   }
 
@@ -67,6 +70,7 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
         await _korisnikProvider!.updateUserRole(korisnikId, 3);
         var azuriraniKorisnik = await _korisnikProvider!.getById(korisnikId);
         AuthProvider.korisnik = azuriraniKorisnik;
+        await _uplataProvider!.insert({'korisnikId': korisnikId, 'iznos':10.0, 'datumUplate': DateTime.now().toIso8601String(),});
         Navigator.pop(context, azuriraniKorisnik);
         await showDialog(
           context: context,

@@ -6,12 +6,12 @@ import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
 import 'package:erecipes_desktop/providers/notifikacije_provider.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
 import 'package:erecipes_desktop/providers/uloga_provider.dart';
+import 'package:erecipes_desktop/providers/uplata_provider.dart';
 import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_desktop/screens/home_screen.dart';
 import 'package:erecipes_desktop/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 void main() {
   runApp(MultiProvider(
@@ -25,14 +25,19 @@ void main() {
       ChangeNotifierProvider<KorisnikProvider>(
           create: (_) => KorisnikProvider()),
       ChangeNotifierProvider<UlogaProvider>(create: (_) => UlogaProvider()),
-       ChangeNotifierProvider<IzvjestajProvider>(create: (_) => IzvjestajProvider()),
-         ChangeNotifierProvider<NotifikacijeProvider>(
+      ChangeNotifierProvider<IzvjestajProvider>(
+          create: (_) => IzvjestajProvider()),
+      ChangeNotifierProvider<NotifikacijeProvider>(
           create: (_) => NotifikacijeProvider()),
+      ChangeNotifierProvider<UplataProvider>(
+          create: (_) => UplataProvider()),
     ],
     child: const MyApp(),
   ));
 }
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -68,19 +73,20 @@ class LoginScreen extends StatelessWidget {
         AuthProvider.username = _usernameController.text;
         AuthProvider.password = _passwordController.text;
         AuthProvider.korisnik = await _korisnikProvider.Authenticate();
-        if (AuthProvider.korisnik!.ulogaId == 2 || AuthProvider.korisnik!.korisnikId==3) {
-          ErrorSnackBar.show(context,
-            'Login failed. Please check your credentials.');
+        if (AuthProvider.korisnik!.ulogaId == 2 ||
+            AuthProvider.korisnik!.korisnikId == 3) {
+          ErrorSnackBar.show(
+              context, 'Login failed. Please check your credentials.');
           return;
         }
-         SuccessSnackBar.show(context, "Login successful!");
+        SuccessSnackBar.show(context, "Login successful!");
         Navigator.of(context).pushNamedAndRemoveUntil(
           HomeScreen.routeName,
           (route) => false,
         );
       } catch (e) {
-        ErrorSnackBar.show(context,
-            'Login failed. Please check your credentials.');
+        ErrorSnackBar.show(
+            context, 'Login failed. Please check your credentials.');
       }
     }
   }
