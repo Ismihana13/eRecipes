@@ -114,7 +114,8 @@ namespace eRecipes.Service
         {
             var receptSastojci = Context.ReceptSastojaks
                                          .Where(rs => rs.ReceptId == receptId)
-                                         .Include(rs => rs.Sastojak)  
+                                         .Include(rs => rs.Sastojak)
+                                         .Include(rs => rs.MjernaJedinica)
                                          .ToList();
             return Mapper.Map<List<Model.ReceptSastojak>>(receptSastojci);
         }

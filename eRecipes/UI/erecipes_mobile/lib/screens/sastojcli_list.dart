@@ -64,6 +64,15 @@ class SastojciListCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      Expanded(
+                        child: Text(
+                          '${sastojak.kolicina?.toStringAsFixed(1) ?? '0'} '
+                          '${sastojak.mjernaJedinica?.naziv ?? ''}',
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 90, 90, 90),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 );

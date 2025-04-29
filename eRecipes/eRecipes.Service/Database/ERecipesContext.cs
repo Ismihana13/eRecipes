@@ -17,27 +17,18 @@ public partial class ERecipesContext : DbContext
     }
 
     public virtual DbSet<Izvjestaj> Izvjestajs { get; set; }
-
     public virtual DbSet<Kategorija> Kategorijas { get; set; }
-
     public virtual DbSet<Korisnik> Korisniks { get; set; }
-
     public virtual DbSet<Lajkovi> Lajkovis { get; set; }
-
     public virtual DbSet<Notifikacije> Notifikacijes { get; set; }
-
     public virtual DbSet<OmiljeniRecept> OmiljeniRecepts { get; set; }
-
     public virtual DbSet<Recept> Recepts { get; set; }
-
     public virtual DbSet<ReceptSastojak> ReceptSastojaks { get; set; }
-
     public virtual DbSet<Sastojak> Sastojaks { get; set; }
-
     public virtual DbSet<Uloga> Ulogas { get; set; }
-
     public virtual DbSet<VrstaJela> VrstaJelas { get; set; }
     public virtual DbSet<Uplata> Uplatas { get; set; }
+    public virtual DbSet<MjernaJedinica> MjernaJedinicas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,49 +113,59 @@ public partial class ERecipesContext : DbContext
             new Recept { ReceptId = 9, Naziv = "Čokoladni mousse", OpisRecepta = "Lagan i kremast desert sa čokoladom.", OpisPripreme = "Otopiti čokoladu, pomiješati sa šlagom i hladiti.", VrijemePripreme = 30, KorisnikId = 3, DatumObjave = DateTime.Now, Premium = true, VrstaJelaId = 1, KategorijaId = 3, Status = true, Slika = Convert.FromBase64String(Images.Slike[8]) },
             new Recept { ReceptId = 10, Naziv = "Zapečeni krompir", OpisRecepta = "Ukusan krompir zapečen sa sirom i začinima.", OpisPripreme = "Krompir ispeći u pećnici sa sirom, maslacem i začinima.", VrijemePripreme = 45, KorisnikId = 2, DatumObjave = DateTime.Now, Premium = false, VrstaJelaId = 4, KategorijaId = 2, Status = true, Slika = Convert.FromBase64String(Images.Slike[9]) }
          );
+        modelBuilder.Entity<MjernaJedinica>().HasData(
+            new MjernaJedinica { MjernaJedinicaId = 1, Naziv = "Gram", Oznaka = "g" },
+            new MjernaJedinica { MjernaJedinicaId = 2, Naziv = "Kilogram", Oznaka = "kg" },
+            new MjernaJedinica { MjernaJedinicaId = 3, Naziv = "Mililitar", Oznaka = "ml" },
+            new MjernaJedinica { MjernaJedinicaId = 4, Naziv = "Komad", Oznaka = "kom" },
+            new MjernaJedinica { MjernaJedinicaId = 5, Naziv = "Šalica", Oznaka = "šalica" }
+         );
+
 
         modelBuilder.Entity<ReceptSastojak>().HasData(
-            new ReceptSastojak { ReceptSastojakId = 1, ReceptId = 1, SastojakId = 1 },  
-            new ReceptSastojak { ReceptSastojakId = 2, ReceptId = 1, SastojakId = 2 },  
-            new ReceptSastojak { ReceptSastojakId = 3, ReceptId = 1, SastojakId = 3 },  
-            new ReceptSastojak { ReceptSastojakId = 4, ReceptId = 1, SastojakId = 4 },  
-            new ReceptSastojak { ReceptSastojakId = 5, ReceptId = 1, SastojakId = 5 },  
+            new ReceptSastojak { ReceptSastojakId = 1, ReceptId = 1, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 2, ReceptId = 1, SastojakId = 2, MjernaJedinicaId = 2, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 3, ReceptId = 1, SastojakId = 3, MjernaJedinicaId = 3, Kolicina = 100.00 },
+            new ReceptSastojak { ReceptSastojakId = 4, ReceptId = 1, SastojakId = 4, MjernaJedinicaId = 4, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 5, ReceptId = 1, SastojakId = 5, MjernaJedinicaId = 5, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 6, ReceptId = 2, SastojakId = 1 },  
-            new ReceptSastojak { ReceptSastojakId = 7, ReceptId = 2, SastojakId = 2 },  
-            new ReceptSastojak { ReceptSastojakId = 8, ReceptId = 2, SastojakId = 3 },  
-            new ReceptSastojak { ReceptSastojakId = 9, ReceptId = 2, SastojakId = 4 },  
-            new ReceptSastojak { ReceptSastojakId = 10, ReceptId = 2, SastojakId = 6 }, 
-            new ReceptSastojak { ReceptSastojakId = 11, ReceptId = 2, SastojakId = 8 },
+            new ReceptSastojak { ReceptSastojakId = 6, ReceptId = 2, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 7, ReceptId = 2, SastojakId = 2, MjernaJedinicaId = 2, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 8, ReceptId = 2, SastojakId = 3, MjernaJedinicaId = 3, Kolicina = 100.00 },
+            new ReceptSastojak { ReceptSastojakId = 9, ReceptId = 2, SastojakId = 4, MjernaJedinicaId = 4, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 10, ReceptId = 2, SastojakId = 6, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 11, ReceptId = 2, SastojakId = 8, MjernaJedinicaId = 5, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 12, ReceptId = 3, SastojakId = 1 },
-            new ReceptSastojak { ReceptSastojakId = 13, ReceptId = 3, SastojakId = 2 },
-            new ReceptSastojak { ReceptSastojakId = 14, ReceptId = 3, SastojakId = 5 }, 
+            new ReceptSastojak { ReceptSastojakId = 12, ReceptId = 3, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 13, ReceptId = 3, SastojakId = 2, MjernaJedinicaId = 2, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 14, ReceptId = 3, SastojakId = 5, MjernaJedinicaId = 5, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 15, ReceptId = 4, SastojakId = 1 }, 
-            new ReceptSastojak { ReceptSastojakId = 16, ReceptId = 4, SastojakId = 4 }, 
-            new ReceptSastojak { ReceptSastojakId = 17, ReceptId = 4, SastojakId = 9 }, 
-            new ReceptSastojak { ReceptSastojakId = 18, ReceptId = 4, SastojakId = 8 }, 
+            new ReceptSastojak { ReceptSastojakId = 15, ReceptId = 4, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 16, ReceptId = 4, SastojakId = 4, MjernaJedinicaId = 4, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 17, ReceptId = 4, SastojakId = 9, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 18, ReceptId = 4, SastojakId = 8, MjernaJedinicaId = 5, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 19, ReceptId = 5, SastojakId = 1 }, 
-            new ReceptSastojak { ReceptSastojakId = 20, ReceptId = 5, SastojakId = 2 }, 
-            new ReceptSastojak { ReceptSastojakId = 21, ReceptId = 5, SastojakId = 5 }, 
-            new ReceptSastojak { ReceptSastojakId = 22, ReceptId = 5, SastojakId = 7 }, 
+            new ReceptSastojak { ReceptSastojakId = 19, ReceptId = 5, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 20, ReceptId = 5, SastojakId = 2, MjernaJedinicaId = 2, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 21, ReceptId = 5, SastojakId = 5, MjernaJedinicaId = 5, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 22, ReceptId = 5, SastojakId = 7, MjernaJedinicaId = 4, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 23, ReceptId = 6, SastojakId = 1 }, 
-            new ReceptSastojak { ReceptSastojakId = 24, ReceptId = 6, SastojakId = 6 }, 
-            new ReceptSastojak { ReceptSastojakId = 25, ReceptId = 6, SastojakId = 10 }, 
+            new ReceptSastojak { ReceptSastojakId = 23, ReceptId = 6, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 24, ReceptId = 6, SastojakId = 6, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 25, ReceptId = 6, SastojakId = 10, MjernaJedinicaId = 5, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 26, ReceptId = 7, SastojakId = 1 }, 
-            new ReceptSastojak { ReceptSastojakId = 27, ReceptId = 7, SastojakId = 5 }, 
-            new ReceptSastojak { ReceptSastojakId = 28, ReceptId = 7, SastojakId = 6 }, 
-            new ReceptSastojak { ReceptSastojakId = 29, ReceptId = 7, SastojakId = 7 }, 
-            new ReceptSastojak { ReceptSastojakId = 30, ReceptId = 7, SastojakId = 10 }, 
+            new ReceptSastojak { ReceptSastojakId = 26, ReceptId = 7, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 27, ReceptId = 7, SastojakId = 5, MjernaJedinicaId = 5, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 28, ReceptId = 7, SastojakId = 6, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 29, ReceptId = 7, SastojakId = 7, MjernaJedinicaId = 4, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 30, ReceptId = 7, SastojakId = 10, MjernaJedinicaId = 5, Kolicina = 1.00 },
 
-            new ReceptSastojak { ReceptSastojakId = 31, ReceptId = 8, SastojakId = 1 }, 
-            new ReceptSastojak { ReceptSastojakId = 32, ReceptId = 8, SastojakId = 5 }, 
-            new ReceptSastojak { ReceptSastojakId = 33, ReceptId = 8, SastojakId = 10 } 
-        );
+            new ReceptSastojak { ReceptSastojakId = 31, ReceptId = 8, SastojakId = 1, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 32, ReceptId = 8, SastojakId = 2, MjernaJedinicaId = 2, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 33, ReceptId = 8, SastojakId = 5, MjernaJedinicaId = 5, Kolicina = 1.00 },
+            new ReceptSastojak { ReceptSastojakId = 34, ReceptId = 8, SastojakId = 6, MjernaJedinicaId = 1, Kolicina = 200.00 },
+            new ReceptSastojak { ReceptSastojakId = 35, ReceptId = 8, SastojakId = 8, MjernaJedinicaId = 5, Kolicina = 1.00 }
+         );
 
         modelBuilder.Entity<Lajkovi>().HasData(
             new Lajkovi { LajkoviId = 1, KorisnikId =2,ReceptId=2,DatumLajka=DateTime.Now },
