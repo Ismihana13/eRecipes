@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/recept_sastojak.dart';
+import 'package:erecipes_mobile/models/sastojak.dart';
 import 'package:erecipes_mobile/providers/base_provider.dart';
 
 class RecipeProvider extends BaseProvider<Recept> {
@@ -39,14 +40,21 @@ class RecipeProvider extends BaseProvider<Recept> {
   }
 
   Future<String> addSastojkeToRecept(
-      int receptId, List<int> sastojakIds) async {
+      int receptId, List<Sastojak> sastojci) async {
     var url = "$fullUrl/$receptId/sastojci";
     var uri = Uri.parse(url);
     var headers = createHeaders();
+     List<Map<String, dynamic>> sastojciZaSlanje = sastojci.map((s) {
+    return {
+      "sastojakId": s.sastojakId,  // ID sastojka
+      "mjernaJedinicaId": s.mjernaJedinicaId,  // ID mjerne jedinice
+      "kolicina": double.tryParse(s.kolicina ?? '0') ?? 0.0,  // Količina
+    };
+  }).toList();
     final response = await http!.post(
       uri,
       headers: headers,
-      body: jsonEncode(sastojakIds),
+      body: jsonEncode(sastojciZaSlanje),
     );
     if (response.statusCode == 200) {
       return "Sastojci su uspješno dodani!";

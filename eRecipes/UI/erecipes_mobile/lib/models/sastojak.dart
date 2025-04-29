@@ -6,6 +6,8 @@ part 'sastojak.g.dart';
 class Sastojak{
   int? sastojakId;
   String? naziv; 
+  String? kolicina; // Dodano
+  int? mjernaJedinicaId; // Dodano
  
   Sastojak({this.naziv,this.sastojakId});
 
