@@ -12,7 +12,7 @@ using eRecipes.Service.Database;
 namespace eRecipes.Service.Migrations
 {
     [DbContext(typeof(ERecipesContext))]
-    [Migration("20250424104831_Init")]
+    [Migration("20250429134118_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -155,7 +155,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 1,
-                            DatumRodjenja = new DateTime(1995, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(6872),
+                            DatumRodjenja = new DateTime(1995, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3021),
                             Email = "admin@mail.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
@@ -169,7 +169,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 2,
-                            DatumRodjenja = new DateTime(2002, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(6939),
+                            DatumRodjenja = new DateTime(2002, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3089),
                             Email = "korisnik@mail.com",
                             Ime = "Korisnik",
                             KorisnickoIme = "korisnik",
@@ -183,7 +183,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 3,
-                            DatumRodjenja = new DateTime(1980, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(6943),
+                            DatumRodjenja = new DateTime(1980, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3093),
                             Email = "bajaspare@mail.com",
                             Ime = "Baja",
                             KorisnickoIme = "premium",
@@ -225,23 +225,76 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             LajkoviId = 1,
-                            DatumLajka = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(362),
+                            DatumLajka = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6221),
                             KorisnikId = 2,
                             ReceptId = 2
                         },
                         new
                         {
                             LajkoviId = 2,
-                            DatumLajka = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(366),
+                            DatumLajka = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6234),
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             LajkoviId = 3,
-                            DatumLajka = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(368),
+                            DatumLajka = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6237),
                             KorisnikId = 2,
                             ReceptId = 3
+                        });
+                });
+
+            modelBuilder.Entity("eRecipes.Service.Database.MjernaJedinica", b =>
+                {
+                    b.Property<int>("MjernaJedinicaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MjernaJedinicaId"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Oznaka")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MjernaJedinicaId");
+
+                    b.ToTable("MjernaJedinicas");
+
+                    b.HasData(
+                        new
+                        {
+                            MjernaJedinicaId = 1,
+                            Naziv = "Gram",
+                            Oznaka = "g"
+                        },
+                        new
+                        {
+                            MjernaJedinicaId = 2,
+                            Naziv = "Kilogram",
+                            Oznaka = "kg"
+                        },
+                        new
+                        {
+                            MjernaJedinicaId = 3,
+                            Naziv = "Mililitar",
+                            Oznaka = "ml"
+                        },
+                        new
+                        {
+                            MjernaJedinicaId = 4,
+                            Naziv = "Komad",
+                            Oznaka = "kom"
+                        },
+                        new
+                        {
+                            MjernaJedinicaId = 5,
+                            Naziv = "Šalica",
+                            Oznaka = "šalica"
                         });
                 });
 
@@ -285,7 +338,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             NotifikacijeId = 1,
-                            DatumSlanja = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(465),
+                            DatumSlanja = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6378),
                             KorisnikId = 3,
                             Naslov = "Test",
                             Procitano = true,
@@ -323,21 +376,21 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             OmiljeniReceptId = 1,
-                            DatumDodavanja = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(393),
+                            DatumDodavanja = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6292),
                             KorisnikId = 2,
                             ReceptId = 1
                         },
                         new
                         {
                             OmiljeniReceptId = 2,
-                            DatumDodavanja = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(397),
+                            DatumDodavanja = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6295),
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             OmiljeniReceptId = 3,
-                            DatumDodavanja = new DateTime(2025, 4, 24, 12, 48, 30, 854, DateTimeKind.Local).AddTicks(400),
+                            DatumDodavanja = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(6298),
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -401,7 +454,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 1,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(7194),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3302),
                             KategorijaId = 3,
                             KorisnikId = 2,
                             Naziv = "Palačinke",
@@ -416,7 +469,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 2,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(7317),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3431),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pizza Margherita",
@@ -431,7 +484,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 3,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(7681),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3729),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Ćevapi",
@@ -446,7 +499,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 4,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(7868),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(3891),
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Tiramisu",
@@ -461,7 +514,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 5,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(9061),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(4915),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pasta Carbonara",
@@ -476,7 +529,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 6,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(9196),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(5183),
                             KategorijaId = 1,
                             KorisnikId = 2,
                             Naziv = "Grčka salata",
@@ -491,7 +544,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 7,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(9334),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(5320),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Sarma",
@@ -506,7 +559,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 8,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(9556),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(5511),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pečena piletina",
@@ -521,7 +574,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 9,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(9888),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(5803),
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Čokoladni mousse",
@@ -536,7 +589,7 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 10,
-                            DatumObjave = new DateTime(2025, 4, 24, 12, 48, 30, 853, DateTimeKind.Local).AddTicks(9999),
+                            DatumObjave = new DateTime(2025, 4, 29, 15, 41, 18, 425, DateTimeKind.Local).AddTicks(5918),
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Zapečeni krompir",
@@ -558,6 +611,12 @@ namespace eRecipes.Service.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceptSastojakId"));
 
+                    b.Property<double>("Kolicina")
+                        .HasColumnType("float");
+
+                    b.Property<int>("MjernaJedinicaId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ReceptId")
                         .HasColumnType("int");
 
@@ -565,6 +624,8 @@ namespace eRecipes.Service.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ReceptSastojakId");
+
+                    b.HasIndex("MjernaJedinicaId");
 
                     b.HasIndex("ReceptId");
 
@@ -576,200 +637,282 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptSastojakId = 1,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 1,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 2,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 2,
                             ReceptId = 1,
                             SastojakId = 2
                         },
                         new
                         {
                             ReceptSastojakId = 3,
+                            Kolicina = 100.0,
+                            MjernaJedinicaId = 3,
                             ReceptId = 1,
                             SastojakId = 3
                         },
                         new
                         {
                             ReceptSastojakId = 4,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 4,
                             ReceptId = 1,
                             SastojakId = 4
                         },
                         new
                         {
                             ReceptSastojakId = 5,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 1,
                             SastojakId = 5
                         },
                         new
                         {
                             ReceptSastojakId = 6,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 2,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 7,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 2,
                             ReceptId = 2,
                             SastojakId = 2
                         },
                         new
                         {
                             ReceptSastojakId = 8,
+                            Kolicina = 100.0,
+                            MjernaJedinicaId = 3,
                             ReceptId = 2,
                             SastojakId = 3
                         },
                         new
                         {
                             ReceptSastojakId = 9,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 4,
                             ReceptId = 2,
                             SastojakId = 4
                         },
                         new
                         {
                             ReceptSastojakId = 10,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 2,
                             SastojakId = 6
                         },
                         new
                         {
                             ReceptSastojakId = 11,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 2,
                             SastojakId = 8
                         },
                         new
                         {
                             ReceptSastojakId = 12,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 3,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 13,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 2,
                             ReceptId = 3,
                             SastojakId = 2
                         },
                         new
                         {
                             ReceptSastojakId = 14,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 3,
                             SastojakId = 5
                         },
                         new
                         {
                             ReceptSastojakId = 15,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 4,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 16,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 4,
                             ReceptId = 4,
                             SastojakId = 4
                         },
                         new
                         {
                             ReceptSastojakId = 17,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 4,
                             SastojakId = 9
                         },
                         new
                         {
                             ReceptSastojakId = 18,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 4,
                             SastojakId = 8
                         },
                         new
                         {
                             ReceptSastojakId = 19,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 5,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 20,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 2,
                             ReceptId = 5,
                             SastojakId = 2
                         },
                         new
                         {
                             ReceptSastojakId = 21,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 5,
                             SastojakId = 5
                         },
                         new
                         {
                             ReceptSastojakId = 22,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 4,
                             ReceptId = 5,
                             SastojakId = 7
                         },
                         new
                         {
                             ReceptSastojakId = 23,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 6,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 24,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 6,
                             SastojakId = 6
                         },
                         new
                         {
                             ReceptSastojakId = 25,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 6,
                             SastojakId = 10
                         },
                         new
                         {
                             ReceptSastojakId = 26,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 7,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 27,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 7,
                             SastojakId = 5
                         },
                         new
                         {
                             ReceptSastojakId = 28,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 7,
                             SastojakId = 6
                         },
                         new
                         {
                             ReceptSastojakId = 29,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 4,
                             ReceptId = 7,
                             SastojakId = 7
                         },
                         new
                         {
                             ReceptSastojakId = 30,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 7,
                             SastojakId = 10
                         },
                         new
                         {
                             ReceptSastojakId = 31,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 8,
                             SastojakId = 1
                         },
                         new
                         {
                             ReceptSastojakId = 32,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 2,
+                            ReceptId = 8,
+                            SastojakId = 2
+                        },
+                        new
+                        {
+                            ReceptSastojakId = 33,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
                             ReceptId = 8,
                             SastojakId = 5
                         },
                         new
                         {
-                            ReceptSastojakId = 33,
+                            ReceptSastojakId = 34,
+                            Kolicina = 200.0,
+                            MjernaJedinicaId = 1,
                             ReceptId = 8,
-                            SastojakId = 10
+                            SastojakId = 6
+                        },
+                        new
+                        {
+                            ReceptSastojakId = 35,
+                            Kolicina = 1.0,
+                            MjernaJedinicaId = 5,
+                            ReceptId = 8,
+                            SastojakId = 8
                         });
                 });
 
@@ -1081,6 +1224,12 @@ namespace eRecipes.Service.Migrations
 
             modelBuilder.Entity("eRecipes.Service.Database.ReceptSastojak", b =>
                 {
+                    b.HasOne("eRecipes.Service.Database.MjernaJedinica", "MjernaJedinica")
+                        .WithMany("ReceptSastojaks")
+                        .HasForeignKey("MjernaJedinicaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("eRecipes.Service.Database.Recept", "Recept")
                         .WithMany("ReceptSastojaks")
                         .HasForeignKey("ReceptId")
@@ -1092,6 +1241,8 @@ namespace eRecipes.Service.Migrations
                         .HasForeignKey("SastojakId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MjernaJedinica");
 
                     b.Navigation("Recept");
 
@@ -1125,6 +1276,11 @@ namespace eRecipes.Service.Migrations
                     b.Navigation("Recepts");
 
                     b.Navigation("Uplatas");
+                });
+
+            modelBuilder.Entity("eRecipes.Service.Database.MjernaJedinica", b =>
+                {
+                    b.Navigation("ReceptSastojaks");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.Recept", b =>

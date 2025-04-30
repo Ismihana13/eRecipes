@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:erecipes_mobile/models/recept.dart';
 import 'package:erecipes_mobile/models/recept_sastojak.dart';
+import 'package:erecipes_mobile/models/sastojak.dart';
 import 'package:erecipes_mobile/providers/base_provider.dart';
 
 class RecipeProvider extends BaseProvider<Recept> {
@@ -39,14 +40,21 @@ class RecipeProvider extends BaseProvider<Recept> {
   }
 
   Future<String> addSastojkeToRecept(
-      int receptId, List<int> sastojakIds) async {
+      int receptId, List<Sastojak> sastojci) async {
     var url = "$fullUrl/$receptId/sastojci";
     var uri = Uri.parse(url);
     var headers = createHeaders();
+    List<Map<String, dynamic>> sastojciZaSlanje = sastojci.map((s) {
+      return {
+        "sastojakId": s.sastojakId,
+        "mjernaJedinicaId": s.mjernaJedinicaId,
+        "kolicina": double.tryParse(s.kolicina ?? '0') ?? 0.0,
+      };
+    }).toList();
     final response = await http!.post(
       uri,
       headers: headers,
-      body: jsonEncode(sastojakIds),
+      body: jsonEncode(sastojciZaSlanje),
     );
     if (response.statusCode == 200) {
       return "Sastojci su uspješno dodani!";
@@ -80,9 +88,11 @@ class RecipeProvider extends BaseProvider<Recept> {
       Recept recipe = fromJson(data);
       return recipe;
     } else {
-     var errorMessage = jsonDecode(response.body)["message"] ?? "Došlo je do greške.";
-      print("Došlo je do greške: $errorMessage"); 
-       throw Exception("Failed to delete recipe. Status code: ${response.statusCode}, ${response.body}");
+      var errorMessage =
+          jsonDecode(response.body)["message"] ?? "Došlo je do greške.";
+      print("Došlo je do greške: $errorMessage");
+      throw Exception(
+          "Failed to delete recipe. Status code: ${response.statusCode}, ${response.body}");
     }
   }
 
@@ -119,12 +129,12 @@ class RecipeProvider extends BaseProvider<Recept> {
     }
   }
 
-   Future<void> deleteRecipeSoft(int? id) async {
+  Future<void> deleteRecipeSoft(int? id) async {
     var url = "$fullUrl/$id/DeleteRecept";
     var uri = Uri.parse(url);
-    var headers =createHeaders();
+    var headers = createHeaders();
     var response = await http!.put(uri, headers: headers);
-     if (isValidResponse(response)) {
+    if (isValidResponse(response)) {
       print("Recept obrisan.");
     } else {
       throw Exception("Neuspješno brisanje recepta.");

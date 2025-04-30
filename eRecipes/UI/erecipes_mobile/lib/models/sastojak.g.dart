@@ -7,11 +7,17 @@ part of 'sastojak.dart';
 // **************************************************************************
 
 Sastojak _$SastojakFromJson(Map<String, dynamic> json) => Sastojak(
-      naziv: json['naziv'] as String?,
       sastojakId: (json['sastojakId'] as num?)?.toInt(),
+      naziv: json['naziv'] as String?,
+      kolicina: json['kolicina'] as String?,
+      mjernaJedinicaId: (json['mjernaJedinicaId'] as num?)?.toInt(),
+      nazivMjerneJedinice: json['nazivMjerneJedinice'] as String?,
     );
 
 Map<String, dynamic> _$SastojakToJson(Sastojak instance) => <String, dynamic>{
       'sastojakId': instance.sastojakId,
       'naziv': instance.naziv,
+      'kolicina': instance.kolicina,
+      'mjernaJedinicaId': instance.mjernaJedinicaId,
+      'nazivMjerneJedinice': instance.nazivMjerneJedinice,
     };

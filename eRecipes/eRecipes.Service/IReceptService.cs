@@ -13,7 +13,7 @@ namespace eRecipes.Service
     {
        Model.Recept DeleteRecept(int id);
         List<Model.ReceptSastojak> GetSastojciForRecept(int id);
-        Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds);
+        Task<string> AddSastojkeToReceptAsync(int receptId, List<ReceptSastojakInsertRequest> sastojciRequest);
         List<Model.Recept> GetReceptiByKorisnikId(int korisnikId);
         Model.Recept BrisanjeRecepta(int id);
         Task<string> UpdateSastojkeForReceptAsync(int receptId, List<int> sastojakIds);

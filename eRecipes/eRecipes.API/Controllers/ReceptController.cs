@@ -34,9 +34,9 @@ namespace eRecipes.API.Controllers
         }
 
         [HttpPost("{receptId}/sastojci")]
-        public async Task<ActionResult> AddSastojkeToRecept(int receptId, [FromBody] List<int> sastojakIds)
+        public async Task<ActionResult> AddSastojkeToRecept(int receptId, [FromBody] List<ReceptSastojakInsertRequest> sastojciRequest)
         {
-            var result = await ((IReceptService)_service).AddSastojkeToReceptAsync(receptId, sastojakIds);
+            var result = await ((IReceptService)_service).AddSastojkeToReceptAsync(receptId, sastojciRequest);
 
             if (result == "Recept nije pronađen." || result == "Neki od sastojaka nisu pronađeni.")
             {

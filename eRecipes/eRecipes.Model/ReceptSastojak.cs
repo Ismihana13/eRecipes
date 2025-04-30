@@ -11,5 +11,8 @@ namespace eRecipes.Model
         public int SastojakId { get; set; }
         public virtual Recept? Recept { get; set; }
         public virtual Sastojak? Sastojak { get; set; }
+        public int MjernaJedinicaId { get; set; }
+        public double Kolicina { get; set; }
+        public virtual MjernaJedinica MjernaJedinica { get; set; } = null!;
     }
 }

@@ -6,8 +6,17 @@ part 'sastojak.g.dart';
 class Sastojak{
   int? sastojakId;
   String? naziv; 
+  String? kolicina; 
+  int? mjernaJedinicaId; 
+  String? nazivMjerneJedinice;
  
-  Sastojak({this.naziv,this.sastojakId});
+ Sastojak({
+  this.sastojakId,
+  this.naziv,
+  this.kolicina,
+  this.mjernaJedinicaId,
+  this.nazivMjerneJedinice,
+});
 
  factory Sastojak.FromJson(Map<String,dynamic> json)=> _$SastojakFromJson(json);
 

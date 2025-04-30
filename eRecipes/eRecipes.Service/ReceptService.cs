@@ -114,12 +114,13 @@ namespace eRecipes.Service
         {
             var receptSastojci = Context.ReceptSastojaks
                                          .Where(rs => rs.ReceptId == receptId)
-                                         .Include(rs => rs.Sastojak)  
+                                         .Include(rs => rs.Sastojak)
+                                         .Include(rs => rs.MjernaJedinica)
                                          .ToList();
             return Mapper.Map<List<Model.ReceptSastojak>>(receptSastojci);
         }
 
-        public async Task<string> AddSastojkeToReceptAsync(int receptId, List<int> sastojakIds)
+        public async Task<string> AddSastojkeToReceptAsync(int receptId, List<ReceptSastojakInsertRequest> sastojciRequest)
         {
             var recept = await Context.Recepts.Include(r => r.ReceptSastojaks)
                                                 .FirstOrDefaultAsync(r => r.ReceptId == receptId);
@@ -129,7 +130,10 @@ namespace eRecipes.Service
                 return "Recept nije pronađen.";
             }
 
-            var sastojci = await Context.Sastojaks.Where(s => sastojakIds.Contains(s.SastojakId)).ToListAsync();
+            var sastojakIds = sastojciRequest.Select(x => x.SastojakId).ToList();
+            var sastojci = await Context.Sastojaks
+                .Where(s => sastojakIds.Contains(s.SastojakId))
+                .ToListAsync();
 
             if (sastojci.Count != sastojakIds.Count)
             {
@@ -139,15 +143,18 @@ namespace eRecipes.Service
                                         .Where(rs => rs.ReceptId == receptId)
                                         .Select(rs => rs.SastojakId)
                                         .ToListAsync();
-            foreach (var sastojak in sastojci)
+            foreach (var req in sastojciRequest)
             {
-                if (!existingSastojaks.Contains(sastojak.SastojakId))
+                if (!existingSastojaks.Contains(req.SastojakId))
                 {
                     var receptSastojak = new ReceptSastojak
                     {
                         ReceptId = receptId,
-                        SastojakId = sastojak.SastojakId
+                        SastojakId = req.SastojakId,
+                        MjernaJedinicaId = req.MjernaJedinicaId,
+                        Kolicina = req.Kolicina
                     };
+
                     Context.ReceptSastojaks.Add(receptSastojak);
                 }
             }
