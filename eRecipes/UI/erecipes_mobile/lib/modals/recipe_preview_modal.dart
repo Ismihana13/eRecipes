@@ -19,7 +19,6 @@ class RecipePreviewModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recipeProvider = Provider.of<RecipeProvider>(context, listen: false);
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Padding(
@@ -190,7 +189,7 @@ class RecipePreviewModal extends StatelessWidget {
                         Expanded(
                         child: Text(
                           '${sastojak.kolicina ?? '0'} '
-                          '${sastojak.mjernaJedinicaId.toString()}',
+                          '${sastojak.nazivMjerneJedinice ?? 'N/A'}',
                           style: const TextStyle(
                             color: Color.fromARGB(255, 90, 90, 90),
                           ),

@@ -77,8 +77,10 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
     vrstaJelaResult = await _vrstaJelaProvider.get();
     sastojakResult = await _sastojakProvider.get();
     mjernaJedinicaResult = await _mjernaJedinicaProvider.get();
-    if(mjernaJedinicaResult!= null && mjernaJedinicaResult!.result.isNotEmpty){
-      _selectedMjernaJedinicaId=mjernaJedinicaResult!.result.first.mjernaJedinicaId.toString();
+    if (mjernaJedinicaResult != null &&
+        mjernaJedinicaResult!.result.isNotEmpty) {
+      _selectedMjernaJedinicaId =
+          mjernaJedinicaResult!.result.first.mjernaJedinicaId.toString();
     }
     if (kategorijaResult != null && kategorijaResult!.result.isNotEmpty) {
       _selectedKategorijaId =
@@ -227,25 +229,48 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                 child: const Text('Dodaj novi sastojak',
                     style: TextStyle(fontSize: 16)),
               ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Dodajte količinu i mjernu jedinicu",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+              if (_selectedSastojci.isNotEmpty)
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Dodajte količinu i mjernu jedinicu",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
               Column(
                 children: _selectedSastojci.map((su) {
+                  if (su.nazivMjerneJedinice == null &&
+                      _selectedMjernaJedinicaId != null) {
+                    final jedinica = mjernaJedinicaResult?.result.firstWhere(
+                      (element) =>
+                          element.mjernaJedinicaId.toString() ==
+                          _selectedMjernaJedinicaId,
+                      orElse: () => MjernaJedinica(),
+                    );
+                    su.nazivMjerneJedinice = jedinica?.naziv;
+                    su.mjernaJedinicaId = jedinica?.mjernaJedinicaId;
+                  }
                   return Row(
                     children: [
                       Expanded(child: Text(su.naziv ?? "Nepoznat sastojak")),
                       const SizedBox(width: 10),
                       Expanded(
                         child: TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: 'Količina'),
-                            onChanged:  (value) => su.kolicina = value,
-                            ),
+                          decoration:
+                              const InputDecoration(labelText: 'Količina'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Unesite količinu';
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Mora biti broj.';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) => su.kolicina = value,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -265,7 +290,16 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                           onChanged: (value) {
                             setState(() {
                               _selectedMjernaJedinicaId = value;
-        su.mjernaJedinicaId = int.tryParse(value!);
+                              su.mjernaJedinicaId = int.tryParse(value!);
+
+                              final jedinica =
+                                  mjernaJedinicaResult?.result.firstWhere(
+                                (element) =>
+                                    element.mjernaJedinicaId.toString() ==
+                                    value,
+                                orElse: () => MjernaJedinica(),
+                              );
+                              su.nazivMjerneJedinice = jedinica!.naziv;
                             });
                           },
                         ),
@@ -362,7 +396,6 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
       int? kategorijaId = int.tryParse(_selectedKategorijaId ?? '');
       int? vrstaJelaId = int.tryParse(_selectedVrstaJelaId ?? '');
       String? base64Image = _base64Image;
-      
 
       Recept newRecipe = Recept(
         naziv: recipeName,

@@ -44,13 +44,13 @@ class RecipeProvider extends BaseProvider<Recept> {
     var url = "$fullUrl/$receptId/sastojci";
     var uri = Uri.parse(url);
     var headers = createHeaders();
-     List<Map<String, dynamic>> sastojciZaSlanje = sastojci.map((s) {
-    return {
-      "sastojakId": s.sastojakId,  // ID sastojka
-      "mjernaJedinicaId": s.mjernaJedinicaId,  // ID mjerne jedinice
-      "kolicina": double.tryParse(s.kolicina ?? '0') ?? 0.0,  // Količina
-    };
-  }).toList();
+    List<Map<String, dynamic>> sastojciZaSlanje = sastojci.map((s) {
+      return {
+        "sastojakId": s.sastojakId,
+        "mjernaJedinicaId": s.mjernaJedinicaId,
+        "kolicina": double.tryParse(s.kolicina ?? '0') ?? 0.0,
+      };
+    }).toList();
     final response = await http!.post(
       uri,
       headers: headers,
@@ -88,9 +88,11 @@ class RecipeProvider extends BaseProvider<Recept> {
       Recept recipe = fromJson(data);
       return recipe;
     } else {
-     var errorMessage = jsonDecode(response.body)["message"] ?? "Došlo je do greške.";
-      print("Došlo je do greške: $errorMessage"); 
-       throw Exception("Failed to delete recipe. Status code: ${response.statusCode}, ${response.body}");
+      var errorMessage =
+          jsonDecode(response.body)["message"] ?? "Došlo je do greške.";
+      print("Došlo je do greške: $errorMessage");
+      throw Exception(
+          "Failed to delete recipe. Status code: ${response.statusCode}, ${response.body}");
     }
   }
 
@@ -127,12 +129,12 @@ class RecipeProvider extends BaseProvider<Recept> {
     }
   }
 
-   Future<void> deleteRecipeSoft(int? id) async {
+  Future<void> deleteRecipeSoft(int? id) async {
     var url = "$fullUrl/$id/DeleteRecept";
     var uri = Uri.parse(url);
-    var headers =createHeaders();
+    var headers = createHeaders();
     var response = await http!.put(uri, headers: headers);
-     if (isValidResponse(response)) {
+    if (isValidResponse(response)) {
       print("Recept obrisan.");
     } else {
       throw Exception("Neuspješno brisanje recepta.");
