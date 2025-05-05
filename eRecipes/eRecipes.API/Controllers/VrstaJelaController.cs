@@ -23,5 +23,18 @@ namespace eRecipes.API.Controllers
         {
             return base.GetList(searchObject);
         }
+
+        [HttpGet("{id}/broj-recepata")]
+        public IActionResult GetBrojRecepataZaVrstuJela(int id)
+        {
+            var brojRecepata = ((IVrstaJelaService)_service).GetBrojRecepataZaVrstuJela(id);
+            return Ok(brojRecepata);
+        }
+
+        [HttpPut("{id}/DeleteVrstaJela")]
+        public VrstaJela DeleteVrstaJela(int id)
+        {
+            return ((IVrstaJelaService)_service).DeleteVrstaJela(id);
+        }
     }
 }

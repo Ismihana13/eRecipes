@@ -29,7 +29,7 @@ namespace eRecipes.Service
             var filteredQuery = base.AddFilter(search, query);
             if (!string.IsNullOrWhiteSpace(search?.NazivGTE))
             {
-                filteredQuery = filteredQuery.Where(x => x.Naziv.ToLower().StartsWith(search.NazivGTE.ToLower()));
+                filteredQuery = filteredQuery.Where(x => x.Naziv.ToLower().Contains(search.NazivGTE.ToLower()));
             }
             if (search.Status.HasValue)
             {

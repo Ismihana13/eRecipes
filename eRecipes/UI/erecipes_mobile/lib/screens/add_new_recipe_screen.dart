@@ -73,8 +73,11 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
   }
 
   Future<void> initForm() async {
-    kategorijaResult = await _kategorijaProvider.get();
-    vrstaJelaResult = await _vrstaJelaProvider.get();
+    var filter={
+      'Status':true
+    };
+    kategorijaResult = await _kategorijaProvider.get(filter: filter);
+    vrstaJelaResult = await _vrstaJelaProvider.get(filter: filter);
     sastojakResult = await _sastojakProvider.get();
     mjernaJedinicaResult = await _mjernaJedinicaProvider.get();
     if (mjernaJedinicaResult != null &&

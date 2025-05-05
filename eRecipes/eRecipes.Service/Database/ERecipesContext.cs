@@ -29,6 +29,8 @@ public partial class ERecipesContext : DbContext
     public virtual DbSet<VrstaJela> VrstaJelas { get; set; }
     public virtual DbSet<Uplata> Uplatas { get; set; }
     public virtual DbSet<MjernaJedinica> MjernaJedinicas { get; set; }
+    public virtual DbSet<Katalog> Katalogs { get; set; }
+    public virtual DbSet<KatalogRecept> KatalogRecepts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

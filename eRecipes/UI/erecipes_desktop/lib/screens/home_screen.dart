@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 if (isAdministrator())
                   NavItem(
-                    title: 'Kategorije',
+                    title: 'Kategorije i vrste jela',
                     isSelected: selectedNavItem == 'Kategorije',
                     onTap: () {
                       setState(() {

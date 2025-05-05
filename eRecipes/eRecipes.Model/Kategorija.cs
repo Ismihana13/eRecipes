@@ -7,7 +7,6 @@ namespace eRecipes.Model
     {
         public int KategorijaId { get; set; }
         public string? Naziv { get; set; }
-
     }
 }
 
