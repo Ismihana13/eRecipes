@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace eRecipes.Service.Database
+namespace eRecipes.Model
 {
     public class KatalogRecept
     {

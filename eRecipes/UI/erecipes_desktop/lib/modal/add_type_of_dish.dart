@@ -10,7 +10,7 @@ class AddTypeDishScreen extends StatefulWidget {
 }
 
 class _AddTypeDishScreenState extends State<AddTypeDishScreen> {
-  TextEditingController _typeDishController = TextEditingController();
+  final TextEditingController _typeDishController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late VrstaJelaProvider provider;
 

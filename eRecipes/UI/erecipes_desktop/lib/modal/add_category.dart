@@ -10,7 +10,7 @@ class AddCategoryScreen extends StatefulWidget {
 }
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
-  TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late KategorijaProvider provider;
 

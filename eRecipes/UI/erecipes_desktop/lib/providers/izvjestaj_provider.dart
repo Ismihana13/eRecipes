@@ -34,7 +34,6 @@ class IzvjestajProvider extends BaseProvider<Izvjestaj> {
       var queryString = getQueryString(filter);
       url = "$url?$queryString";
     }
-    print("Pozivam GET URL: $url");
     var uri = Uri.parse(url);
     var headers = createHeaders();
     var response = await http.get(uri, headers: headers);
