@@ -1,5 +1,6 @@
 import 'package:erecipes_desktop/providers/auth_provider.dart';
 import 'package:erecipes_desktop/providers/izvjestaj_provider.dart';
+import 'package:erecipes_desktop/providers/katalog_provider.dart';
 import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
@@ -29,8 +30,8 @@ void main() {
           create: (_) => IzvjestajProvider()),
       ChangeNotifierProvider<NotifikacijeProvider>(
           create: (_) => NotifikacijeProvider()),
-      ChangeNotifierProvider<UplataProvider>(
-          create: (_) => UplataProvider()),
+      ChangeNotifierProvider<UplataProvider>(create: (_) => UplataProvider()),
+      ChangeNotifierProvider<KatalogProvider>(create: (_) => KatalogProvider()),
     ],
     child: const MyApp(),
   ));
