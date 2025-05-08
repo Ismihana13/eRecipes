@@ -1,3 +1,4 @@
+import 'package:erecipes_desktop/models/katalog_recept.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'katalog.g.dart';
@@ -8,6 +9,7 @@ class Katalog{
   String? naziv; 
   String? opis;
   DateTime? datumKreiranja;
+  List<KatalogRecept>? katalogRecepts;
   
    Katalog();
   

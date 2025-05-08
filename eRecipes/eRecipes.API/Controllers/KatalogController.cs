@@ -25,5 +25,16 @@ namespace eRecipes.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("{id}/with-recepti")]
+        public async Task<ActionResult<Model.Katalog>> GetByIdWithRecepti(int id)
+        {
+            var katalog = await ((IKatalogService)_service).GetByIdIncludeRecipes(id);
+
+            if (katalog == null)
+                return NotFound();
+
+            return Ok(katalog);
+        }
     }
 }

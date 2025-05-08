@@ -169,6 +169,17 @@ public partial class ERecipesContext : DbContext
             new ReceptSastojak { ReceptSastojakId = 35, ReceptId = 8, SastojakId = 8, MjernaJedinicaId = 5, Kolicina = 1.00 }
          );
 
+        modelBuilder.Entity<Katalog>().HasData(
+            new Katalog { KatalogId = 1, Naziv = "Tradicionalna jela", Opis = "Katalog tradicionalnih jela predstavlja zbirku recepata koji čine srž kulturne baštine, običaja i gastronomskih tradicija iz različitih regiona. Svako jelo u ovom katalogu nosi priču, jedinstvene sastojke i način pripreme koji su se prenosili kroz generacije, oblikujući kulturni identitet zajednica. Bilo da je u pitanju jelo koje se priprema za posebne prilike, ili svakodnevni specijalitet, svaki recept u ovom katalogu odražava bogatstvo ukusa i tradicije.",
+                DatumKreiranja = DateTime.Now }
+          );
+
+        modelBuilder.Entity<KatalogRecept>().HasData(
+            new KatalogRecept { KatalogReceptId=1, KatalogId=1, ReceptId=3},
+            new KatalogRecept { KatalogReceptId = 2, KatalogId = 1, ReceptId = 7 },
+            new KatalogRecept { KatalogReceptId = 3, KatalogId = 1, ReceptId = 4 }
+            );
+
         modelBuilder.Entity<Lajkovi>().HasData(
             new Lajkovi { LajkoviId = 1, KorisnikId =2,ReceptId=2,DatumLajka=DateTime.Now },
             new Lajkovi { LajkoviId = 2, KorisnikId = 1, ReceptId = 3, DatumLajka = DateTime.Now },

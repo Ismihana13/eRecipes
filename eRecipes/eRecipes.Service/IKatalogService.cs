@@ -12,5 +12,6 @@ namespace eRecipes.Service
     public interface IKatalogService : ICRUDService<Katalog,KatalogSearchObject,KatalogUpsertRequest, KatalogUpsertRequest>
     {
         Task<string> AddReceptToKatalog(int katalogId, List<int> receptIds);
+        Task<Model.Katalog> GetByIdIncludeRecipes(int id);
     }
 }

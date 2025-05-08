@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:erecipes_desktop/models/katalog.dart';
 import 'package:erecipes_desktop/models/search_result.dart';
 import 'package:erecipes_desktop/providers/katalog_provider.dart';
@@ -16,6 +19,7 @@ class KatalogScreen extends StatefulWidget {
   @override
   State<KatalogScreen> createState() => _KatalogScreenState();
 }
+
 class _KatalogScreenState extends State<KatalogScreen> {
   final TextEditingController _nazivController = TextEditingController();
   final TextEditingController _opisController = TextEditingController();
@@ -23,6 +27,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
   late KatalogProvider _katalogProvider;
   List<int?> selektovaniReceptiIds = [];
   SearchResult<Katalog>? result;
+  SearchResult<Katalog>? resultRecept;
 
   @override
   void didChangeDependencies() {
@@ -68,7 +73,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columnSpacing: 40, 
+                      columnSpacing: 40,
                       border: TableBorder.all(
                         color: Colors.black,
                         width: 1,
@@ -135,18 +140,23 @@ class _KatalogScreenState extends State<KatalogScreen> {
                                 style: const TextStyle(fontSize: 14),
                               ),
                             )),
-                            DataCell(SizedBox(
-                              width: 300,
-                              child: Text(
-                                katalog.opis ?? 'N/A',
-                                style: const TextStyle(fontSize: 14),
+                            DataCell(
+                              SizedBox(
+                                width: 300,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Text(
+                                    katalog.opis ?? 'N/A',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
                               ),
-                            )),
+                            ),
                             DataCell(SizedBox(
                               width: 150,
                               child: ElevatedButton.icon(
                                 onPressed: () {
-                                   //_preuzmiPdf(katalog.katalogId);
+                                  _preuzmiPdf(katalog);
                                 },
                                 icon: const Icon(Icons.download),
                                 label: const Text("Preuzmi"),
@@ -168,39 +178,106 @@ class _KatalogScreenState extends State<KatalogScreen> {
   }
 
   Future<void> _preuzmiPdf(Katalog katalog) async {
- /* final pdf = pw.Document();
+    var resultRecipes = await _katalogProvider.recepti(katalog.katalogId);
+    final pdf = pw.Document();
 
-  pdf.addPage(
-    pw.MultiPage(
-      build: (pw.Context context) => [
-        pw.Text(
-          katalog.naziv ?? 'Bez naslova',
-          style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
-        ),
-        pw.SizedBox(height: 16),
-        pw.Text(
-          katalog.opis ?? 'Bez opisa',
-          style: pw.TextStyle(fontSize: 16),
-        ),
-        pw.SizedBox(height: 24),
-        pw.Text(
-          'Recepti:',
-          style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
-        ),
-        pw.SizedBox(height: 10),
-        if (katalog.recepti != null && katalog.recepti.isNotEmpty)
-          ...katalog.recepti.map((recept) => pw.Bullet(text: recept.naziv ?? 'Nepoznat recept')),
-        if (katalog.recepti == null || katalog.recepti.isEmpty)
-          pw.Text("Nema recepata u ovom katalogu."),
-      ],
-    ),
-  );
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Container(
+            color: PdfColor.fromHex("#E8F5E9"),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Center(
+                  child: pw.Text(
+                    katalog.naziv ?? 'Bez naslova',
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColor.fromHex("#006400"),
+                    ),
+                  ),
+                ),
+                pw.SizedBox(height: 16),
+                pw.Text(
+                  katalog.opis ?? 'Bez opisa',
+                  style: pw.TextStyle(
+                    fontSize: 16,
+                    color: PdfColor.fromHex("#808080"),
+                    fontStyle: pw.FontStyle.italic,
+                  ),
+                ),
+                pw.SizedBox(height: 24),
+                pw.Text(
+                  'Recepti:',
+                  style: pw.TextStyle(
+                    fontSize: 20,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColor.fromHex("#006400"),
+                  ),
+                ),
+                pw.SizedBox(height: 10),
+                if (resultRecipes.isNotEmpty)
+                  ...resultRecipes.map((recept) {
+                    Uint8List? imageBytes;
+                    if (recept.recept?.slika != null &&
+                        recept.recept!.slika!.isNotEmpty) {
+                      imageBytes = base64Decode(recept.recept!.slika!);
+                    }
 
-  // Otvori dijalog za štampanje ili preuzimanje
-  await Printing.layoutPdf(
-    onLayout: (PdfPageFormat format) async => pdf.save(),
-  );*/
-}
+                    return pw.Padding(
+                      padding: const pw.EdgeInsets.only(bottom: 20),
+                      child: pw.Row(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          if (imageBytes != null)
+                            pw.Image(
+                              pw.MemoryImage(imageBytes),
+                              width: 100,
+                              height: 100,
+                              fit: pw.BoxFit.cover,
+                            ),
+                          if (imageBytes != null) pw.SizedBox(width: 10),
+                          pw.Expanded(
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(
+                                  recept.recept?.naziv ?? 'Nepoznat recept',
+                                  style: pw.TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color: PdfColor.fromHex("#000000"),
+                                  ),
+                                ),
+                                pw.SizedBox(height: 5),
+                                pw.Text(
+                                  recept.recept?.opisRecepta ?? 'Nema opisa',
+                                  style: pw.TextStyle(
+                                    fontSize: 14,
+                                    color: PdfColor.fromHex("#808080"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                if (resultRecipes.isEmpty)
+                  pw.Text("Nema recepata u ovom katalogu."),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
 
   void _showDodajKatalogDialog() {
     showDialog(
@@ -266,6 +343,9 @@ class _KatalogScreenState extends State<KatalogScreen> {
   }
 
   void _prikaziListuRecepata(BuildContext context) {
+    var filter = {
+      'Status': true,
+    };
     showDialog(
       context: context,
       builder: (context) {
@@ -276,7 +356,8 @@ class _KatalogScreenState extends State<KatalogScreen> {
           content: SizedBox(
             width: double.maxFinite,
             child: FutureBuilder(
-              future: Provider.of<RecipeProvider>(context, listen: false).get(),
+              future: Provider.of<RecipeProvider>(context, listen: false)
+                  .get(filter: filter),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -377,7 +458,9 @@ class _KatalogScreenState extends State<KatalogScreen> {
                   setState(() {
                     selektovaniReceptiIds.clear();
                   });
+
                   Navigator.pop(context);
+                  _fetchData();
                   SuccessSnackBar.show(context, "Dodali ste novi katalog!");
                 }
               },
