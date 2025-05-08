@@ -6,6 +6,7 @@ part 'vrsta_jela.g.dart';
 class VrstaJela{
   int? vrstaJelaId;
   String? naziv; 
+  int? brojRecepata;
   
    VrstaJela();
   

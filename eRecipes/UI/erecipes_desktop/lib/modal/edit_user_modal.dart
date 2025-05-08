@@ -12,7 +12,7 @@ class EditUserModal extends StatefulWidget {
   final void Function(int, dynamic) onUpdatePressed;
   final Korisnik? korisnikToEdit;
 
-  const EditUserModal({
+  const EditUserModal({super.key, 
     required this.onCancelPressed,
     required this.onUpdatePressed,
     required this.korisnikToEdit,

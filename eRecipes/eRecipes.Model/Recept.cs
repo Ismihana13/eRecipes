@@ -23,5 +23,6 @@ namespace eRecipes.Model
         public bool? Status { get; set; }
         public string? StateMachine { get; set; }
         public ICollection<ReceptSastojak> ReceptSastojaks { get; set; } = new List<ReceptSastojak>();
+        public ICollection<KatalogRecept> KatalogRecepts { get; set; } = new List<KatalogRecept>();
     }
 }

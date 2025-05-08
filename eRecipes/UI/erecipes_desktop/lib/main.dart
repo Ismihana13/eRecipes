@@ -1,5 +1,6 @@
 import 'package:erecipes_desktop/providers/auth_provider.dart';
 import 'package:erecipes_desktop/providers/izvjestaj_provider.dart';
+import 'package:erecipes_desktop/providers/katalog_provider.dart';
 import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:erecipes_desktop/providers/korisnik_provider.dart';
 import 'package:erecipes_desktop/providers/logged_recipe_provider.dart';
@@ -29,8 +30,8 @@ void main() {
           create: (_) => IzvjestajProvider()),
       ChangeNotifierProvider<NotifikacijeProvider>(
           create: (_) => NotifikacijeProvider()),
-      ChangeNotifierProvider<UplataProvider>(
-          create: (_) => UplataProvider()),
+      ChangeNotifierProvider<UplataProvider>(create: (_) => UplataProvider()),
+      ChangeNotifierProvider<KatalogProvider>(create: (_) => KatalogProvider()),
     ],
     child: const MyApp(),
   ));
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(),
       onGenerateRoute: (settings) {
         if (settings.name == HomeScreen.routeName) {
-          return MaterialPageRoute(builder: ((context) => HomeScreen()));
+          return MaterialPageRoute(builder: ((context) => const HomeScreen()));
         } else if (settings.name == LoginScreen.routeName) {
           return MaterialPageRoute(builder: ((context) => LoginScreen()));
         }
@@ -61,8 +62,8 @@ class MyApp extends StatelessWidget {
 // ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
-  TextEditingController _usernameController = new TextEditingController();
-  TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _usernameController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
   late KorisnikProvider _korisnikProvider;
   final _formKey = GlobalKey<FormState>();
   static const String routeName = "/login";

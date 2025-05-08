@@ -24,6 +24,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<INotifikacijeService, NotifikacijeService>();
 builder.Services.AddTransient<IUplataService, UplataService>();
 builder.Services.AddTransient<IMjernaJedinicaService, MjernaJedinicaService>();
+builder.Services.AddTransient<IKatalogService, KatalogService>();
 
 builder.Services.AddHttpContextAccessor();
 

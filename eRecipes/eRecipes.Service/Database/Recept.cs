@@ -23,5 +23,6 @@ public partial class Recept
     public virtual ICollection<Lajkovi> Lajkovis { get; set; } = new List<Lajkovi>();
     public virtual ICollection<OmiljeniRecept> OmiljeniRecepts { get; set; } = new List<OmiljeniRecept>();
     public virtual ICollection<ReceptSastojak> ReceptSastojaks { get; set; } = new List<ReceptSastojak>();
+    public virtual ICollection<KatalogRecept> KatalogRecepts { get; set; } = new List<KatalogRecept>();
     public virtual VrstaJela VrstaJela { get; set; } = null!;
 }

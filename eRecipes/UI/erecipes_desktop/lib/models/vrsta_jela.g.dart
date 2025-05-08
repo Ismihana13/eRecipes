@@ -8,9 +8,11 @@ part of 'vrsta_jela.dart';
 
 VrstaJela _$VrstaJelaFromJson(Map<String, dynamic> json) => VrstaJela()
   ..vrstaJelaId = (json['vrstaJelaId'] as num?)?.toInt()
-  ..naziv = json['naziv'] as String?;
+  ..naziv = json['naziv'] as String?
+  ..brojRecepata = (json['brojRecepata'] as num?)?.toInt();
 
 Map<String, dynamic> _$VrstaJelaToJson(VrstaJela instance) => <String, dynamic>{
       'vrstaJelaId': instance.vrstaJelaId,
       'naziv': instance.naziv,
+      'brojRecepata': instance.brojRecepata,
     };

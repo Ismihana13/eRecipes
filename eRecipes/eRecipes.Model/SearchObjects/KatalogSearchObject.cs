@@ -4,10 +4,8 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class VrstaJelaSearchObject:BaseSearchObject
+    public class KatalogSearchObject : BaseSearchObject
     {
         public string? NazivGTE {  get; set; }
-        public bool? Status { get; set; }
-        public bool? StatusRecepta { get; set; }
     }
 }

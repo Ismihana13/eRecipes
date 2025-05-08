@@ -4,6 +4,7 @@ import 'package:erecipes_desktop/main.dart';
 import 'package:erecipes_desktop/providers/auth_provider.dart';
 import 'package:erecipes_desktop/providers/notifikacije_provider.dart';
 import 'package:erecipes_desktop/screens/category_list_screen.dart';
+import 'package:erecipes_desktop/screens/katalog_screen.dart';
 import 'package:erecipes_desktop/screens/notifikacije_screen.dart';
 import 'package:erecipes_desktop/screens/profile_screen.dart';
 import 'package:erecipes_desktop/screens/recipe_list_screen.dart';
@@ -16,7 +17,10 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
   static const String routeName = "/home";
 }
@@ -34,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchBrojNeprocitanih();
     selectedNavItem = 'Recepti';
 
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       _fetchBrojNeprocitanih();
     });
   }
@@ -94,11 +98,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 if (isAdministrator())
                   NavItem(
-                    title: 'Kategorije',
+                    title: 'Kategorije i vrste jela',
                     isSelected: selectedNavItem == 'Kategorije',
                     onTap: () {
                       setState(() {
                         selectedNavItem = 'Kategorije';
+                      });
+                    },
+                  ),
+                if (isAdministrator())
+                  NavItem(
+                    title: 'Katalog',
+                    isSelected: selectedNavItem == 'Katalog',
+                    onTap: () {
+                      setState(() {
+                        selectedNavItem = 'Katalog';
                       });
                     },
                   ),
@@ -212,7 +226,12 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'Uplate':
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child:  UplataScreen(),
+          child: UplataScreen(),
+        );
+          case 'Katalog':
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: const KatalogScreen(),
         );
       case 'Kategorije':
         return ClipRRect(

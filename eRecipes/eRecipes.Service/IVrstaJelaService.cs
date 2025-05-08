@@ -11,6 +11,7 @@ namespace eRecipes.Service
 {
     public interface IVrstaJelaService: ICRUDService<VrstaJela,VrstaJelaSearchObject,VrsteJelaUpsertRequest, VrsteJelaUpsertRequest>
     {
-        
+        int GetBrojRecepataZaVrstuJela(int vrstaJelaId);
+        Model.VrstaJela DeleteVrstaJela(int id);
     }
 }

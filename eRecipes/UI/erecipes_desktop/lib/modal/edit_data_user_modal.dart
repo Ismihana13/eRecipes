@@ -4,7 +4,7 @@ class EditProfileDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onEditPressed;
   final Map<String, dynamic> userData;
 
-  const EditProfileDialog({
+  const EditProfileDialog({super.key, 
     required this.onEditPressed,
     required this.userData,
   });
