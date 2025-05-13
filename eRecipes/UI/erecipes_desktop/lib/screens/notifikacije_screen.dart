@@ -4,8 +4,11 @@ import 'package:erecipes_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:erecipes_desktop/models/notifikacije.dart';
 
-class  NotifikacijeScreen extends StatefulWidget {
+class NotifikacijeScreen extends StatefulWidget {
+  const NotifikacijeScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _NotifikacijeScreenState createState() => _NotifikacijeScreenState();
 }
 
@@ -218,8 +221,9 @@ class _NotifikacijeScreenState extends State<NotifikacijeScreen> {
                                   );
                                   if (confirmDelete == true) {
                                     try {
-                                      await _notifikacijeProvider.obrisiObavijest(
-                                          obavijest.notifikacijeId!);
+                                      await _notifikacijeProvider
+                                          .obrisiObavijest(
+                                              obavijest.notifikacijeId!);
 
                                       setState(() {
                                         _obavijesti.remove(obavijest);

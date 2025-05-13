@@ -14,15 +14,15 @@ class RecipeProvider extends BaseProvider<Recept> {
   Future<void> deleteRecept(int? id) async {
     var url = "$fullUrl/$id/DeleteRecept";
     var uri = Uri.parse(url);
-    var headers =createHeaders();
+    var headers = createHeaders();
     var response = await http!.put(uri, headers: headers);
-     if (isValidResponse(response)) {
+    if (isValidResponse(response)) {
       print("Recept obrisan.");
     } else {
       throw Exception("Neuspješno brisanje recepta.");
     }
   }
-  
+
   Future<List<ReceptSastojak>> sastojci(int? id) async {
     var url = "$fullUrl/$id/sastojci";
     var uri = Uri.parse(url);

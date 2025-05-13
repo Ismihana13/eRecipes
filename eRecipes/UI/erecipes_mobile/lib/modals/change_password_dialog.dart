@@ -10,7 +10,7 @@ class ChangePasswordDialog extends StatefulWidget {
   final Function(String oldPassword, String newPassword) onPasswordChange;
   final String? oldPassword;
 
-  const ChangePasswordDialog({
+  const ChangePasswordDialog({super.key, 
     required this.onPasswordChange,
     required this.oldPassword,
   });

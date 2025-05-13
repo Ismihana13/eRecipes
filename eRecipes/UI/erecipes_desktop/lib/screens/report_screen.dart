@@ -301,7 +301,11 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                     onPressed: () {
                       setState(() {
-                        selectedIzvjestaj = izvjestaj;
+                        if (selectedIzvjestaj == izvjestaj) {
+                          selectedIzvjestaj = null;
+                        } else {
+                          selectedIzvjestaj = izvjestaj;
+                        }
                       });
                     },
                   ),

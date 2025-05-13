@@ -24,16 +24,16 @@ class VrstaJelaProvider extends BaseProvider<VrstaJela> {
   }
 
   Future<void> deleteVrstaJela(int? id) async {
-  var url = "$fullUrl/$id/DeleteVrstaJela";
-  var uri = Uri.parse(url);
-  var headers = createHeaders();
+    var url = "$fullUrl/$id/DeleteVrstaJela";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
 
-  var response = await http!.put(uri, headers: headers);
+    var response = await http!.put(uri, headers: headers);
 
-  if (isValidResponse(response)) {
-    print("Vrsta jela obrisana.");
-  } else {
-    throw Exception("Neuspješno brisanje vrste jela.");
+    if (isValidResponse(response)) {
+      print("Vrsta jela obrisana.");
+    } else {
+      throw Exception("Neuspješno brisanje vrste jela.");
+    }
   }
-}
 }

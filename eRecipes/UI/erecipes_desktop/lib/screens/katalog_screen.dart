@@ -73,7 +73,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columnSpacing: 40,
+                      columnSpacing: 60,
                       border: TableBorder.all(
                         color: Colors.black,
                         width: 1,
@@ -98,7 +98,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
                         ),
                         DataColumn(
                           label: SizedBox(
-                            width: 300,
+                            width: 700,
                             child: Center(
                               child: Text(
                                 'Opis',
@@ -142,7 +142,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
                             )),
                             DataCell(
                               SizedBox(
-                                width: 300,
+                                width: 700,
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.vertical,
                                   child: Text(
@@ -434,10 +434,7 @@ class _KatalogScreenState extends State<KatalogScreen> {
                     greska = "Morate selektovati barem jedan recept.";
                   });
                 } else {
-                  print("Odabrani recepti (ID-evi):");
-                  selektovaniReceptiIds.forEach((id) {
-                    print("Recept ID: $id");
-                  });
+                  selektovaniReceptiIds.forEach((id) {});
 
                   var requestKatalog = {
                     'naziv': _nazivController.text,
