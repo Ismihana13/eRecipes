@@ -255,18 +255,13 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             Navigator.pushNamed(context, '/addNewRecipe');
           } else {
             setState(() {
+              loadData();
               _selectedIndex = index;
             });
           }
         },
       ),
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   Widget _buildCategoryAndDishTypeFilter() {
@@ -431,25 +426,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               child: const Icon(Icons.favorite, color: Colors.white),
             ),
           ),
-          /*Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddNewRecipeScreen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),*/
         ],
       ),
     );

@@ -44,7 +44,6 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
       };
 
       try {
-        Navigator.pop(context);
         Navigator.of(context).pushNamedAndRemoveUntil(
           LoginScreen.routeName,
           (route) => false,
@@ -52,10 +51,34 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
         await context
             .read<KorisnikProvider>()
             .update(AuthProvider.korisnik!.korisnikId!, request);
-        SuccessSnackBar.show(context, "Uspješno ste promijenili lozinku.");
+
+        if (!mounted) return;
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+              title: const Text('Promjena lozinke'),
+              content: const Text(
+                  'Uspješno ste promijenili lozinku. Logirajte se sa novom.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        if (!mounted) return;
       } catch (e) {
-        ErrorSnackBar.show(context,
-            'Neuspješna promjena lozinke. Pokušajte ponovo.\n${e.toString()}');
+        if (!mounted) return;
+        ErrorSnackBar.show(
+          context,
+          'Neuspješna promjena lozinke. Pokušajte ponovo.\n${e.toString()}',
+        );
       }
     }
   }
@@ -67,7 +90,7 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Container(
-         width: MediaQuery.of(context).size.width * 0.6,
+        width: MediaQuery.of(context).size.width * 0.6,
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Form(
@@ -86,7 +109,7 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
                     labelText: 'Nova lozinka',
-                     prefixIcon: const Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible
@@ -112,7 +135,7 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
                     labelText: 'Potvrdite novu lozinku',
-                     prefixIcon: const Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible

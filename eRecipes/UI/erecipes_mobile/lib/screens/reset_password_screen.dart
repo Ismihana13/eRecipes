@@ -155,7 +155,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             if (isUserFound) ...[
               const SizedBox(height: 20),
               const Text(
-                "Unesite email na koji ćemo vam poslati novu lozinku",
+                "Unesite email adresu povezanu s vašim korisničkim računom kako bismo vam poslali novu lozinku.",
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 16),
               ),
