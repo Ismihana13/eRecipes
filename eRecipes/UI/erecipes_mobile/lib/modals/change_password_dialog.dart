@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   final Function(String oldPassword, String newPassword) onPasswordChange;
-  final String? oldPassword; 
+  final String? oldPassword;
 
   const ChangePasswordDialog({
     required this.onPasswordChange,
-    required this.oldPassword, 
+    required this.oldPassword,
   });
 
   @override
@@ -39,48 +39,67 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       });
     } else {
       setState(() {
-      
         isOldPasswordInvalid = true;
       });
     }
   }
+
   void _submitPasswordChange() async {
-  if (_formKey.currentState!.validate()) {
-    final newPassword = newPasswordController.text;
-    final confirmPassword = confirmNewPasswordController.text;
+    if (_formKey.currentState!.validate()) {
+      final newPassword = newPasswordController.text;
+      final confirmPassword = confirmNewPasswordController.text;
 
-    final request = {
-      'ime': AuthProvider.korisnik!.ime,
-      'prezime': AuthProvider.korisnik!.prezime,
-      'datumRodjenja': AuthProvider.korisnik!.datumRodjenja?.toIso8601String(),
-      'email': AuthProvider.korisnik!.email,
-      'telefon': AuthProvider.korisnik!.telefon,
-      'korisnickoIme': AuthProvider.korisnik!.korisnickoIme,
-      'lozinka': newPassword,
-      'lozinkaPotvrda': confirmPassword,
-      'ulogaId': AuthProvider.korisnik!.ulogaId,
-    };
+      final request = {
+        'ime': AuthProvider.korisnik!.ime,
+        'prezime': AuthProvider.korisnik!.prezime,
+        'datumRodjenja':
+            AuthProvider.korisnik!.datumRodjenja?.toIso8601String(),
+        'email': AuthProvider.korisnik!.email,
+        'telefon': AuthProvider.korisnik!.telefon,
+        'korisnickoIme': AuthProvider.korisnik!.korisnickoIme,
+        'lozinka': newPassword,
+        'lozinkaPotvrda': confirmPassword,
+        'ulogaId': AuthProvider.korisnik!.ulogaId,
+      };
 
-    try {
-      await context.read<KorisnikProvider>().update(
-            AuthProvider.korisnik!.korisnikId!,
-            request,
-          );
-          AuthProvider.username="";
-      AuthProvider.password="";
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        LoginScreen.routeName,
-        (route) => false,
-      );
-          CustomSnackBar.showSuccessSnackBar(context,  "Uspješno ste promijenili lozinku.");
-    } catch (e) {
-      CustomSnackBar.showErrorSnackBar(
-        context,
-        'Neuspješna promjena lozinke. Pokušajte ponovo.}',
-      );
+      try {
+        await context.read<KorisnikProvider>().update(
+              AuthProvider.korisnik!.korisnikId!,
+              request,
+            );
+        AuthProvider.username = "";
+        AuthProvider.password = "";
+
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Lozinka promijenjena'),
+              content: const Text(
+                  'Uspješno ste promijenili lozinku. Molimo prijavite se s novom lozinkom.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); 
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          LoginScreen.routeName,
+          (route) => false,
+        );
+      } catch (e) {
+        CustomSnackBar.showErrorSnackBar(
+          context,
+          'Neuspješna promjena lozinke. Pokušajte ponovo.}',
+        );
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
