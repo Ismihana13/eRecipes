@@ -73,9 +73,7 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
   }
 
   Future<void> initForm() async {
-    var filter={
-      'Status':true
-    };
+    var filter = {'Status': true};
     kategorijaResult = await _kategorijaProvider.get(filter: filter);
     vrstaJelaResult = await _vrstaJelaProvider.get(filter: filter);
     sastojakResult = await _sastojakProvider.get();
@@ -259,42 +257,45 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Količina'),
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Unesite količinu';
-                            }
-                            if (double.tryParse(value) == null) {
-                              return 'Mora biti broj.';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) => su.kolicina = value,
-                        ),
+                            decoration:
+                                const InputDecoration(labelText: 'Količina'),
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Unesite količinu';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Mora biti broj.';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                final index = _selectedSastojci.indexWhere(
+                                    (s) => s.sastojakId == su.sastojakId);
+                                if (index != -1) {
+                                  _selectedSastojci[index].kolicina =
+                                      double.tryParse(value) ?? 0.0;
+                                }
+                              });
+                            }),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         flex: 2,
                         child: DropdownButtonFormField<String>(
-                          value: _selectedMjernaJedinicaId,
+                          value: su.mjernaJedinicaId?.toString(),
                           decoration: const InputDecoration(labelText: 'Mjera'),
                           items: mjernaJedinicaResult?.result.map((jedinica) {
                             return DropdownMenuItem<String>(
-                              // ignore: unnecessary_type_check
-                              value: jedinica is MjernaJedinica
-                                  ? jedinica.mjernaJedinicaId.toString()
-                                  : "",
+                              value: jedinica.mjernaJedinicaId.toString(),
                               child: Text(jedinica.naziv ?? ""),
                             );
                           }).toList(),
                           onChanged: (value) {
                             setState(() {
-                              _selectedMjernaJedinicaId = value;
                               su.mjernaJedinicaId = int.tryParse(value!);
-
                               final jedinica =
                                   mjernaJedinicaResult?.result.firstWhere(
                                 (element) =>
@@ -302,7 +303,7 @@ class AddNewRecipeScreenState extends State<AddNewRecipeScreen> {
                                     value,
                                 orElse: () => MjernaJedinica(),
                               );
-                              su.nazivMjerneJedinice = jedinica!.naziv;
+                              su.nazivMjerneJedinice = jedinica?.naziv;
                             });
                           },
                         ),

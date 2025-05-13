@@ -9,7 +9,7 @@ part of 'sastojak.dart';
 Sastojak _$SastojakFromJson(Map<String, dynamic> json) => Sastojak(
       sastojakId: (json['sastojakId'] as num?)?.toInt(),
       naziv: json['naziv'] as String?,
-      kolicina: json['kolicina'] as String?,
+      kolicina: json['kolicina'] as double?,
       mjernaJedinicaId: (json['mjernaJedinicaId'] as num?)?.toInt(),
       nazivMjerneJedinice: json['nazivMjerneJedinice'] as String?,
     );

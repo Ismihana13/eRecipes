@@ -48,7 +48,7 @@ class RecipeProvider extends BaseProvider<Recept> {
       return {
         "sastojakId": s.sastojakId,
         "mjernaJedinicaId": s.mjernaJedinicaId,
-        "kolicina": double.tryParse(s.kolicina ?? '0') ?? 0.0,
+        "kolicina": s.kolicina ?? '0',
       };
     }).toList();
     final response = await http!.post(

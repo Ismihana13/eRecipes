@@ -220,34 +220,54 @@ class _SignupScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildDateField() {
-    return TextFormField(
-      controller: _datumRodjenjaController,
-      decoration: InputDecoration(
-        labelText: 'Datum Rođenja',
-        prefixIcon: const Icon(Icons.calendar_today),
-        filled: true,
-        fillColor: const Color(0xFFEFEFEF),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
+ Widget _buildDateField() {
+  return TextFormField(
+    controller: _datumRodjenjaController,
+    decoration: InputDecoration(
+      labelText: 'Datum Rođenja',
+      prefixIcon: const Icon(Icons.calendar_today),
+      filled: true,
+      fillColor: const Color(0xFFEFEFEF),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide.none,
       ),
-      readOnly: true,
-      onTap: () async {
-        DateTime? selectedDate = await showDatePicker(
-          context: _formKey.currentContext!,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime.now(),
-        );
-        if (selectedDate != null) {
-          _datumRodjenjaController.text =
-              selectedDate.toLocal().toString().split(' ')[0];
-        }
-      },
-    );
-  }
+    ),
+    readOnly: true,
+    onTap: () async {
+      DateTime? selectedDate = await showDatePicker(
+        context: _formKey.currentContext!,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
+      if (selectedDate != null) {
+        _datumRodjenjaController.text =
+            selectedDate.toLocal().toString().split(' ')[0];
+      }
+    },
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'Molimo unesite datum rođenja.';
+      }
+      DateTime? birthDate = DateTime.tryParse(value);
+      if (birthDate == null) {
+        return 'Unesite važeći datum.';
+      }
+
+      DateTime today = DateTime.now();
+      int age = today.year - birthDate.year;
+      if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
+        age--;
+      }
+
+      if (age < 10) {
+        return 'Morate biti stariji od 10 godina.';
+      }
+      return null;
+    },
+  );
+}
 
   String? _emailValidator(String? value) {
     final emailRegExp =
