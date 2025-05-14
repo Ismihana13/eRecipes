@@ -66,9 +66,9 @@ namespace eRecipes.API.Controllers
         }
 
         [HttpPut("{receptId}/updateSastojci")]
-        public async Task<ActionResult> UpdateSastojkeForRecept(int receptId, [FromBody] List<int> sastojakIds)
+        public async Task<ActionResult> UpdateSastojkeForRecept(int receptId, [FromBody] List<SastojakUpdateModel> sastojciRequest)
         {
-            var result = await ((IReceptService)_service).UpdateSastojkeForReceptAsync(receptId, sastojakIds);
+            var result = await ((IReceptService)_service).UpdateSastojkeForReceptAsync(receptId, sastojciRequest);
 
             if (result == "Recept nije pronađen." || result == "Neki od sastojaka nisu pronađeni.")
             {
@@ -77,11 +77,25 @@ namespace eRecipes.API.Controllers
             return Ok(result);
         }
 
+
         [HttpGet("recommend/{korisnikId}")]
         public  IActionResult GetRecommendations(int korisnikId)
         {
             var preporuke = ((IReceptService)_service).Recommend(korisnikId);
             return Ok(preporuke);
+        }
+
+        [HttpGet("kolicina-i-mjerna-jedinica")]
+        public async Task<IActionResult> GetKolicinaIMjernaJedinica(int receptId, int sastojakId)
+        {
+            var result = await ((IReceptService)_service).GetKolicinaIMjernaJedinicaAsync(receptId, sastojakId);
+
+            if (result.Kolicina == null || result.MjernaJedinica == null)
+            {
+                return NotFound("Podaci o količini i mjernoj jedinici nisu pronađeni.");
+            }
+
+            return Ok(new { Kolicina = result.Kolicina, MjernaJedinica = result.MjernaJedinica });
         }
     }
 }

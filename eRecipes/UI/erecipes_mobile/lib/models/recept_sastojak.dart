@@ -16,10 +16,16 @@ class ReceptSastojak {
   Sastojak? sastojak;
   MjernaJedinica? mjernaJedinica;
 
-  ReceptSastojak(
-      {required this.receptId,
-      required this.sastojakId,
-      required this.sastojak});
+  ReceptSastojak({
+    this.receptSastojakId,
+    required this.receptId,
+    required this.sastojakId,
+    this.mjernaJedinicaId,
+    this.kolicina,
+    this.recept,
+    required this.sastojak,
+    this.mjernaJedinica,
+  });
 
   factory ReceptSastojak.FromJson(Map<String, dynamic> json) =>
       _$ReceptSastojakFromJson(json);

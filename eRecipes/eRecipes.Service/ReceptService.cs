@@ -188,8 +188,9 @@ namespace eRecipes.Service
             return Mapper.Map<Model.Recept>(recept);
         }
 
-        public async Task<string> UpdateSastojkeForReceptAsync(int receptId, List<int> sastojakIds)
+        public async Task<string> UpdateSastojkeForReceptAsync(int receptId, List<SastojakUpdateModel> sastojciZaUpdate)
         {
+            // Dohvaćanje recepta s pripadajućim sastojcima
             var recept = await Context.Recepts.Include(r => r.ReceptSastojaks)
                                                .FirstOrDefaultAsync(r => r.ReceptId == receptId);
 
@@ -198,18 +199,24 @@ namespace eRecipes.Service
                 return "Recept nije pronađen.";
             }
 
+            // Dohvaćanje postojećih sastojaka za taj recept
             var existingSastojaks = await Context.ReceptSastojaks
                                                  .Where(rs => rs.ReceptId == receptId)
                                                  .ToListAsync();
+
+            // Provjera ako su svi sastojci iz primljenih podataka prisutni u bazi
             var sastojci = await Context.Sastojaks
-                                        .Where(s => sastojakIds.Contains(s.SastojakId))
+                                        .Where(s => sastojciZaUpdate.Select(x => x.SastojakId).Contains(s.SastojakId))
                                         .ToListAsync();
-            if (sastojci.Count != sastojakIds.Count)
+
+            if (sastojci.Count != sastojciZaUpdate.Count)
             {
                 return "Neki od sastojaka nisu pronađeni.";
             }
+
+            // Brisanje sastojaka koji više nisu povezani s receptom
             var sastojakIdsToRemove = existingSastojaks
-                                        .Where(rs => !sastojakIds.Contains(rs.SastojakId))
+                                        .Where(rs => !sastojciZaUpdate.Select(x => x.SastojakId).Contains(rs.SastojakId))
                                         .Select(rs => rs.SastojakId)
                                         .ToList();
 
@@ -220,23 +227,40 @@ namespace eRecipes.Service
                                                 .ToList();
                 Context.ReceptSastojaks.RemoveRange(receptSastojaksToRemove);
             }
-            var sastojakIdsToAdd = sastojci
-                                   .Where(s => !existingSastojaks.Any(rs => rs.SastojakId == s.SastojakId))
-                                   .ToList();
 
-            foreach (var sastojak in sastojakIdsToAdd)
+            // Ažuriranje postojećih sastojaka
+            foreach (var sastojakUpdate in sastojciZaUpdate)
             {
-                var receptSastojak = new ReceptSastojak
+                var receptSastojak = existingSastojaks
+                                        .FirstOrDefault(rs => rs.SastojakId == sastojakUpdate.SastojakId);
+
+                if (receptSastojak != null)
                 {
-                    ReceptId = receptId,
-                    SastojakId = sastojak.SastojakId
-                };
-                Context.ReceptSastojaks.Add(receptSastojak);
+                    // Ažuriranje količine i mjerne jedinice
+                    receptSastojak.Kolicina = sastojakUpdate.Kolicina;
+                    receptSastojak.MjernaJedinicaId = sastojakUpdate.MjernaJedinicaId;
+                    Context.ReceptSastojaks.Update(receptSastojak);
+                }
+                else
+                {
+                    // Ako sastojak nije u postojećim, dodajemo ga
+                    var newReceptSastojak = new ReceptSastojak
+                    {
+                        ReceptId = receptId,
+                        SastojakId = sastojakUpdate.SastojakId,
+                        Kolicina = sastojakUpdate.Kolicina,
+                        MjernaJedinicaId = sastojakUpdate.MjernaJedinicaId
+                    };
+                    Context.ReceptSastojaks.Add(newReceptSastojak);
+                }
             }
+
+            // Spremanje promjena
             await Context.SaveChangesAsync();
 
             return "Sastojci su uspješno ažurirani.";
         }
+
 
         public List<Recept> Recommend(int korisnikId)
         {
@@ -248,5 +272,20 @@ namespace eRecipes.Service
             var preporuceniRecepti = _recommender.Recommend(korisnikId); 
             return Mapper.Map<List<Model.Recept>>(preporuceniRecepti);
         }
+
+        public async Task<(double? Kolicina, int MjernaJedinica)> GetKolicinaIMjernaJedinicaAsync(int receptId, int sastojakId)
+        {
+            var receptSastojak = await Context.ReceptSastojaks
+                .Where(rs => rs.ReceptId == receptId && rs.SastojakId == sastojakId)
+                .FirstOrDefaultAsync();
+
+            if (receptSastojak == null)
+            {
+                return (null, 0);
+            }
+
+            return (receptSastojak.Kolicina, receptSastojak.MjernaJedinicaId); 
+        }
+
     }
 }

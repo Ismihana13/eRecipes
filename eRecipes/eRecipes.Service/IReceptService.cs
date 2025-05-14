@@ -16,7 +16,8 @@ namespace eRecipes.Service
         Task<string> AddSastojkeToReceptAsync(int receptId, List<ReceptSastojakInsertRequest> sastojciRequest);
         List<Model.Recept> GetReceptiByKorisnikId(int korisnikId);
         Model.Recept BrisanjeRecepta(int id);
-        Task<string> UpdateSastojkeForReceptAsync(int receptId, List<int> sastojakIds);
+        Task<string> UpdateSastojkeForReceptAsync(int receptId, List<SastojakUpdateModel> sastojciZaUpdate);
         public List<Model.Recept> Recommend(int korisnikId);
+        Task<(double? Kolicina, int MjernaJedinica)> GetKolicinaIMjernaJedinicaAsync(int receptId, int sastojakId);
     }
 }
