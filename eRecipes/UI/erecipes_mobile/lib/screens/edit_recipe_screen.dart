@@ -226,9 +226,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             const SizedBox(height: 30),
             EditSastojciListCard(
               sastojciList: widget.sastojci,
+              onSastojciChanged: () {
+                setState(() {});
+              },
+              open: open,
             ),
             ElevatedButton(
               onPressed: () {
+                _getAvailableSastojciForSelection();
                 setState(() {
                   open = true;
                 });
@@ -239,7 +244,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
             if (open == true)
               MultiSelectSastojak(
                 label: 'Potrebni sastojci',
-                items: sastojakResult?.result,
+                items: _getAvailableSastojciForSelection(),
                 selectedSastojci: selectedSastojakIds,
                 onChanged: (List<Sastojak> selectedItems) {
                   setState(() {
@@ -427,5 +432,16 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
 
       Navigator.pop(context, 2);
     }
+  }
+
+  List<Sastojak> _getAvailableSastojciForSelection() {
+    final existingIds = widget.sastojci
+        .map((e) => e.sastojak?.sastojakId)
+        .whereType<int>()
+        .toSet();
+    return sastojakResult?.result
+            .where((s) => !existingIds.contains(s.sastojakId))
+            .toList() ??
+        [];
   }
 }

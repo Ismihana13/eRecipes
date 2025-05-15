@@ -132,22 +132,34 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               TextFormField(
                 controller: newPasswordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Nova lozinka",
-                  errorText: isNewPasswordInvalid
-                      ? "Lozinka mora imati najmanje 6 karaktera"
-                      : null,
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Unesite novu lozinku';
+                  }
+                  if (value.length < 6) {
+                    return 'Lozinka mora imati najmanje 6 karaktera';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 controller: confirmNewPasswordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Potvrdi novu lozinku",
-                  errorText: isConfirmPasswordInvalid
-                      ? "Lozinke se ne poklapaju"
-                      : null,
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Potvrdite lozinku';
+                  }
+                  if (value != newPasswordController.text) {
+                    return 'Lozinke se ne poklapaju';
+                  }
+                  return null;
+                },
               ),
             ],
           ],

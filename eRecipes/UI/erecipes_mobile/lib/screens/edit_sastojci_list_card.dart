@@ -7,8 +7,15 @@ import 'package:provider/provider.dart';
 
 class EditSastojciListCard extends StatefulWidget {
   final List<ReceptSastojak> sastojciList;
+  final VoidCallback? onSastojciChanged;
+  final bool?  open;
 
-  const EditSastojciListCard({super.key, required this.sastojciList});
+  const EditSastojciListCard({
+    super.key,
+    required this.sastojciList,
+    this.onSastojciChanged,
+    required this.open,
+  });
 
   @override
   State<EditSastojciListCard> createState() => _EditSastojciListCardState();
@@ -162,6 +169,9 @@ class _EditSastojciListCardState extends State<EditSastojciListCard> {
                             widget.sastojciList.removeAt(index);
                             kolicinaControllers.removeAt(index);
                           });
+                          if (widget.onSastojciChanged != null) {
+                            widget.onSastojciChanged!();
+                          }
                         },
                       ),
                     ],

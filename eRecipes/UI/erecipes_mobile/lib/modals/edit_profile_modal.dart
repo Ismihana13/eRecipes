@@ -169,18 +169,42 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: const Color.fromRGBO(97, 142, 246, 1),
-          ),
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              uploadEdit();
-            }
-          },
-          child: const Text('Save'),
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: const Color.fromRGBO(97, 142, 246, 1),
         ),
-      ],
-    );
-  }
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Potvrda"),
+                  content: const Text("Da li želite sačuvati promjene?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); 
+                      },
+                      child: const Text("Otkaži"),
+                    ),
+                    ElevatedButton(
+                      
+                      onPressed: () {
+                        uploadEdit(); 
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Sačuvaj"),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
+        child: const Text('Save'),
+      ),
+    ],
+  );
+}
 }

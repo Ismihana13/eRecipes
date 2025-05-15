@@ -31,6 +31,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
     provider = context.read<KategorijaProvider>();
     _vrstaJelaProvider = context.read<VrstaJelaProvider>();
     _fetchData();
+    _fetchDataDish();
   }
 
   Future<void> _fetchData({String query = ''}) async {
@@ -43,13 +44,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         'NazivGTE': query,
         'Status': true,
       };
-      var filterVrstaJela = {
-        'Status': true,
-      };
-
       result = await provider.get(filter: filter);
-      resultVrstaJela = await _vrstaJelaProvider.get(filter: filterVrstaJela);
-
       Map<int, int> brojRecepataMap = {};
       for (var kategorija in result!.result) {
         brojRecepataMap[kategorija.kategorijaId!] = await provider
@@ -60,6 +55,28 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         kategorija.brojRecepata =
             brojRecepataMap[kategorija.kategorijaId!] ?? 0;
       });
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchDataDish({String query = ''}) async {
+     setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      var filter = {
+        'NazivGTE': query,
+        'Status': true,
+      };
+  
+      resultVrstaJela = await _vrstaJelaProvider.get(filter: filter);
 
       Map<int, int> brojRecepataVrstaJelaMap = {};
       for (var vrstaJela in resultVrstaJela!.result) {
@@ -179,14 +196,8 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
                   ),
-                  onChanged: (value) async {
-                    var filter = {
-                      'NazivGTE': value,
-                      'Status': true,
-                    };
-                    resultVrstaJela =
-                        await _vrstaJelaProvider.get(filter: filter);
-                    setState(() {});
+                  onChanged: (value) async {                
+                    _fetchDataDish(query: value);
                   },
                 ),
               ),
@@ -196,7 +207,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      _fetchData();
+                      _fetchDataDish();
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -205,7 +216,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                       ).then((categoryName) {
                         if (categoryName != null && categoryName.isNotEmpty) {
                           setState(() {
-                            _fetchData();
+                            _fetchDataDish();
                           });
                         }
                       });
@@ -442,7 +453,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                                 try {
                                   await _vrstaJelaProvider
                                       .deleteVrstaJela(e.vrstaJelaId);
-                                  await _fetchData();
+                                  await _fetchDataDish();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(

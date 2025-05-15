@@ -133,53 +133,52 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const RecipeListScreen(),
-          ),
-        );
-        return true;
-      },
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 10,
+Widget build(BuildContext context) {
+  return WillPopScope(
+    onWillPop: () async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const RecipeListScreen(),
+        ),
+      );
+      return true;
+    },
+    child: Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 24),
+                  const CustomTitleText(title: 'Moj profil'),
+                  GestureDetector(
+                    onTap: () {
+                      AuthProvider.username = null;
+                      AuthProvider.password = null;
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Icon(Icons.exit_to_app,
+                        color: Colors.black, size: 24),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(width: 24),
-                    const CustomTitleText(title: 'Moj profil'),
-                    GestureDetector(
-                      onTap: () {
-                        AuthProvider.username = null;
-                        AuthProvider.password = null;
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      child: const Icon(Icons.exit_to_app,
-                          color: Colors.black, size: 24),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () {
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -196,7 +195,8 @@ class _UserScreenState extends State<UserScreen> {
                                       AuthProvider.korisnik?.prezime ?? '',
                                   'email': AuthProvider.korisnik?.email ?? '',
                                   'lozinka': AuthProvider.password,
-                                  'ulogaId': AuthProvider.korisnik?.ulogaId,
+                                  'ulogaId':
+                                      AuthProvider.korisnik?.ulogaId ?? 0,
                                   'telephone': AuthProvider.korisnik?.telefon
                                           ?.toString() ??
                                       '',
@@ -205,19 +205,16 @@ class _UserScreenState extends State<UserScreen> {
                             },
                           );
                         },
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Uredi podatke',
-                            style: TextStyle(color: Colors.blue, fontSize: 17),
-                          ),
+                        icon: const Icon(Icons.edit, size: 18),
+                        label: const Text("Uredi"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
                         ),
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () async {
+                      const SizedBox(width: 65),
+                      ElevatedButton.icon(
+                        onPressed: () async {
                           final confirm = await showDialog<bool>(
                             context: context,
                             builder: (BuildContext context) {
@@ -252,33 +249,31 @@ class _UserScreenState extends State<UserScreen> {
                             await _deleteProfile();
                           }
                         },
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 3),
-                          child: Text(
-                            'Obriši profil',
-                            style: TextStyle(color: Colors.red, fontSize: 17),
-                          ),
+                        icon: const Icon(Icons.delete, size: 18),
+                        label: const Text("Obriši"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 13,
-                    ),
-                    _buildUserData(),
-                    const SizedBox(
-                      height: 13,
-                    ),
-                    const CustomTitleText(title: "MOJI RECEPTI:"),
-                    _buildUserRecipes(),
-                  ],
-                ),
+                      const SizedBox(width: 50),
+                    ],
+                  ),
+                  const SizedBox(height: 13),
+                  _buildUserData(),
+                  const SizedBox(height: 13),
+                  const CustomTitleText(title: "MOJI RECEPTI:"),
+                  _buildUserRecipes(),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildUserData() {
     return Padding(
