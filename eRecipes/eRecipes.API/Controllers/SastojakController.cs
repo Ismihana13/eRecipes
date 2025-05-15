@@ -9,7 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SastojakController : BaseCURDController<Sastojak,SastojakSearchObject,SastojakUpsertRequest, SastojakUpsertRequest>
+    public class SastojakController : BaseCURDController<Sastojak, SastojakSearchObject, SastojakUpsertRequest, SastojakUpsertRequest>
     {
         public SastojakController(ISastojakService service) : base(service) { }
 

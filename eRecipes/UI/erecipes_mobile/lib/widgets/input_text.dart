@@ -8,13 +8,13 @@ class InputText extends StatelessWidget {
   final TextInputType? keyboardType;
 
   const InputText({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
     required this.hint,
     this.maxLines = 1,
     this.keyboardType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

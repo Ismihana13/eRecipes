@@ -6,6 +6,7 @@ class AddTypeDishScreen extends StatefulWidget {
   const AddTypeDishScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddTypeDishScreenState createState() => _AddTypeDishScreenState();
 }
 
@@ -25,7 +26,7 @@ class _AddTypeDishScreenState extends State<AddTypeDishScreen> {
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
-        width: 300, 
+        width: 300,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,

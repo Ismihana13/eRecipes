@@ -12,10 +12,11 @@ class IzvjestajModal extends StatefulWidget {
   const IzvjestajModal({
     required this.onCancelPressed,
     required this.onReportCreated,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _IzvjestajModalState createState() => _IzvjestajModalState();
 }
 

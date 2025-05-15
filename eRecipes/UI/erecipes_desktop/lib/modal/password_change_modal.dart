@@ -19,10 +19,17 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
     });
   }
 
@@ -132,17 +139,17 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _confirmPasswordController,
-                  obscureText: !_isPasswordVisible,
+                  obscureText: !_isConfirmPasswordVisible,
                   decoration: InputDecoration(
                     labelText: 'Potvrdite novu lozinku',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible
+                        _isConfirmPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
                       ),
-                      onPressed: _togglePasswordVisibility,
+                      onPressed: _toggleConfirmPasswordVisibility,
                     ),
                   ),
                   validator: (value) {

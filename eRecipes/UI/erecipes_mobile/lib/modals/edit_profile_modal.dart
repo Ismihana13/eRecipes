@@ -7,11 +7,13 @@ class EditProfileDialog extends StatefulWidget {
   final Map<String, dynamic> userData;
 
   const EditProfileDialog({
+    super.key,
     required this.onEditPressed,
     required this.userData,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfileDialogState createState() => _EditProfileDialogState();
 }
 
@@ -53,7 +55,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     passwordController.text = widget.userData['lozinka'] ?? '';
     role = widget.userData['ulogaId'] ?? '';
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,10 +140,8 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                   showDialog(
                     context: context,
                     builder: (context) => ChangePasswordDialog(
-                      oldPassword: passwordController
-                          .text, 
-                      onPasswordChange: (oldPass, newPass) {
-                      },
+                      oldPassword: passwordController.text,
+                      onPasswordChange: (oldPass, newPass) {},
                     ),
                   );
                 },

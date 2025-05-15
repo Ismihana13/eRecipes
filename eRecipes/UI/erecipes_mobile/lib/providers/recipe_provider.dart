@@ -28,6 +28,23 @@ class RecipeProvider extends BaseProvider<Recept> {
     }
   }
 
+  Future<Map<String, dynamic>> getKolicinaIMjernaJedinica(
+      int? receptId, int? sastojakId) async {
+    var url =
+        "$fullUrl/kolicina-i-mjerna-jedinica?receptId=$receptId&sastojakId=$sastojakId";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http!.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load quantity and unit');
+    }
+  }
+
   Future<void> activateRecipe(int id) async {
     var url = "$fullUrl/$id/activate";
     var uri = Uri.parse(url);
@@ -48,7 +65,7 @@ class RecipeProvider extends BaseProvider<Recept> {
       return {
         "sastojakId": s.sastojakId,
         "mjernaJedinicaId": s.mjernaJedinicaId,
-        "kolicina": double.tryParse(s.kolicina ?? '0') ?? 0.0,
+        "kolicina": s.kolicina ?? '0',
       };
     }).toList();
     final response = await http!.post(
@@ -96,17 +113,28 @@ class RecipeProvider extends BaseProvider<Recept> {
     }
   }
 
-  Future<String> updateSastojci(int receptId, List<int> sastojakIds) async {
+  Future<String> updateSastojci(
+      int receptId, List<ReceptSastojak> sastojci) async {
     var url = "$fullUrl/$receptId/updateSastojci";
     var uri = Uri.parse(url);
     var headers = createHeaders();
+
+    List<Map<String, dynamic>> sastojciZaSlanje = sastojci.map((s) {
+      return {
+        "sastojakId": s.sastojakId,
+        "kolicina": s.kolicina ?? 0,
+        "mjernaJedinicaId": s.mjernaJedinicaId,
+      };
+    }).toList();
+
     final response = await http!.put(
       uri,
       headers: headers,
-      body: jsonEncode(sastojakIds),
+      body: jsonEncode(sastojciZaSlanje),
     );
+
     if (response.statusCode == 200) {
-      return "Sastojci su uspješno dodani!";
+      return "Sastojci su uspješno ažurirani.";
     } else {
       return "Došlo je do greške: ${response.body}";
     }

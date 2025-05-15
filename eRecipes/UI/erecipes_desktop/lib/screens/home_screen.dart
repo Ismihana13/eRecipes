@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(10),
           child: UplataScreen(),
         );
-          case 'Katalog':
+      case 'Katalog':
         return ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: const KatalogScreen(),

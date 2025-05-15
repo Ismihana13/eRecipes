@@ -6,6 +6,6 @@ namespace eRecipes.Model.SearchObjects
 {
     public class LajkoviSearchObject : BaseSearchObject
     {
-      
+
     }
 }

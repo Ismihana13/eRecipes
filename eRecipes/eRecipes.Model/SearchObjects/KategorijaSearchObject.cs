@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class KategorijaSearchObject:BaseSearchObject
+    public class KategorijaSearchObject : BaseSearchObject
     {
         public string? NazivGTE { get; set; }
         public bool? Status { get; set; }

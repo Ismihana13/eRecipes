@@ -4,31 +4,31 @@ import 'package:json_annotation/json_annotation.dart';
 part 'korisnik.g.dart';
 
 @JsonSerializable()
-class Korisnik{
+class Korisnik {
   int? korisnikId;
-  String? ime; 
-  String? prezime; 
+  String? ime;
+  String? prezime;
   DateTime? datumRodjenja;
-   String? email; 
-  String? telefon; 
-  String? korisnickoIme; 
-  String? lozinka; 
+  String? email;
+  String? telefon;
+  String? korisnickoIme;
+  String? lozinka;
   int? ulogaId;
   Uloga? uloga;
 
-   Korisnik({
-  required   this.ime,
-    this.prezime,
-    this.datumRodjenja,
-    this.email,
-    this.telefon,
-    this.korisnickoIme,
-    this.lozinka,
-    this.ulogaId,
-    this.uloga
-   });
+  Korisnik(
+      {required this.ime,
+      this.prezime,
+      this.datumRodjenja,
+      this.email,
+      this.telefon,
+      this.korisnickoIme,
+      this.lozinka,
+      this.ulogaId,
+      this.uloga});
 
-  factory Korisnik.FromJson(Map<String,dynamic> json)=> _$KorisnikFromJson(json);
+  factory Korisnik.FromJson(Map<String, dynamic> json) =>
+      _$KorisnikFromJson(json);
 
-  Map<String,dynamic> toJson() => _$KorisnikToJson(this);
+  Map<String, dynamic> toJson() => _$KorisnikToJson(this);
 }

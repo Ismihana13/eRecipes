@@ -30,7 +30,7 @@ String formatQuantity(double quantity) {
   }
 }
 
-  String formatDateAndHours(DateTime? date) {
-    if (date == null) return "";
-    return DateFormat('dd.MM.yyyy HH:mm').format(date);
-  }
+String formatDateAndHours(DateTime? date) {
+  if (date == null) return "";
+  return DateFormat('dd.MM.yyyy HH:mm').format(date);
+}

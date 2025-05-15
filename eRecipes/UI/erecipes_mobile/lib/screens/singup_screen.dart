@@ -246,6 +246,27 @@ class _SignupScreenState extends State<SignUpScreen> {
               selectedDate.toLocal().toString().split(' ')[0];
         }
       },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Molimo unesite datum rođenja.';
+        }
+        DateTime? birthDate = DateTime.tryParse(value);
+        if (birthDate == null) {
+          return 'Unesite važeći datum.';
+        }
+
+        DateTime today = DateTime.now();
+        int age = today.year - birthDate.year;
+        if (today.month < birthDate.month ||
+            (today.month == birthDate.month && today.day < birthDate.day)) {
+          age--;
+        }
+
+        if (age < 10) {
+          return 'Morate biti stariji od 10 godina.';
+        }
+        return null;
+      },
     );
   }
 

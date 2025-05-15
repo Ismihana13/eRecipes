@@ -1,24 +1,25 @@
 import 'package:erecipes_mobile/models/sastojak.dart';
 import 'package:flutter/material.dart';
-import 'package:multiselect/multiselect.dart'; 
+import 'package:multiselect/multiselect.dart';
 
 class MultiSelectSastojak extends StatefulWidget {
   final String label;
   final List<Sastojak>? items;
   final List<Sastojak>? selectedSastojci;
   final Function(List<Sastojak>) onChanged;
-  final String? errorMessage;  
-  
+  final String? errorMessage;
+
   const MultiSelectSastojak({
-    Key? key,
+    super.key,
     required this.label,
     required this.items,
     required this.selectedSastojci,
     required this.onChanged,
-    this.errorMessage,  
-  }) : super(key: key);
+    this.errorMessage,
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _MultiSelectSastojakState createState() => _MultiSelectSastojakState();
 }
 
@@ -35,25 +36,31 @@ class _MultiSelectSastojakState extends State<MultiSelectSastojak> {
           onChanged: (List<String> selectedValues) {
             setState(() {
               if (selectedValues.isEmpty) {
-                widget.onChanged([]);  
+                widget.onChanged([]);
               } else {
                 widget.onChanged(widget.items!
                     .where((sastojak) => selectedValues
                         .contains(sastojak.naziv ?? "Nepoznat sastojak"))
-                    .toList());
+                    .toList()
+                  ..sort((a, b) {
+                    int indexA = selectedValues.indexOf(a.naziv ?? "");
+                    int indexB = selectedValues.indexOf(b.naziv ?? "");
+                    return indexA.compareTo(indexB);
+                  }));
               }
             });
           },
           options: widget.items
                   ?.map((sastojak) => sastojak.naziv ?? "Nepoznat sastojak")
-                  .toList() ?? [],
+                  .toList() ??
+              [],
           selectedValues: widget.selectedSastojci!
               .map((sastojak) => sastojak.naziv ?? "Nepoznat sastojak")
               .toList(),
           selectedValuesStyle: const TextStyle(fontSize: 0.0),
           hint: const Text("Odaberite potrebne sastojke"),
         ),
-        if (widget.errorMessage != null)  
+        if (widget.errorMessage != null)
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0),

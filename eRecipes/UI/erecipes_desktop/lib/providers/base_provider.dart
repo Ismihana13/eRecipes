@@ -10,12 +10,12 @@ abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint = "";
   String? fullUrl;
-  
+
   HttpClient client = HttpClient();
   IOClient? http;
 
   BaseProvider(String endpoint) {
-        _baseUrl = const String.fromEnvironment("baseUrl",
+    _baseUrl = const String.fromEnvironment("baseUrl",
         defaultValue: "http://localhost:5089/");
     if (_baseUrl!.endsWith("/") == false) {
       _baseUrl = _baseUrl! + "/";
@@ -27,7 +27,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
     http = IOClient(client);
     fullUrl = "$_baseUrl$_endpoint";
   }
- Future<List<T>> Get([dynamic search]) async {
+  Future<List<T>> Get([dynamic search]) async {
     var url = "${_baseUrl}${_endpoint}";
 
     if (search != null) {
@@ -49,6 +49,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       throw Exception("Wrong username or password");
     }
   }
+
   Future<SearchResult<T>> get({dynamic filter}) async {
     var url = "$_baseUrl$_endpoint";
 
@@ -144,8 +145,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
   }
 
   Map<String, String> getHeaders() {
-    String username = AuthProvider.username !;
-    String passowrd =AuthProvider.password !;
+    String username = AuthProvider.username!;
+    String passowrd = AuthProvider.password!;
 
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$passowrd'))}";
@@ -157,6 +158,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
     return headers;
   }
+
   String getQueryString(Map params,
       {String prefix = '&', bool inRecursion = false}) {
     String query = '';

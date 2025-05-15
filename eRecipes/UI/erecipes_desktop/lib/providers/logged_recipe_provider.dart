@@ -5,7 +5,6 @@ import 'package:erecipes_desktop/providers/recipe_provider.dart';
 class LoggedRecipeProvider extends RecipeProvider {
   @override
   Future<SearchResult<Recept>> get({filter}) {
-    // TODO: implement get
     print(" in in logged");
     return super.get(filter: filter);
   }

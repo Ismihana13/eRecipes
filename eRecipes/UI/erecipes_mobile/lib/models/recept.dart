@@ -1,5 +1,3 @@
-
-
 import 'package:erecipes_mobile/models/korisnik.dart';
 import 'package:erecipes_mobile/models/recept_sastojak.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -7,9 +5,9 @@ import 'package:json_annotation/json_annotation.dart';
 part 'recept.g.dart';
 
 @JsonSerializable()
-class Recept{
+class Recept {
   int? receptId;
-  String? naziv; 
+  String? naziv;
   String? slika;
   int? vrstaJelaId;
   int? kategorijaId;
@@ -23,21 +21,20 @@ class Recept{
   List<ReceptSastojak>? sastojci;
   Korisnik? korisnik;
   bool? isFavorite;
- bool? isLiked;
- bool? status;
-   Recept({
-     this.receptId,
-    required this.naziv,
-    required this.opisRecepta,
-    required this.opisPripreme,
-    required this.vrijemePripreme,
-    this.kategorijaId,
-    this.vrstaJelaId,
-    this.slika,
-    this.status
-  });
+  bool? isLiked;
+  bool? status;
+  Recept(
+      {this.receptId,
+      required this.naziv,
+      required this.opisRecepta,
+      required this.opisPripreme,
+      required this.vrijemePripreme,
+      this.kategorijaId,
+      this.vrstaJelaId,
+      this.slika,
+      this.status});
 
-  factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);
+  factory Recept.FromJson(Map<String, dynamic> json) => _$ReceptFromJson(json);
 
-  Map<String,dynamic> toJson() => _$ReceptToJson(this);
+  Map<String, dynamic> toJson() => _$ReceptToJson(this);
 }

@@ -271,25 +271,6 @@ class _LikeScreenState extends State<OmiljeniReceptiScreen> {
               child: const Icon(Icons.favorite, color: Colors.white),
             ),
           ),
-          /* Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddNewRecipeScreen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),*/
         ],
       ),
     );

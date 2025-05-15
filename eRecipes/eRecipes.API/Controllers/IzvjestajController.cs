@@ -10,10 +10,10 @@ namespace eRecipes.API.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class IzvjestajController 
+    public class IzvjestajController
     {
         IIzvjestajService _service;
-        public IzvjestajController(IIzvjestajService service) 
+        public IzvjestajController(IIzvjestajService service)
         {
             _service = service;
         }

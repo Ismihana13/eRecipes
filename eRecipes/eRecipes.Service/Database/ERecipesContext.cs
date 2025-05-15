@@ -170,7 +170,7 @@ public partial class ERecipesContext : DbContext
          );
 
         modelBuilder.Entity<Katalog>().HasData(
-            new Katalog { KatalogId = 1, Naziv = "Tradicionalna jela", Opis = "Katalog tradicionalnih jela predstavlja zbirku recepata koji čine srž kulturne baštine, običaja i gastronomskih tradicija iz različitih regiona. Svako jelo u ovom katalogu nosi priču, jedinstvene sastojke i način pripreme koji su se prenosili kroz generacije, oblikujući kulturni identitet zajednica. Bilo da je u pitanju jelo koje se priprema za posebne prilike, ili svakodnevni specijalitet, svaki recept u ovom katalogu odražava bogatstvo ukusa i tradicije.",
+            new Katalog { KatalogId = 1, Naziv = "Tradicionalna jela", Opis = "Katalog tradicionalnih jela predstavlja zbirku recepata koji cine srz kulturne bastine, obicaja i gastronomskih tradicija iz razlicitih regiona. Svako jelo u ovom katalogu nosi pricu, jedinstvene sastojke i nacin pripreme koji su se prenosili kroz generacije, oblikujuci kulturni identitet zajednica. Bilo da je u pitanju jelo koje se priprema za posebne prilike, ili svakodnevni specijalitet, svaki recept u ovom katalogu odrazava bogatstvo ukusa i tradicije.",
                 DatumKreiranja = DateTime.Now }
           );
 

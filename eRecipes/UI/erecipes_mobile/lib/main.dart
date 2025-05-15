@@ -55,7 +55,7 @@ class MainApp extends StatelessWidget {
           RecipeDetailsScreen.routeName: (context) => RecipeDetailsScreen(),
           AddNewRecipeScreen.routeName: (context) => const AddNewRecipeScreen(),
           UserScreen.routeName: (context) => const UserScreen(),
-          ResetPasswordScreen.routeName: (context) =>  ResetPasswordScreen(),
+          ResetPasswordScreen.routeName: (context) => ResetPasswordScreen(),
         },
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
@@ -224,7 +224,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed(ResetPasswordScreen.routeName);
+                          Navigator.of(context)
+                              .pushNamed(ResetPasswordScreen.routeName);
                         },
                         child: const Text(
                           "Forgot password?",

@@ -6,6 +6,6 @@ namespace eRecipes.Model.Messages
 {
     public class ReceptActivated
     {
-        public Recept Recept { get; set; }  
+        public Recept Recept { get; set; }
     }
 }

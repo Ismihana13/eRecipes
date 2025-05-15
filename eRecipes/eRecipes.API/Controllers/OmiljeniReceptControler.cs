@@ -10,7 +10,7 @@ namespace eRecipes.API.Controllers
     [ApiController]
     [Route("[controller]")]
 
-    public class OmiljeniReceptController : BaseCURDController<OmiljeniRecept,OmiljeniReceptSearchObject,OmiljeniReceptUpsertRequest, OmiljeniReceptUpsertRequest>
+    public class OmiljeniReceptController : BaseCURDController<OmiljeniRecept, OmiljeniReceptSearchObject, OmiljeniReceptUpsertRequest, OmiljeniReceptUpsertRequest>
     {
         public OmiljeniReceptController(IOmiljeniReceptService service) : base(service) { }
 
@@ -19,7 +19,7 @@ namespace eRecipes.API.Controllers
         {
             try
             {
-                var omiljeniRecepti = await ((IOmiljeniReceptService)_service).GetFavoritesForCurrentUser( search);
+                var omiljeniRecepti = await ((IOmiljeniReceptService)_service).GetFavoritesForCurrentUser(search);
                 return Ok(omiljeniRecepti);
             }
             catch (Exception ex)

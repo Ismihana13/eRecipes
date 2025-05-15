@@ -41,7 +41,8 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       throw Exception("Neuspješno brisanje korisnika.");
     }
   }
-   Future<void> resetPassword(int? id) async {
+
+  Future<void> resetPassword(int? id) async {
     var url = "$fullUrl/$id/ResetPassword";
     var uri = Uri.parse(url);
     var headers = createHeaders();
@@ -54,6 +55,7 @@ class KorisnikProvider extends BaseProvider<Korisnik> {
       throw Exception("Neuspješno mijenjanje lozinke.");
     }
   }
+
   Future<Korisnik> updateMobile(int id, Map<String, dynamic> request) async {
     var url = "$fullUrl/$id/UpdateMobile";
     var uri = Uri.parse(url);

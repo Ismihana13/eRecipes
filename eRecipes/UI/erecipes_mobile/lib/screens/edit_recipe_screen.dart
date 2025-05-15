@@ -2,13 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:erecipes_mobile/modals/new_ingredient_modal.dart';
 import 'package:erecipes_mobile/models/kategorija.dart';
+import 'package:erecipes_mobile/models/mjerna_jedinica.dart';
+import 'package:erecipes_mobile/models/recept_sastojak.dart';
 import 'package:erecipes_mobile/models/sastojak.dart';
 import 'package:erecipes_mobile/models/search_result.dart';
 import 'package:erecipes_mobile/models/vrsta_jela.dart';
 import 'package:erecipes_mobile/providers/kategorija_provider.dart';
+import 'package:erecipes_mobile/providers/mjerna_jedinica_provider.dart';
 import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_mobile/screens/edit_sastojci_list_card.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/input_text.dart';
 import 'package:erecipes_mobile/widgets/multiselect_sastojal.dart';
 import 'package:file_picker/file_picker.dart';
@@ -41,15 +46,20 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   late VrstaJelaProvider _vrstaJelaProvider;
   late SastojakProvider _sastojakProvider;
   late RecipeProvider _recipeProvider;
+  late MjernaJedinicaProvider _mjernaJedinicaProvider;
   SearchResult<Kategorija>? kategorijaResult;
   SearchResult<VrstaJela>? vrstaJelaResult;
   SearchResult<Sastojak>? sastojakResult;
+  SearchResult<MjernaJedinica>? mjernaJedinicaResult;
   String? _selectedKategorijaId;
   String? _selectedVrstaJelaId;
-  List<Sastojak> _selectedSastojci = [];
   File? _image;
   String? _base64Image;
+  String? _selectedMjernaJedinicaId;
+  List<ReceptSastojak> newSastojci = [];
+  List<Sastojak> selectedSastojakIds = [];
   String? sastojciError;
+  bool? open;
 
   @override
   void didChangeDependencies() {
@@ -63,6 +73,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     _vrstaJelaProvider = context.read<VrstaJelaProvider>();
     _sastojakProvider = context.read<SastojakProvider>();
     _recipeProvider = context.read<RecipeProvider>();
+    _mjernaJedinicaProvider = context.read<MjernaJedinicaProvider>();
     _recipeNameController.text = widget.recept.naziv ?? "";
     _recipeDescriptionController.text = widget.recept.opisRecepta ?? "";
     _preparationDescriptionController.text = widget.recept.opisPripreme ?? "";
@@ -75,29 +86,21 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       _base64Image = widget.recept.slika;
     }
     initForm();
-    loadSastojci();
   }
 
   Future<void> initForm() async {
     sastojakResult = await _sastojakProvider.get();
     kategorijaResult = await _kategorijaProvider.get();
     vrstaJelaResult = await _vrstaJelaProvider.get();
+    mjernaJedinicaResult = await _mjernaJedinicaProvider.get();
     _selectedKategorijaId = widget.recept.kategorijaId.toString();
     _selectedVrstaJelaId = widget.recept.vrstaJelaId.toString();
-    setState(() {});
-  }
-
-  Future<void> loadSastojci() async {
-    try {
-      var receptSastojciList =
-          await _recipeProvider.sastojci(widget.recept.receptId);
-      _selectedSastojci =
-          receptSastojciList.map((item) => item.toSastojak()).toList();
-    } catch (e) {
-      setState(() {
-        sastojciError = 'Failed to load ingredients: $e';
-      });
+    if (mjernaJedinicaResult != null &&
+        mjernaJedinicaResult!.result.isNotEmpty) {
+      _selectedMjernaJedinicaId =
+          mjernaJedinicaResult!.result.first.mjernaJedinicaId.toString();
     }
+    setState(() {});
   }
 
   void getImage() async {
@@ -111,21 +114,21 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     }
   }
 
-   void openDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return NewIngredientModal(
-        onIngredientAdded: () async {
-          var noviSastojci = await _sastojakProvider.get(); 
-          setState(() {
-            sastojakResult = noviSastojci;
-          });
-        },
-      );
-    },
-  );
-}
+  void openDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return NewIngredientModal(
+          onIngredientAdded: () async {
+            var noviSastojci = await _sastojakProvider.get();
+            setState(() {
+              sastojakResult = noviSastojci;
+            });
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,24 +224,119 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                 _selectedVrstaJelaId,
                 (value) => setState(() => _selectedVrstaJelaId = value)),
             const SizedBox(height: 30),
-            MultiSelectSastojak(
-              label: 'Potrebni sastojci',
-              items: sastojakResult?.result,
-              selectedSastojci: _selectedSastojci,
-              onChanged: (List<Sastojak> selectedItems) {
-                setState(() {
-                  _selectedSastojci = selectedItems;
-                });
-              },
-              errorMessage: sastojciError,
+            EditSastojciListCard(
+              sastojciList: widget.sastojci,
             ),
             ElevatedButton(
               onPressed: () {
-                openDialog();
+                setState(() {
+                  open = true;
+                });
               },
               child: const Text('Dodaj novi sastojak',
                   style: TextStyle(fontSize: 16)),
             ),
+            if (open == true)
+              MultiSelectSastojak(
+                label: 'Potrebni sastojci',
+                items: sastojakResult?.result,
+                selectedSastojci: selectedSastojakIds,
+                onChanged: (List<Sastojak> selectedItems) {
+                  setState(() {
+                    selectedSastojakIds = selectedItems;
+                  });
+                },
+                errorMessage: sastojciError,
+              ),
+            if (selectedSastojakIds.isNotEmpty)
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Dodajte količinu i mjernu jedinicu",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            Column(
+              children: selectedSastojakIds.map((su) {
+                if (su.nazivMjerneJedinice == null &&
+                    _selectedMjernaJedinicaId != null) {
+                  final jedinica = mjernaJedinicaResult?.result.firstWhere(
+                    (element) =>
+                        element.mjernaJedinicaId.toString() ==
+                        _selectedMjernaJedinicaId,
+                    orElse: () => MjernaJedinica(),
+                  );
+                  su.nazivMjerneJedinice = jedinica?.naziv;
+                  su.mjernaJedinicaId = jedinica?.mjernaJedinicaId;
+                }
+                return Row(
+                  children: [
+                    Expanded(child: Text(su.naziv ?? "Nepoznat sastojak")),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                          decoration:
+                              const InputDecoration(labelText: 'Količina'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Unesite količinu';
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'Mora biti broj.';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              final index = selectedSastojakIds.indexWhere(
+                                  (s) => s.sastojakId == su.sastojakId);
+                              if (index != -1) {
+                                selectedSastojakIds[index].kolicina =
+                                    double.tryParse(value) ?? 0.0;
+                              }
+                            });
+                          }),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 2,
+                      child: DropdownButtonFormField<String>(
+                        value: su.mjernaJedinicaId?.toString(),
+                        decoration: const InputDecoration(labelText: 'Mjera'),
+                        items: mjernaJedinicaResult?.result.map((jedinica) {
+                          return DropdownMenuItem<String>(
+                            value: jedinica.mjernaJedinicaId.toString(),
+                            child: Text(jedinica.naziv ?? ""),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            su.mjernaJedinicaId = int.tryParse(value!);
+                            final jedinica =
+                                mjernaJedinicaResult?.result.firstWhere(
+                              (element) =>
+                                  element.mjernaJedinicaId.toString() == value,
+                              orElse: () => MjernaJedinica(),
+                            );
+                            su.nazivMjerneJedinice = jedinica?.naziv;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+            if (open == true)
+              ElevatedButton(
+                onPressed: () {
+                  openDialog();
+                },
+                child: const Text('Dodaj novi sastojak u listu sastojaka',
+                    style: TextStyle(fontSize: 16)),
+              ),
             const SizedBox(
               height: 30,
             ),
@@ -309,17 +407,25 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         slika: base64Image,
       );
 
+      for (var sastojak in widget.sastojci) {
+        print(
+            'Naziv: ${sastojak.sastojak?.sastojakId}, Količina: ${sastojak.kolicina}, Mjerna jedinica: ${sastojak.mjernaJedinica?.naziv}');
+      }
+
       var id = widget.recept.receptId;
       await _recipeProvider.update(id!, newRecipe);
       await _recipeProvider.updateSastojci(
-          id, _selectedSastojci.map((s) => s.sastojakId!).toList());
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Izvršili ste promjene na receptu'),
-          duration: Duration(seconds: 2),
-        ),
+        id,
+        widget.sastojci,
       );
-     Navigator.pop(context, 2);
+      if (selectedSastojakIds.isNotEmpty) {
+        await Provider.of<RecipeProvider>(context, listen: false)
+            .addSastojkeToRecept(widget.recept.receptId!, selectedSastojakIds);
+      }
+      CustomSnackBar.showSuccessSnackBar(
+          context, 'Izvršili ste promjene na receptu!');
+
+      Navigator.pop(context, 2);
     }
   }
 }

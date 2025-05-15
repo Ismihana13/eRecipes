@@ -11,11 +11,13 @@ class ChangePasswordDialog extends StatefulWidget {
   final String? oldPassword;
 
   const ChangePasswordDialog({
+    super.key,
     required this.onPasswordChange,
     required this.oldPassword,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChangePasswordDialogState createState() => _ChangePasswordDialogState();
 }
 
@@ -80,7 +82,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); 
+                    Navigator.of(context).pop();
                   },
                   child: const Text('OK'),
                 ),

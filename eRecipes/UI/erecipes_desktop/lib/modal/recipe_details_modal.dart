@@ -6,6 +6,7 @@ import 'package:erecipes_desktop/providers/kategorija_provider.dart';
 import 'package:erecipes_desktop/providers/recipe_provider.dart';
 import 'package:erecipes_desktop/providers/utils.dart';
 import 'package:erecipes_desktop/providers/vrsta_jela_provider.dart';
+import 'package:erecipes_desktop/widgets/sastojci_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,7 @@ class RecipeDetailsModal extends StatefulWidget {
   RecipeDetailsModal({super.key, this.recept});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RecipeDetailsModalState createState() => _RecipeDetailsModalState();
 }
 
@@ -66,41 +68,6 @@ class _RecipeDetailsModalState extends State<RecipeDetailsModal> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  _buildSastojciList() {
-    if (sastojciList == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (sastojciList.isEmpty) {
-      return const Text('No ingredients available.');
-    }
-
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: sastojciList.length,
-      itemBuilder: (context, index) {
-        var sastojak = sastojciList[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  sastojak.sastojak?.naziv ?? 'N/A',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 19, 51, 34),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   Widget _buildDetailRow(String title, String value,
@@ -213,7 +180,9 @@ class _RecipeDetailsModalState extends State<RecipeDetailsModal> {
                       color: Colors.black54,
                     ),
                   ),
-                  _buildSastojciList(),
+                  SastojciListCard(
+                    sastojciList: sastojciList ?? [],
+                  ),
                   _buildDetailRow(
                     'Opis pripreme',
                     _recept?.opisPripreme ?? 'N/A',

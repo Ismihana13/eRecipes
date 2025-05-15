@@ -11,10 +11,17 @@ class Lajkovi {
   DateTime? datumLajkanja;
   Korisnik? korisnik;
   Recept? recept;
-  
-  Lajkovi({this.lajkoviId, this.korisnikId, required this.receptId, this.datumLajkanja, this.korisnik, this.recept});
 
-   factory Lajkovi.FromJson(Map<String,dynamic> json)=> _$LajkoviFromJson(json);
+  Lajkovi(
+      {this.lajkoviId,
+      this.korisnikId,
+      required this.receptId,
+      this.datumLajkanja,
+      this.korisnik,
+      this.recept});
 
-  Map<String,dynamic> toJson() => _$LajkoviToJson(this);
+  factory Lajkovi.FromJson(Map<String, dynamic> json) =>
+      _$LajkoviFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LajkoviToJson(this);
 }

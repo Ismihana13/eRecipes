@@ -4,8 +4,8 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class UlogaSearchObject:BaseSearchObject
+    public class UlogaSearchObject : BaseSearchObject
     {
-        public string? NazivGTE {  get; set; }
+        public string? NazivGTE { get; set; }
     }
 }

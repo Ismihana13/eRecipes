@@ -11,28 +11,29 @@ class NotifikacijeProvider extends BaseProvider<Notifikacije> {
     return Notifikacije.FromJson(data);
   }
 
-  Future<List<Notifikacije>> getSve({dynamic filter})async{
-    var url="$fullUrl";
-    if(filter!=null){
-      var queryString=getQueryString(filter);
-      url="$url?$queryString";
-   }
-    var uri=Uri.parse(url);
-    var headers= createHeaders();
-    var response=await http!.get(uri,headers: headers);
-    if(isValidResponse(response)){
-      var data= jsonDecode(response.body);
-      List<Notifikacije> result=[];
-      for(var item in data){
+  Future<List<Notifikacije>> getSve({dynamic filter}) async {
+    var url = "$fullUrl";
+    if (filter != null) {
+      var queryString = getQueryString(filter);
+      url = "$url?$queryString";
+    }
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+    var response = await http!.get(uri, headers: headers);
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      List<Notifikacije> result = [];
+      for (var item in data) {
         result.add(fromJson(item));
       }
       return result;
-    }else{
+    } else {
       throw Exception("Unknown error.");
     }
   }
 
-   Future<void> oznaciObavijestKaoProcitanu(int notifikacijeId, bool procitano) async {
+  Future<void> oznaciObavijestKaoProcitanu(
+      int notifikacijeId, bool procitano) async {
     var url = "$fullUrl/$notifikacijeId/procitano?procitano=$procitano";
     var uri = Uri.parse(url);
     var headers = createHeaders();
@@ -52,9 +53,9 @@ class NotifikacijeProvider extends BaseProvider<Notifikacije> {
     }
   }
 
-  Future<void> obrisiObavijest(int notifikacijeId) async{
-    var url="$fullUrl/$notifikacijeId";
-     var uri = Uri.parse(url);
+  Future<void> obrisiObavijest(int notifikacijeId) async {
+    var url = "$fullUrl/$notifikacijeId";
+    var uri = Uri.parse(url);
     var headers = getHeaders();
     var response = await http!.delete(uri, headers: headers);
     if (isValidResponse(response)) {

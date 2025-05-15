@@ -10,10 +10,10 @@ namespace eRecipes.API.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class NotifikacijeController 
+    public class NotifikacijeController
     {
         private readonly INotifikacijeService _service;
-        public NotifikacijeController(INotifikacijeService service)  
+        public NotifikacijeController(INotifikacijeService service)
         {
             _service = service;
         }
@@ -21,7 +21,7 @@ namespace eRecipes.API.Controllers
         [HttpPost]
         public Model.Notifikacije Insert([FromQuery] NotifikacijeInsertRequest request)
         {
-                return _service.Insert(request);
+            return _service.Insert(request);
         }
 
         [Authorize(Roles = "Admin")]
@@ -35,7 +35,7 @@ namespace eRecipes.API.Controllers
         [HttpPut("{id}/procitano")]
         public ActionResult<Model.Notifikacije> UpdateProcitano(int id, [FromQuery] bool procitano)
         {
-           return _service.UpdateProcitano(id, procitano);
+            return _service.UpdateProcitano(id, procitano);
         }
 
         [Authorize(Roles = "Admin")]

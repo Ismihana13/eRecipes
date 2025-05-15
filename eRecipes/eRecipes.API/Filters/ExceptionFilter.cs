@@ -5,10 +5,11 @@ using System.Net;
 
 namespace eRecipes.API.Filters
 {
-    public class ExceptionFilter:ExceptionFilterAttribute
+    public class ExceptionFilter : ExceptionFilterAttribute
     {
         ILogger<ExceptionFilter> _logger;
-        public ExceptionFilter(ILogger<ExceptionFilter> logger) { 
+        public ExceptionFilter(ILogger<ExceptionFilter> logger)
+        {
             _logger = logger;
         }
         public override void OnException(ExceptionContext context)
@@ -21,13 +22,13 @@ namespace eRecipes.API.Filters
             }
             else
             {
-                context.ModelState.AddModelError("ERROR","Server side error, please check logs");
+                context.ModelState.AddModelError("ERROR", "Server side error, please check logs");
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
             var list = context.ModelState.Where(x => x.Value.Errors.Count() > 0)
                 .ToDictionary(x => x.Key, y => y.Value.Errors.Select(z => z.ErrorMessage));
 
-            context.Result=new JsonResult(new {errors=list});
+            context.Result = new JsonResult(new { errors = list });
         }
     }
 }

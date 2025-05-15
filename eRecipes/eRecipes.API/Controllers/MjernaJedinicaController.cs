@@ -9,7 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MjernaJedinicaController : BaseCURDController<MjernaJedinica,MjernaJedinicaSearchObject,MjernaJedinicaUpsertRequest, MjernaJedinicaUpsertRequest>
+    public class MjernaJedinicaController : BaseCURDController<MjernaJedinica, MjernaJedinicaSearchObject, MjernaJedinicaUpsertRequest, MjernaJedinicaUpsertRequest>
     {
         public MjernaJedinicaController(IMjernaJedinicaService service) : base(service) { }
     }

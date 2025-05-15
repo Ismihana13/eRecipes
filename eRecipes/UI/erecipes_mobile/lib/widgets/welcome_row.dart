@@ -24,10 +24,9 @@ class WelcomeRow extends StatelessWidget {
           onTap: () {
             AuthProvider.username = null;
             AuthProvider.password = null;
-            Navigator.pushNamed(context, '/login'); 
+            Navigator.pushNamed(context, '/login');
           },
-          child: const Icon(Icons.exit_to_app,
-              color: Colors.black, size: 24), 
+          child: const Icon(Icons.exit_to_app, color: Colors.black, size: 24),
         ),
         const SizedBox(width: 3),
       ],

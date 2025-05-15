@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:erecipes_mobile/models/lajkovi.dart';
 import 'package:erecipes_mobile/models/omiljeni_recept.dart';
 import 'package:erecipes_mobile/models/recept.dart';
@@ -13,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-// ignore: must_be_immutable
 class RecipeDetailsScreen extends StatefulWidget {
   static const String routeName = "/recipeDetails";
   Recept? recept;
@@ -34,6 +35,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   LajkoviProvider? _lajkoviProvider;
   bool showLikesSection = true;
   bool showButton = false;
+  var sastojci;
+  Recept? _recept;
 
   @override
   void didChangeDependencies() {
@@ -43,6 +46,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    _recept = widget.recept;
     recipeProvider = context.read<RecipeProvider>();
     _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
     _lajkoviProvider = context.read<LajkoviProvider>();
@@ -54,7 +58,33 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     }
     _getLikesCount();
     _checkIfLiked();
-    recipeProvider.sastojci(widget.recept!.receptId).then((result) {
+    recipeProvider.sastojci(_recept!.receptId).then((result) {
+      setState(() {
+        sastojciList = result;
+      });
+    });
+  }
+
+  Future<void> loadRecipe() async {
+    var noviRecept = await recipeProvider.getById(_recept!.receptId);
+    setState(() {
+      _recept = noviRecept;
+    });
+  }
+
+  Future<void> loadSastojci() async {
+    recipeProvider = context.read<RecipeProvider>();
+    _omiljeniReceptProvider = context.read<OmiljeniReceptProvider>();
+    _lajkoviProvider = context.read<LajkoviProvider>();
+    if (widget.fromScreen == 'user') {
+      setState(() {
+        showLikesSection = false;
+        showButton = true;
+      });
+    }
+    _getLikesCount();
+    _checkIfLiked();
+    recipeProvider.sastojci(_recept!.receptId).then((result) {
       setState(() {
         sastojciList = result;
       });
@@ -62,7 +92,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   }
 
   Future<void> _checkIfLiked() async {
-    bool liked = await _lajkoviProvider!.isLiked(widget.recept!.receptId);
+    bool liked = await _lajkoviProvider!.isLiked(_recept!.receptId);
     setState(() {
       isliked = liked;
     });
@@ -70,7 +100,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
 
   Future<int> _getLikesCount() async {
     int count =
-        await LajkoviProvider().getLikesCountForRecipe(widget.recept?.receptId);
+        await LajkoviProvider().getLikesCountForRecipe(_recept?.receptId);
     return likesCount = count;
   }
 
@@ -92,22 +122,23 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   }
 
   void handleLike() async {
-    bool isLiked = await _lajkoviProvider!.isLiked(widget.recept!.receptId);
+    bool isLiked = await _lajkoviProvider!.isLiked(_recept!.receptId);
     if (isLiked) {
-      await _lajkoviProvider!.removeLike(widget.recept!.receptId);
+      await _lajkoviProvider!.removeLike(_recept!.receptId);
       setState(() {
         isliked = false;
         likesCount--;
       });
-        CustomSnackBar.showErrorSnackBar(context, 'Uklonili ste recept iz lajkovanih.');
+      CustomSnackBar.showErrorSnackBar(
+          context, 'Uklonili ste recept iz lajkovanih.');
     } else {
-      Lajkovi newLajk = Lajkovi(receptId: widget.recept!.receptId);
+      Lajkovi newLajk = Lajkovi(receptId: _recept!.receptId);
       await _lajkoviProvider!.insert(newLajk);
       setState(() {
         isliked = true;
         likesCount++;
       });
-        CustomSnackBar.showSuccessSnackBar(context, 'Lajkali ste recept');
+      CustomSnackBar.showSuccessSnackBar(context, 'Lajkali ste recept');
     }
   }
 
@@ -117,27 +148,33 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
       appBar: const CustomAppBar(naslov: 'eRecipes'),
       body: SingleChildScrollView(
         child: Column(
-          children: [  
+          children: [
             const SizedBox(height: 5),
             _buildRecipeDetails(),
             if (showButton)
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  loadRecipe();
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditRecipeScreen(
-                        recept: widget.recept!,
+                        recept: _recept!,
                         sastojci: sastojciList,
                       ),
                     ),
                   );
+                  if (result != null) {
+                    loadRecipe();
+                    loadSastojci();
+                    setState(() {});
+                  }
                 },
-                child: const Text("Uredi recept"),
+                child: const Text('Uredi recept'),
               ),
             if (showLikesSection)
               FutureBuilder<bool>(
-                future: _lajkoviProvider?.isLiked(widget.recept!.receptId!),
+                future: _lajkoviProvider?.isLiked(_recept!.receptId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
@@ -236,11 +273,11 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
           SizedBox(
             width: double.infinity,
             height: 250,
-            child: widget.recept?.slika == null
+            child: _recept!.slika == null
                 ? const Placeholder()
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                    child: imageFromStringDetails(widget.recept!.slika!),
+                    child: imageFromStringDetails(_recept!.slika!),
                   ),
           ),
           const SizedBox(height: 20),
@@ -251,7 +288,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    widget.recept?.naziv ?? 'Naziv recepta nije dostupan',
+                    _recept?.naziv ?? 'Naziv recepta nije dostupan',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -263,12 +300,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 ),
                 Row(
                   children: [
-                    if (widget.recept?.vrijemePripreme != null) ...[
+                    if (_recept?.vrijemePripreme != null) ...[
                       const Icon(Icons.access_time,
                           color: Colors.black, size: 24),
                       const SizedBox(width: 8),
                       Text(
-                        '${widget.recept?.vrijemePripreme} min',
+                        '${_recept?.vrijemePripreme} min',
                         style: const TextStyle(
                             fontSize: 16, fontStyle: FontStyle.italic),
                         softWrap: true,
@@ -279,23 +316,24 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                     const SizedBox(width: 8),
                     FutureBuilder<bool>(
                       future: _omiljeniReceptProvider
-                          ?.isFavorite(widget.recept!.receptId!),
+                          ?.isFavorite(_recept!.receptId!),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         }
                         if (snapshot.hasData && snapshot.data!) {
                           return IconButton(
                             icon: const Icon(Icons.favorite, color: Colors.red),
                             iconSize: 35,
-                            onPressed: () => _toggleFavorite(widget.recept!),
+                            onPressed: () => _toggleFavorite(_recept!),
                           );
                         } else {
                           return IconButton(
                             icon: const Icon(Icons.favorite_border,
                                 color: Colors.red),
                             iconSize: 35,
-                            onPressed: () => _toggleFavorite(widget.recept!),
+                            onPressed: () => _toggleFavorite(_recept!),
                           );
                         }
                       },
@@ -308,7 +346,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              widget.recept?.opisRecepta ?? 'Opis recepta nije dostupan',
+              _recept?.opisRecepta ?? 'Opis recepta nije dostupan',
               style: const TextStyle(
                 fontStyle: FontStyle.italic,
                 fontSize: 16.0,
@@ -335,7 +373,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.recept?.opisPripreme ?? 'Način pripreme nije dostupan',
+                  _recept?.opisPripreme ?? 'Način pripreme nije dostupan',
                 ),
               ],
             ),
@@ -347,18 +385,16 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Autor recepta: ${widget.recept!.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
-                  
-                  style:
-                      const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                  'Autor recepta: ${_recept!.korisnik?.korisnickoIme ?? 'Nepoznat korisnik'}',
+                  style: const TextStyle(
+                      fontSize: 16, fontStyle: FontStyle.italic),
                 ),
                 Text(
-                  widget.recept?.datumObjave != null
-                      ? DateFormat('dd.MM.yyyy.')
-                          .format(widget.recept!.datumObjave!)
+                  _recept?.datumObjave != null
+                      ? DateFormat('dd.MM.yyyy.').format(_recept!.datumObjave!)
                       : 'Datum nije dostupan',
-                  style:
-                      const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                  style: const TextStyle(
+                      fontSize: 16, fontStyle: FontStyle.italic),
                 ),
               ],
             ),

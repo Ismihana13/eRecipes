@@ -111,7 +111,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 child: TextField(
                   controller: _ftsEditingController,
                   decoration: const InputDecoration(
-                    labelText: 'Search',
+                    labelText: 'Search by username',
                     border: OutlineInputBorder(),
                     suffixIcon: Icon(Icons.search),
                     contentPadding:
