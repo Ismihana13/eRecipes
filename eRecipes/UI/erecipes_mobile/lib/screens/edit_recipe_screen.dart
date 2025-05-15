@@ -13,6 +13,7 @@ import 'package:erecipes_mobile/providers/recipe_provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/edit_sastojci_list_card.dart';
+import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:erecipes_mobile/widgets/input_text.dart';
 import 'package:erecipes_mobile/widgets/multiselect_sastojal.dart';
 import 'package:file_picker/file_picker.dart';
@@ -421,13 +422,8 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
         await Provider.of<RecipeProvider>(context, listen: false)
             .addSastojkeToRecept(widget.recept.receptId!, selectedSastojakIds);
       }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Izvršili ste promjene na receptu'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      CustomSnackBar.showSuccessSnackBar(
+          context, 'Izvršili ste promjene na receptu!');
 
       Navigator.pop(context, 2);
     }
