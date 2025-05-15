@@ -6,6 +6,7 @@ class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddCategoryScreenState createState() => _AddCategoryScreenState();
 }
 
@@ -25,7 +26,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
-        width: 300, 
+        width: 300,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,

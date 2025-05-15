@@ -7,9 +7,9 @@ import 'package:json_annotation/json_annotation.dart';
 part 'recept.g.dart';
 
 @JsonSerializable()
-class Recept{
+class Recept {
   int? receptId;
-  String? naziv; 
+  String? naziv;
   String? slika;
   int? vrstaJelaId;
   int? kategorijaId;
@@ -21,10 +21,10 @@ class Recept{
   Kategorija? kategorija;
   VrstaJela? vrstaJela;
   String? opisPripreme;
-  List<ReceptSastojak>? sastojci; 
+  List<ReceptSastojak>? sastojci;
   Recept({this.receptId, this.naziv});
 
-  factory Recept.FromJson(Map<String,dynamic> json)=> _$ReceptFromJson(json);
+  factory Recept.FromJson(Map<String, dynamic> json) => _$ReceptFromJson(json);
 
- Map<String,dynamic> toJson() => _$ReceptToJson(this);
+  Map<String, dynamic> toJson() => _$ReceptToJson(this);
 }

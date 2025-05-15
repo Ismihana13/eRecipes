@@ -4,12 +4,14 @@ class EditProfileDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onEditPressed;
   final Map<String, dynamic> userData;
 
-  const EditProfileDialog({super.key, 
+  const EditProfileDialog({
+    super.key,
     required this.onEditPressed,
     required this.userData,
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfileDialogState createState() => _EditProfileDialogState();
 }
 
@@ -54,7 +56,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: const Color.fromRGBO(247, 249, 253, 1),
-      title: Text( 'Uredi podatke'),
+      title: const Text('Uredi podatke'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,

@@ -28,10 +28,10 @@ class _ChangePasswordUserModalState extends State<ChangePasswordUserModal> {
   }
 
   void _toggleConfirmPasswordVisibility() {
-  setState(() {
-    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-  });
-}
+    setState(() {
+      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+    });
+  }
 
   void _submitPasswordChange() async {
     if (_formKey.currentState!.validate()) {

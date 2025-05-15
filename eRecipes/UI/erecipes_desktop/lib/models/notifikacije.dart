@@ -4,16 +4,16 @@ import 'package:json_annotation/json_annotation.dart';
 part 'notifikacije.g.dart';
 
 @JsonSerializable()
-class Notifikacije{
+class Notifikacije {
   int? notifikacijeId;
-  String? naslov; 
+  String? naslov;
   String? sadrzaj;
   int? korisnikId;
   Korisnik? korisnik;
   DateTime? datumSlanja;
   bool? procitano;
-  
-     Notifikacije({
+
+  Notifikacije({
     this.notifikacijeId,
     this.naslov,
     this.sadrzaj,
@@ -22,8 +22,9 @@ class Notifikacije{
     this.datumSlanja,
     this.procitano,
   });
-  
-  factory Notifikacije.FromJson(Map<String,dynamic> json)=> _$NotifikacijeFromJson(json);
 
-  Map<String,dynamic> toJson() => _$NotifikacijeToJson(this);
+  factory Notifikacije.FromJson(Map<String, dynamic> json) =>
+      _$NotifikacijeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NotifikacijeToJson(this);
 }

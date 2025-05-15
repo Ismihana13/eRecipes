@@ -16,6 +16,7 @@ class RecipeDetailsModal extends StatefulWidget {
   RecipeDetailsModal({super.key, this.recept});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RecipeDetailsModalState createState() => _RecipeDetailsModalState();
 }
 

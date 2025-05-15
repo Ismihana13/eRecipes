@@ -3,14 +3,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'sastojak.g.dart';
 
 @JsonSerializable()
-class Sastojak{
+class Sastojak {
   int? sastojakId;
-  String? naziv; 
+  String? naziv;
   double? kolicina;
   int? mjernaJedinicaId;
   String? nazivMjerneJedinice;
- 
-Sastojak({
+
+  Sastojak({
     this.sastojakId,
     this.naziv,
     this.kolicina,
@@ -18,7 +18,8 @@ Sastojak({
     this.nazivMjerneJedinice,
   });
 
- factory Sastojak.FromJson(Map<String,dynamic> json)=> _$SastojakFromJson(json);
+  factory Sastojak.FromJson(Map<String, dynamic> json) =>
+      _$SastojakFromJson(json);
 
- Map<String,dynamic> toJson() => _$SastojakToJson(this);
+  Map<String, dynamic> toJson() => _$SastojakToJson(this);
 }
