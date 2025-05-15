@@ -37,7 +37,7 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
     super.initState();
     _korisnikProvider = context.read<KorisnikProvider>();
     _recipeProvider = context.read<RecipeProvider>();
-      _uplataProvider = context.read<UplataProvider>();
+    _uplataProvider = context.read<UplataProvider>();
     loadData();
   }
 
@@ -70,7 +70,11 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
         await _korisnikProvider!.updateUserRole(korisnikId, 3);
         var azuriraniKorisnik = await _korisnikProvider!.getById(korisnikId);
         AuthProvider.korisnik = azuriraniKorisnik;
-        await _uplataProvider!.insert({'korisnikId': korisnikId, 'iznos':10.0, 'datumUplate': DateTime.now().toIso8601String(),});
+        await _uplataProvider!.insert({
+          'korisnikId': korisnikId,
+          'iznos': 10.0,
+          'datumUplate': DateTime.now().toIso8601String(),
+        });
         Navigator.pop(context, azuriraniKorisnik);
         await showDialog(
           context: context,

@@ -10,15 +10,16 @@ class MultiSelectSastojak extends StatefulWidget {
   final String? errorMessage;
 
   const MultiSelectSastojak({
-    Key? key,
+    super.key,
     required this.label,
     required this.items,
     required this.selectedSastojci,
     required this.onChanged,
     this.errorMessage,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _MultiSelectSastojakState createState() => _MultiSelectSastojakState();
 }
 

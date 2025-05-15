@@ -3,13 +3,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'kategorija.g.dart';
 
 @JsonSerializable()
-class Kategorija{
+class Kategorija {
   int? kategorijaId;
-  String? naziv; 
+  String? naziv;
 
-   Kategorija();
+  Kategorija();
 
-  factory Kategorija.FromJson(Map<String,dynamic> json)=> _$KategorijaFromJson(json);
+  factory Kategorija.FromJson(Map<String, dynamic> json) =>
+      _$KategorijaFromJson(json);
 
-  Map<String,dynamic> toJson() => _$KategorijaToJson(this);
+  Map<String, dynamic> toJson() => _$KategorijaToJson(this);
 }

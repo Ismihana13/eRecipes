@@ -83,12 +83,11 @@ class RecipePreviewModal extends StatelessWidget {
                     onPressed: () async {
                       try {
                         var newRecipe = await recipeProvider.insert(recept);
-    
+
                         final result = await Provider.of<RecipeProvider>(
                                 context,
                                 listen: false)
-                            .addSastojkeToRecept(newRecipe.receptId!,
-                                sastojci);
+                            .addSastojkeToRecept(newRecipe.receptId!, sastojci);
                         if (result == "Sastojci su uspješno dodani!") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -186,7 +185,7 @@ class RecipePreviewModal extends StatelessWidget {
                           ),
                         ),
                       ),
-                        Expanded(
+                      Expanded(
                         child: Text(
                           '${sastojak.kolicina ?? '0'} '
                           '${sastojak.nazivMjerneJedinice ?? 'N/A'}',

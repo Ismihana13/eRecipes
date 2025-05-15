@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:erecipes_mobile/providers/sastojak_provider.dart';
 
 class NewIngredientModal extends StatefulWidget {
-  final VoidCallback onIngredientAdded; 
+  final VoidCallback onIngredientAdded;
 
   const NewIngredientModal({super.key, required this.onIngredientAdded});
 
@@ -19,7 +19,8 @@ class _NewIngredientModalState extends State<NewIngredientModal> {
 
   @override
   Widget build(BuildContext context) {
-    final sastojakProvider = Provider.of<SastojakProvider>(context, listen: false);
+    final sastojakProvider =
+        Provider.of<SastojakProvider>(context, listen: false);
 
     return Dialog(
       shape: RoundedRectangleBorder(
@@ -73,18 +74,20 @@ class _NewIngredientModalState extends State<NewIngredientModal> {
                             Sastojak newSastojak = Sastojak(naziv: naziv);
                             await sastojakProvider.insert(newSastojak);
 
-                            widget.onIngredientAdded(); 
+                            widget.onIngredientAdded();
                             Navigator.pop(context);
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Dodali ste novi sastojak u listu sastojaka."),
+                                content: Text(
+                                    "Dodali ste novi sastojak u listu sastojaka."),
                               ),
                             );
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Greška prilikom dodavanja ili sastojak već postoji."),
+                                content: Text(
+                                    "Greška prilikom dodavanja ili sastojak već postoji."),
                               ),
                             );
                           }

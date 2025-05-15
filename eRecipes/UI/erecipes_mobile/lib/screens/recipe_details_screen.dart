@@ -391,8 +391,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 ),
                 Text(
                   _recept?.datumObjave != null
-                      ? DateFormat('dd.MM.yyyy.')
-                          .format(_recept!.datumObjave!)
+                      ? DateFormat('dd.MM.yyyy.').format(_recept!.datumObjave!)
                       : 'Datum nije dostupan',
                   style: const TextStyle(
                       fontSize: 16, fontStyle: FontStyle.italic),

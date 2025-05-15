@@ -8,7 +8,7 @@ class CustomSnackBar {
           message,
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color.fromARGB(255, 53, 92, 54), 
+        backgroundColor: const Color.fromARGB(255, 53, 92, 54),
         duration: const Duration(seconds: 3),
       ),
     );
@@ -21,7 +21,7 @@ class CustomSnackBar {
           message,
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.red, 
+        backgroundColor: Colors.red,
         duration: const Duration(seconds: 3),
       ),
     );
