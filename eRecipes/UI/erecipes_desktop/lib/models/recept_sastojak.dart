@@ -1,3 +1,4 @@
+import 'package:erecipes_desktop/models/mjerna_jedinica.dart';
 import 'package:erecipes_desktop/models/recept.dart';
 import 'package:erecipes_desktop/models/sastojak.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -5,17 +6,32 @@ import 'package:json_annotation/json_annotation.dart';
 part 'recept_sastojak.g.dart';
 
 @JsonSerializable()
-class ReceptSastojak{
+class ReceptSastojak {
   int? receptSastojakId;
-  int? receptId; 
- int? sastojakId;
-double? kolicina;
-String? mjernaJedinica;
-Recept? recept;
-Sastojak? sastojak; 
-  ReceptSastojak();
+  int? receptId;
+  int? sastojakId;
+  int? mjernaJedinicaId;
+  double? kolicina;
+  Recept? recept;
+  Sastojak? sastojak;
+  MjernaJedinica? mjernaJedinica;
 
- factory ReceptSastojak.FromJson(Map<String,dynamic> json)=> _$ReceptSastojakFromJson(json);
+  ReceptSastojak({
+    this.receptSastojakId,
+    required this.receptId,
+    required this.sastojakId,
+    this.mjernaJedinicaId,
+    this.kolicina,
+    this.recept,
+    required this.sastojak,
+    this.mjernaJedinica,
+  });
 
- Map<String,dynamic> toJson() => _$ReceptSastojakToJson(this);
+  factory ReceptSastojak.FromJson(Map<String, dynamic> json) =>
+      _$ReceptSastojakFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReceptSastojakToJson(this);
+  Sastojak toSastojak() {
+    return this.sastojak!;
+  }
 }
