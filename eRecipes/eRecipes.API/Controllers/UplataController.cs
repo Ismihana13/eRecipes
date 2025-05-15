@@ -9,7 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UplataController : BaseCURDController<Uplata,UplataSearchObject,UplataUpsertRequest, UplataUpsertRequest>
+    public class UplataController : BaseCURDController<Uplata, UplataSearchObject, UplataUpsertRequest, UplataUpsertRequest>
     {
         public UplataController(IUplataService service) : base(service) { }
     }

@@ -6,6 +6,6 @@ namespace eRecipes.Model.SearchObjects
 {
     public class KatalogSearchObject : BaseSearchObject
     {
-        public string? NazivGTE {  get; set; }
+        public string? NazivGTE { get; set; }
     }
 }

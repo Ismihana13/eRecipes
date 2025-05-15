@@ -9,7 +9,7 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class KatalogController : BaseCURDController<Katalog,KatalogSearchObject,KatalogUpsertRequest, KatalogUpsertRequest>
+    public class KatalogController : BaseCURDController<Katalog, KatalogSearchObject, KatalogUpsertRequest, KatalogUpsertRequest>
     {
         public KatalogController(IKatalogService service) : base(service) { }
 

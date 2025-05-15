@@ -9,9 +9,9 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ReceptController : BaseCURDController<Recept,ReceptSearchObject,ReceptInsertRequest,ReceptUpdateRequest>
+    public class ReceptController : BaseCURDController<Recept, ReceptSearchObject, ReceptInsertRequest, ReceptUpdateRequest>
     {
-        public ReceptController(IReceptService service):base(service)
+        public ReceptController(IReceptService service) : base(service)
         {
         }
 
@@ -79,7 +79,7 @@ namespace eRecipes.API.Controllers
 
 
         [HttpGet("recommend/{korisnikId}")]
-        public  IActionResult GetRecommendations(int korisnikId)
+        public IActionResult GetRecommendations(int korisnikId)
         {
             var preporuke = ((IReceptService)_service).Recommend(korisnikId);
             return Ok(preporuke);

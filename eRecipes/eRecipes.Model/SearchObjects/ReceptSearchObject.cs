@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRecipes.Model.SearchObjects
 {
-    public class ReceptSearchObject: BaseSearchObject
+    public class ReceptSearchObject : BaseSearchObject
     {
         public string? FTS { get; set; }
         public bool? Status { get; set; }

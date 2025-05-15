@@ -6,6 +6,6 @@ namespace eRecipes.Model.SearchObjects
 {
     public class IzvjestajSearchObject
     {
-        public string? Naziv {  get; set; }
+        public string? Naziv { get; set; }
     }
 }

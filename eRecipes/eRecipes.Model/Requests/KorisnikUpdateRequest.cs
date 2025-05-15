@@ -4,10 +4,10 @@ using System.Text;
 
 namespace eRecipes.Model.Requests
 {
-    public  class KorisnikUpdateRequest
+    public class KorisnikUpdateRequest
     {
-        public string? Ime { get; set; } 
-        public string? Prezime { get; set; } 
+        public string? Ime { get; set; }
+        public string? Prezime { get; set; }
         public string? Telefon { get; set; }
         public string? Email { get; set; }
         public string? KorisnickoIme { get; set; }

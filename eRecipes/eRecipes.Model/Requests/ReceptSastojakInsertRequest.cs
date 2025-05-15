@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRecipes.Model.Requests
 {
-    public  class ReceptSastojakInsertRequest
+    public class ReceptSastojakInsertRequest
     {
         public int SastojakId { get; set; }
         public int MjernaJedinicaId { get; set; }

@@ -14,10 +14,10 @@ namespace eRecipes.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class KorisnikController : BaseCURDController<Model.Korisnik,KorisnikSearchObject,KorisnikInsertRequest,KorisnikUpdateRequest>
+    public class KorisnikController : BaseCURDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
         protected IKorisnikService _service;
-        public KorisnikController(IKorisnikService service):base(service) 
+        public KorisnikController(IKorisnikService service) : base(service)
         {
             _service = service;
         }
@@ -62,10 +62,10 @@ namespace eRecipes.API.Controllers
         {
             return base.Insert(request);
         }
-       
-        public override Korisnik Update(int id,KorisnikUpdateRequest request)
+
+        public override Korisnik Update(int id, KorisnikUpdateRequest request)
         {
-            return base.Update(id,request);
+            return base.Update(id, request);
         }
 
         [HttpPut("{id}/UpdateMobile")]
@@ -79,7 +79,7 @@ namespace eRecipes.API.Controllers
         {
             return ((IKorisnikService)_service).DeleteKorisnickiProfil(id);
         }
-    
+
         [HttpPut("{id}/DeleteKorisnik")]
         public Korisnik DeleteKorisnik(int id)
         {
@@ -89,7 +89,7 @@ namespace eRecipes.API.Controllers
         [HttpPut("{id}/uloga")]
         public Korisnik UpdateUloga(int id, [FromBody] int novaUlogaId)
         {
-           return ((IKorisnikService)_service).UpdateUloga(id, novaUlogaId);
+            return ((IKorisnikService)_service).UpdateUloga(id, novaUlogaId);
         }
         [HttpPost("{id}/ResetPassword")]
         public async Task<ActionResult> ResetPassword(int id)
