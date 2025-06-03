@@ -21,3 +21,4 @@ Image imageFromStringDetails(String input) {
     fit: BoxFit.cover,
   );
 }
+String formatDateWithTime(DateTime date) => DateFormat("dd/MM/yyyy HH:mm").format(date);

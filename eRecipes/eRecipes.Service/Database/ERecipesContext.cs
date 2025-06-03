@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using eRecipes.Service.Helper;
 using eRecipes.Services.Helper;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,8 @@ public partial class ERecipesContext : DbContext
     public virtual DbSet<MjernaJedinica> MjernaJedinicas { get; set; }
     public virtual DbSet<Katalog> Katalogs { get; set; }
     public virtual DbSet<KatalogRecept> KatalogRecepts { get; set; }
+    public virtual DbSet<RadniProstor> RadniProstors { get; set; }
+    public virtual DbSet<RezervacijaProstora20022025> RezervacijaProstora20022025s { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -199,6 +202,20 @@ public partial class ERecipesContext : DbContext
         modelBuilder.Entity<Notifikacije>().HasData(
            new Notifikacije { NotifikacijeId = 1, KorisnikId = 3, ReceptId = 2, Procitano = true, DatumSlanja=DateTime.Now,Naslov="Test", Sadrzaj="TEst" }
        );
+
+        modelBuilder.Entity<RadniProstor>().HasData(
+         new RadniProstor { RadniProstorId = 1, Aktivna=true, Kapacitet=35, Oznaka="Prostor 1"},
+         new RadniProstor { RadniProstorId = 2, Aktivna = true, Kapacitet = 10, Oznaka = "Prostor 2" },
+         new RadniProstor { RadniProstorId = 3, Aktivna = true, Kapacitet = 18, Oznaka = "Prostor 3" }
+     );
+
+        modelBuilder.Entity<RezervacijaProstora20022025>().HasData(
+                 new RezervacijaProstora20022025 { RezervacijaProstora20022025Id = 1, DatumIVrijemePocetkaRezervacije = new DateTime(2025, 1, 15, 14, 30, 0), KorisnikId = 1, Napomena = "Ovo je neka napomena", RadniProstorId = 1, StatusRezervacije = StatusRezervacije.Potvrdjena.ToString(), Trajanje = 3 },
+                 new RezervacijaProstora20022025 { RezervacijaProstora20022025Id = 2, DatumIVrijemePocetkaRezervacije = new DateTime(2025, 2, 10, 9, 15, 0), KorisnikId = 2, Napomena = "Rezervacija za sastanak", RadniProstorId = 2, StatusRezervacije = StatusRezervacije.Na_cekanju.ToString(), Trajanje = 2 }
+                 );
+             
+
     }
 }
+
 

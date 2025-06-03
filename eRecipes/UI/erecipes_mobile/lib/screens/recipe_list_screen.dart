@@ -12,6 +12,7 @@ import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 import 'package:erecipes_mobile/screens/locked_recipe.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
+import 'package:erecipes_mobile/screens/rezervacija_prostora_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -151,6 +152,17 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         const SizedBox(height: 5),
                         _buildRecipeSearch(),
                         _buildCategoryAndDishTypeFilter(),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      RezervacijaProstoraScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text("Rezervisi")),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
