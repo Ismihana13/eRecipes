@@ -178,7 +178,7 @@ Future<void> filteredData() async {
                 DataColumn(label: Text('Status')),
               ],
               rows: _rezervacijaProstora.map((e) {
-                print("Status: ${e.statusRezervacije}");
+  
                 return DataRow(
                   cells: [
                     DataCell(Text(e.korisnik?.ime ?? "-")),

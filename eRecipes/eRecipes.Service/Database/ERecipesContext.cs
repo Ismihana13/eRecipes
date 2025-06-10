@@ -34,6 +34,7 @@ public partial class ERecipesContext : DbContext
     public virtual DbSet<KatalogRecept> KatalogRecepts { get; set; }
     public virtual DbSet<RadniProstor> RadniProstors { get; set; }
     public virtual DbSet<RezervacijaProstora20022025> RezervacijaProstora20022025s { get; set; }
+    public virtual DbSet<MoodTracker30012025> MoodTracker30012025s { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -213,7 +214,12 @@ public partial class ERecipesContext : DbContext
                  new RezervacijaProstora20022025 { RezervacijaProstora20022025Id = 1, DatumIVrijemePocetkaRezervacije = new DateTime(2025, 1, 15, 14, 30, 0), KorisnikId = 1, Napomena = "Ovo je neka napomena", RadniProstorId = 1, StatusRezervacije = StatusRezervacije.Potvrdjena.ToString(), Trajanje = 3 },
                  new RezervacijaProstora20022025 { RezervacijaProstora20022025Id = 2, DatumIVrijemePocetkaRezervacije = new DateTime(2025, 2, 10, 9, 15, 0), KorisnikId = 2, Napomena = "Rezervacija za sastanak", RadniProstorId = 2, StatusRezervacije = StatusRezervacije.Na_cekanju.ToString(), Trajanje = 2 }
                  );
-             
+
+        modelBuilder.Entity<MoodTracker30012025>().HasData(
+                new MoodTracker30012025 { MoodTracker30012025Id = 1, DatumEvidencije = new DateTime(2025, 1, 15), KorisnikId = 1, Opis = "Ovo je neka napomena", VrijednostRaspolozenja = VrijednostRaspolozenja.Sretan.ToString() },
+                new MoodTracker30012025 { MoodTracker30012025Id = 2, DatumEvidencije = new DateTime(2025, 2, 10), KorisnikId = 2, Opis = "Rezervacija za sastanak", VrijednostRaspolozenja = VrijednostRaspolozenja.Tuzan.ToString()}
+                );
+
 
     }
 }

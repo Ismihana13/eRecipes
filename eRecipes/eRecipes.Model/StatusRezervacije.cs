@@ -12,4 +12,13 @@ namespace eRecipes.Service.Helper
         Na_cekanju,
         Otkazana
     }
+
+    public enum VrijednostRaspolozenja
+    {
+        Sretan,
+        Tuzan,
+        Pod_stresom,
+        Uzbudjen,
+        Umoran
+    }
 }

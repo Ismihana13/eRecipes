@@ -22,3 +22,4 @@ Image imageFromStringDetails(String input) {
   );
 }
 String formatDateWithTime(DateTime date) => DateFormat("dd/MM/yyyy HH:mm").format(date);
+String formatDate(DateTime date) => DateFormat("dd/MM/yyyy ").format(date);
