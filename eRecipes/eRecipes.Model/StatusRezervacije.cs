@@ -21,4 +21,10 @@ namespace eRecipes.Service.Helper
         Uzbudjen,
         Umoran
     }
+    public enum StatusAktivnosti
+    {
+        U_toku,
+        Realizovana,
+        Istekla
+    }
 }

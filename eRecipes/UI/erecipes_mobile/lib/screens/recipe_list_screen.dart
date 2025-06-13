@@ -14,6 +14,7 @@ import 'package:erecipes_mobile/screens/mood_tracker_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
 import 'package:erecipes_mobile/screens/rezervacija_prostora_screen.dart';
+import 'package:erecipes_mobile/screens/to_do4924_screen.dart';
 import 'package:erecipes_mobile/screens/user_screen.dart';
 import 'package:erecipes_mobile/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -175,6 +176,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               );
                             },
                             child: const Text("MoodTracker")),
+                            ElevatedButton(onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ToDo4924Screen()));
+                            }, child: Text("ToDo4924")),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
