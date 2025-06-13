@@ -29,6 +29,7 @@ builder.Services.AddTransient<IRadniProstorService, RadniProstorService>();
 builder.Services.AddTransient<IRezervacijaProstoraService, RezervacijaProstoraService>();
 builder.Services.AddTransient<IMoodTrackerService, MoodTrackerService>();
 builder.Services.AddTransient<IToDo4924Service, ToDo4924Service>();
+builder.Services.AddTransient<IFitPasosService, FitPasosService>();
 
 builder.Services.AddHttpContextAccessor();
 

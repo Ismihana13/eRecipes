@@ -9,6 +9,7 @@ import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
+import 'package:erecipes_mobile/screens/frm_fit_pasos_screen.dart';
 import 'package:erecipes_mobile/screens/locked_recipe.dart';
 import 'package:erecipes_mobile/screens/mood_tracker_screen.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
@@ -177,8 +178,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             },
                             child: const Text("MoodTracker")),
                             ElevatedButton(onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ToDo4924Screen()));
-                            }, child: Text("ToDo4924")),
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const ToDo4924Screen()));
+                            }, child: const Text("ToDo4924")),
+
+                            ElevatedButton(onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const FrmFitPasosScreen()));
+                            }, child: const Text("FitPaos")),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(

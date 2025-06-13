@@ -36,6 +36,8 @@ public partial class ERecipesContext : DbContext
     public virtual DbSet<RezervacijaProstora20022025> RezervacijaProstora20022025s { get; set; }
     public virtual DbSet<MoodTracker30012025> MoodTracker30012025s { get; set; }
     public virtual DbSet<ToDo4924> ToDo4924s { get; set; }
+    public virtual DbSet<FitPasos> FitPasos { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -224,6 +226,11 @@ public partial class ERecipesContext : DbContext
                new ToDo4924 { ToDo4924Id = 1, DatumIzvrsenja = new DateTime(2025, 1, 15), KorisnikId = 1,Naziv="Aktivnost 1", Opis = "Ovo je neka napomena", Status = StatusAktivnosti.Istekla.ToString() },
                new ToDo4924 { ToDo4924Id = 2, DatumIzvrsenja = new DateTime(2025, 2, 10), KorisnikId = 2, Naziv = "Aktivnost 2", Opis = "Rezervacija za sastanak", Status = StatusAktivnosti.U_toku.ToString() }
                );
+        modelBuilder.Entity<FitPasos>().HasData(
+            new FitPasos { FitPasosId=1, KorisnikId=1, DatumIzdavanja=new DateTime(2025,01,01), Validan=true},
+            new FitPasos { FitPasosId = 2, KorisnikId = 2, DatumIzdavanja = new DateTime(2025, 02, 02), Validan = true }
+            );
+        
 
     }
 }
