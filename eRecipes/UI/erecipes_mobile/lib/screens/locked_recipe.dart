@@ -130,11 +130,15 @@ class _LockedRecipeState extends State<LockedRecipeScreen> {
                                         : imageFromString(recept.slika!),
                                   ),
                                   const SizedBox(height: 10),
-                                  Text(
-                                    recept.naziv ?? "Bez naziva",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
+                                
+                                  Expanded(
+                                    child: Text(
+                                      recept.naziv ?? "Bez naziva",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ],
                               ),
