@@ -22,6 +22,7 @@ namespace eRecipes.Service.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.FitPasos", b =>
                 {
                     b.Property<int>("FitPasosId")
@@ -32,10 +33,23 @@ namespace eRecipes.Service.Migrations
 
                     b.Property<DateTime>("DatumIzdavanja")
                         .HasColumnType("datetime2");
+=======
+            modelBuilder.Entity("eRecipes.Service.Database.FinansijskiLimit25062026", b =>
+                {
+                    b.Property<int>("FinansijskiLimit25062026Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FinansijskiLimit25062026Id"));
+
+                    b.Property<int>("KategorijaTransakcije25062025Id")
+                        .HasColumnType("int");
+>>>>>>> Stashed changes
 
                     b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
+<<<<<<< Updated upstream
                     b.Property<bool>("Validan")
                         .HasColumnType("bit");
 
@@ -44,10 +58,23 @@ namespace eRecipes.Service.Migrations
                     b.HasIndex("KorisnikId");
 
                     b.ToTable("FitPasos");
+=======
+                    b.Property<decimal>("Limit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("FinansijskiLimit25062026Id");
+
+                    b.HasIndex("KategorijaTransakcije25062025Id");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.ToTable("FinansijskiLimit25062026s");
+>>>>>>> Stashed changes
 
                     b.HasData(
                         new
                         {
+<<<<<<< Updated upstream
                             FitPasosId = 1,
                             DatumIzdavanja = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             KorisnikId = 1,
@@ -59,6 +86,19 @@ namespace eRecipes.Service.Migrations
                             DatumIzdavanja = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             KorisnikId = 2,
                             Validan = true
+=======
+                            FinansijskiLimit25062026Id = 1,
+                            KategorijaTransakcije25062025Id = 2,
+                            KorisnikId = 2,
+                            Limit = 100m
+                        },
+                        new
+                        {
+                            FinansijskiLimit25062026Id = 2,
+                            KategorijaTransakcije25062025Id = 2,
+                            KorisnikId = 1,
+                            Limit = 200m
+>>>>>>> Stashed changes
                         });
                 });
 
@@ -125,7 +165,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KatalogId = 1,
+<<<<<<< Updated upstream
                             DatumKreiranja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6082),
+=======
+                            DatumKreiranja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5127),
+>>>>>>> Stashed changes
                             Naziv = "Tradicionalna jela",
                             Opis = "Katalog tradicionalnih jela predstavlja zbirku recepata koji cine srz kulturne bastine, obicaja i gastronomskih tradicija iz razlicitih regiona. Svako jelo u ovom katalogu nosi pricu, jedinstvene sastojke i nacin pripreme koji su se prenosili kroz generacije, oblikujuci kulturni identitet zajednica. Bilo da je u pitanju jelo koje se priprema za posebne prilike, ili svakodnevni specijalitet, svaki recept u ovom katalogu odrazava bogatstvo ukusa i tradicije."
                         });
@@ -214,6 +258,41 @@ namespace eRecipes.Service.Migrations
                         });
                 });
 
+            modelBuilder.Entity("eRecipes.Service.Database.KategorijaTransakcije25062025", b =>
+                {
+                    b.Property<int>("KategorijaTransakcije25062025Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KategorijaTransakcije25062025Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tip")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("KategorijaTransakcije25062025Id");
+
+                    b.ToTable("KategorijaTransakcije25062025s");
+
+                    b.HasData(
+                        new
+                        {
+                            KategorijaTransakcije25062025Id = 1,
+                            Naziv = "Hrana",
+                            Tip = "Rashod"
+                        },
+                        new
+                        {
+                            KategorijaTransakcije25062025Id = 2,
+                            Naziv = "Prevoz",
+                            Tip = "Rashod"
+                        });
+                });
+
             modelBuilder.Entity("eRecipes.Service.Database.Korisnik", b =>
                 {
                     b.Property<int>("KorisnikId")
@@ -267,7 +346,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 1,
+<<<<<<< Updated upstream
                             DatumRodjenja = new DateTime(1995, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3046),
+=======
+                            DatumRodjenja = new DateTime(1995, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1896),
+>>>>>>> Stashed changes
                             Email = "admin@mail.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
@@ -281,7 +364,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 2,
+<<<<<<< Updated upstream
                             DatumRodjenja = new DateTime(2002, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3116),
+=======
+                            DatumRodjenja = new DateTime(2002, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1965),
+>>>>>>> Stashed changes
                             Email = "korisnik@mail.com",
                             Ime = "Korisnik",
                             KorisnickoIme = "korisnik",
@@ -295,7 +382,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 3,
+<<<<<<< Updated upstream
                             DatumRodjenja = new DateTime(1980, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3120),
+=======
+                            DatumRodjenja = new DateTime(1980, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1970),
+>>>>>>> Stashed changes
                             Email = "bajaspare@mail.com",
                             Ime = "Baja",
                             KorisnickoIme = "premium",
@@ -337,21 +428,33 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             LajkoviId = 1,
+<<<<<<< Updated upstream
                             DatumLajka = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6142),
+=======
+                            DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5193),
+>>>>>>> Stashed changes
                             KorisnikId = 2,
                             ReceptId = 2
                         },
                         new
                         {
                             LajkoviId = 2,
+<<<<<<< Updated upstream
                             DatumLajka = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6145),
+=======
+                            DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5195),
+>>>>>>> Stashed changes
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             LajkoviId = 3,
+<<<<<<< Updated upstream
                             DatumLajka = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6148),
+=======
+                            DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5198),
+>>>>>>> Stashed changes
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -497,7 +600,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             NotifikacijeId = 1,
+<<<<<<< Updated upstream
                             DatumSlanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6238),
+=======
+                            DatumSlanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5298),
+>>>>>>> Stashed changes
                             KorisnikId = 3,
                             Naslov = "Test",
                             Procitano = true,
@@ -535,21 +642,33 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             OmiljeniReceptId = 1,
+<<<<<<< Updated upstream
                             DatumDodavanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6174),
+=======
+                            DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5226),
+>>>>>>> Stashed changes
                             KorisnikId = 2,
                             ReceptId = 1
                         },
                         new
                         {
                             OmiljeniReceptId = 2,
+<<<<<<< Updated upstream
                             DatumDodavanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6176),
+=======
+                            DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5230),
+>>>>>>> Stashed changes
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             OmiljeniReceptId = 3,
+<<<<<<< Updated upstream
                             DatumDodavanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6179),
+=======
+                            DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5233),
+>>>>>>> Stashed changes
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -659,7 +778,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 1,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3275),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2131),
+>>>>>>> Stashed changes
                             KategorijaId = 3,
                             KorisnikId = 2,
                             Naziv = "Palačinke",
@@ -674,7 +797,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 2,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3433),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2373),
+>>>>>>> Stashed changes
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pizza Margherita",
@@ -689,7 +816,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 3,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3679),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2648),
+>>>>>>> Stashed changes
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Ćevapi",
@@ -704,7 +835,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 4,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3841),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2827),
+>>>>>>> Stashed changes
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Tiramisu",
@@ -719,7 +854,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 5,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(4864),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(3886),
+>>>>>>> Stashed changes
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pasta Carbonara",
@@ -734,7 +873,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 6,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5124),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4025),
+>>>>>>> Stashed changes
                             KategorijaId = 1,
                             KorisnikId = 2,
                             Naziv = "Grčka salata",
@@ -749,7 +892,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 7,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5259),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4161),
+>>>>>>> Stashed changes
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Sarma",
@@ -764,7 +911,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 8,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5453),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4517),
+>>>>>>> Stashed changes
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pečena piletina",
@@ -779,7 +930,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 9,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5637),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4710),
+>>>>>>> Stashed changes
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Čokoladni mousse",
@@ -794,7 +949,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 10,
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5752),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4830),
+>>>>>>> Stashed changes
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Zapečeni krompir",
@@ -1249,6 +1408,7 @@ namespace eRecipes.Service.Migrations
                         });
                 });
 
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.ToDo4924", b =>
                 {
                     b.Property<int>("ToDo4924Id")
@@ -1267,6 +1427,28 @@ namespace eRecipes.Service.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+=======
+            modelBuilder.Entity("eRecipes.Service.Database.Transakcija25062025", b =>
+                {
+                    b.Property<int>("Transakcija25062025Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Transakcija25062025Id"));
+
+                    b.Property<DateTime>("DatumTransakcije")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Iznos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("KategorijaTransakcije25062025Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KorisnikId")
+                        .HasColumnType("int");
+
+>>>>>>> Stashed changes
                     b.Property<string>("Opis")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1275,15 +1457,26 @@ namespace eRecipes.Service.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<< Updated upstream
                     b.HasKey("ToDo4924Id");
 
                     b.HasIndex("KorisnikId");
 
                     b.ToTable("ToDo4924s");
+=======
+                    b.HasKey("Transakcija25062025Id");
+
+                    b.HasIndex("KategorijaTransakcije25062025Id");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.ToTable("Transakcija25062025s");
+>>>>>>> Stashed changes
 
                     b.HasData(
                         new
                         {
+<<<<<<< Updated upstream
                             ToDo4924Id = 1,
                             DatumIzvrsenja = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             KorisnikId = 1,
@@ -1302,6 +1495,57 @@ namespace eRecipes.Service.Migrations
                         });
                 });
 
+=======
+                            Transakcija25062025Id = 1,
+                            DatumTransakcije = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Iznos = 100m,
+                            KategorijaTransakcije25062025Id = 1,
+                            KorisnikId = 1,
+                            Opis = "Opis",
+                            Status = "Planirano"
+                        },
+                        new
+                        {
+                            Transakcija25062025Id = 2,
+                            DatumTransakcije = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Iznos = 100m,
+                            KategorijaTransakcije25062025Id = 2,
+                            KorisnikId = 2,
+                            Opis = "Opis",
+                            Status = "Planirano"
+                        });
+                });
+
+            modelBuilder.Entity("eRecipes.Service.Database.TransakcijaLog25062025", b =>
+                {
+                    b.Property<int>("TransakcijaLog25062025Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransakcijaLog25062025Id"));
+
+                    b.Property<int>("KorisnikId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NovaVrijednost")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaraVrijednost")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("VrijemePromjene")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TransakcijaLog25062025Id");
+
+                    b.HasIndex("KorisnikId");
+
+                    b.ToTable("TransakcijaLog25062025s");
+                });
+
+>>>>>>> Stashed changes
             modelBuilder.Entity("eRecipes.Service.Database.Uloga", b =>
                 {
                     b.Property<int>("UlogaId")
@@ -1448,14 +1692,30 @@ namespace eRecipes.Service.Migrations
                         });
                 });
 
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.FitPasos", b =>
                 {
+=======
+            modelBuilder.Entity("eRecipes.Service.Database.FinansijskiLimit25062026", b =>
+                {
+                    b.HasOne("eRecipes.Service.Database.KategorijaTransakcije25062025", "KategorijaTransakcije25062025")
+                        .WithMany()
+                        .HasForeignKey("KategorijaTransakcije25062025Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+>>>>>>> Stashed changes
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany()
                         .HasForeignKey("KorisnikId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream
+=======
+                    b.Navigation("KategorijaTransakcije25062025");
+
+>>>>>>> Stashed changes
                     b.Navigation("Korisnik");
                 });
 
@@ -1620,14 +1880,26 @@ namespace eRecipes.Service.Migrations
                     b.Navigation("Sastojak");
                 });
 
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.RezervacijaProstora20022025", b =>
                 {
+=======
+            modelBuilder.Entity("eRecipes.Service.Database.Transakcija25062025", b =>
+                {
+                    b.HasOne("eRecipes.Service.Database.KategorijaTransakcije25062025", "KategorijaTransakcije25062025")
+                        .WithMany()
+                        .HasForeignKey("KategorijaTransakcije25062025Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+>>>>>>> Stashed changes
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany()
                         .HasForeignKey("KorisnikId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream
                     b.HasOne("eRecipes.Service.Database.RadniProstor", "RadniProstor")
                         .WithMany()
                         .HasForeignKey("RadniProstorId")
@@ -1640,6 +1912,14 @@ namespace eRecipes.Service.Migrations
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.ToDo4924", b =>
+=======
+                    b.Navigation("KategorijaTransakcije25062025");
+
+                    b.Navigation("Korisnik");
+                });
+
+            modelBuilder.Entity("eRecipes.Service.Database.TransakcijaLog25062025", b =>
+>>>>>>> Stashed changes
                 {
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany()

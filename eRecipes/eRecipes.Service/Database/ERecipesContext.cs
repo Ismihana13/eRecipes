@@ -32,12 +32,19 @@ public partial class ERecipesContext : DbContext
     public virtual DbSet<MjernaJedinica> MjernaJedinicas { get; set; }
     public virtual DbSet<Katalog> Katalogs { get; set; }
     public virtual DbSet<KatalogRecept> KatalogRecepts { get; set; }
+<<<<<<< Updated upstream
     public virtual DbSet<RadniProstor> RadniProstors { get; set; }
     public virtual DbSet<RezervacijaProstora20022025> RezervacijaProstora20022025s { get; set; }
     public virtual DbSet<MoodTracker30012025> MoodTracker30012025s { get; set; }
     public virtual DbSet<ToDo4924> ToDo4924s { get; set; }
     public virtual DbSet<FitPasos> FitPasos { get; set; }
 
+=======
+    public virtual DbSet<KategorijaTransakcije25062025> KategorijaTransakcije25062025s { get; set; }
+    public virtual DbSet<Transakcija25062025> Transakcija25062025s { get; set; }
+    public virtual DbSet<TransakcijaLog25062025> TransakcijaLog25062025s { get; set; }
+    public virtual DbSet<FinansijskiLimit25062026> FinansijskiLimit25062026s { get; set; }
+>>>>>>> Stashed changes
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -207,6 +214,7 @@ public partial class ERecipesContext : DbContext
            new Notifikacije { NotifikacijeId = 1, KorisnikId = 3, ReceptId = 2, Procitano = true, DatumSlanja=DateTime.Now,Naslov="Test", Sadrzaj="TEst" }
        );
 
+<<<<<<< Updated upstream
         modelBuilder.Entity<RadniProstor>().HasData(
          new RadniProstor { RadniProstorId = 1, Aktivna=true, Kapacitet=35, Oznaka="Prostor 1"},
          new RadniProstor { RadniProstorId = 2, Aktivna = true, Kapacitet = 10, Oznaka = "Prostor 2" },
@@ -232,6 +240,20 @@ public partial class ERecipesContext : DbContext
             );
         
 
+=======
+        modelBuilder.Entity<KategorijaTransakcije25062025>().HasData(
+           new KategorijaTransakcije25062025 { KategorijaTransakcije25062025Id = 1,  Naziv="Hrana", Tip="Rashod" },
+             new KategorijaTransakcije25062025 { KategorijaTransakcije25062025Id = 2, Naziv = "Prevoz", Tip = "Rashod" }
+       );
+        modelBuilder.Entity<Transakcija25062025>().HasData(
+         new Transakcija25062025 { Transakcija25062025Id = 1,KorisnikId=1, KategorijaTransakcije25062025Id=1, Iznos=100, DatumTransakcije=new DateTime(2025,06,25), Opis="Opis",Status="Planirano" },
+         new Transakcija25062025 { Transakcija25062025Id = 2, KorisnikId = 2, KategorijaTransakcije25062025Id = 2, Iznos = 100, DatumTransakcije = new DateTime(2025, 06, 25), Opis = "Opis", Status = "Planirano" }
+     );
+        modelBuilder.Entity<FinansijskiLimit25062026>().HasData(
+          new FinansijskiLimit25062026 { FinansijskiLimit25062026Id = 1,KorisnikId=2, KategorijaTransakcije25062025Id=2, Limit=100},
+          new FinansijskiLimit25062026 { FinansijskiLimit25062026Id = 2, KorisnikId = 1, KategorijaTransakcije25062025Id = 2, Limit=200 }
+      );
+>>>>>>> Stashed changes
     }
 }
 

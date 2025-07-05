@@ -25,11 +25,18 @@ builder.Services.AddTransient<INotifikacijeService, NotifikacijeService>();
 builder.Services.AddTransient<IUplataService, UplataService>();
 builder.Services.AddTransient<IMjernaJedinicaService, MjernaJedinicaService>();
 builder.Services.AddTransient<IKatalogService, KatalogService>();
+<<<<<<< Updated upstream
 builder.Services.AddTransient<IRadniProstorService, RadniProstorService>();
 builder.Services.AddTransient<IRezervacijaProstoraService, RezervacijaProstoraService>();
 builder.Services.AddTransient<IMoodTrackerService, MoodTrackerService>();
 builder.Services.AddTransient<IToDo4924Service, ToDo4924Service>();
 builder.Services.AddTransient<IFitPasosService, FitPasosService>();
+=======
+builder.Services.AddTransient<IKategorijaTransakcije25062025Service, KategorijaTransakcije25062025Service>();
+builder.Services.AddTransient<ITransakcije25062025Service, Transakcije25062025Service>();
+builder.Services.AddTransient<ITransakcijaLog25062025Service, TransakcijaLog25062025Service>();
+builder.Services.AddTransient<IFinansijskiLimit25062025Service, FinansijskiLimit25062025Service>();
+>>>>>>> Stashed changes
 
 builder.Services.AddHttpContextAccessor();
 
