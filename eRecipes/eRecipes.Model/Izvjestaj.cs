@@ -8,8 +8,8 @@ namespace eRecipes.Model
     {
         public int IzvjestajId { get; set; }
         public int? ReceptId { get; set; }
-        public int? BrojLajkova { get; set; } = 0;
-        public int? BrojOmiljenih { get; set; } = 0;
+        public int? BrojLajkova { get; set; } 
+        public int? BrojOmiljenih { get; set; }
         public DateTime? DatumIzvjestaja { get; set; }
         public virtual Recept? Recept { get; set; } 
     }
