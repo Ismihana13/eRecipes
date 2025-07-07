@@ -10,7 +10,11 @@ import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import 'package:erecipes_mobile/screens/frm_fit_pasos_screen.dart';
+=======
+import 'package:erecipes_mobile/screens/frmTransakcija25062025_screen.dart';
+>>>>>>> Stashed changes
 =======
 import 'package:erecipes_mobile/screens/frmTransakcija25062025_screen.dart';
 >>>>>>> Stashed changes
@@ -160,6 +164,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         _buildRecipeSearch(),
                         _buildCategoryAndDishTypeFilter(),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -189,6 +194,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             ElevatedButton(onPressed: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context)=> const FrmFitPasosScreen()));
                             }, child: const Text("FitPaos")),
+=======
+                        ElevatedButton(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const FrmTransakcija25062025Screen()));
+                        }, child: Text("Transakcije")),
+>>>>>>> Stashed changes
 =======
                         ElevatedButton(onPressed: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=> const FrmTransakcija25062025Screen()));

@@ -22,8 +22,14 @@ Image imageFromStringDetails(String input) {
   );
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 String formatDateWithTime(DateTime date) => DateFormat("dd/MM/yyyy HH:mm").format(date);
 String formatDate(DateTime date) => DateFormat("dd/MM/yyyy ").format(date);
+=======
+
+
+String formatDate(DateTime date)=> DateFormat('dd.MM.yyyy').format(date);
+>>>>>>> Stashed changes
 =======
 
 

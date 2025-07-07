@@ -23,6 +23,7 @@ namespace eRecipes.Service.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.FitPasos", b =>
                 {
                     b.Property<int>("FitPasosId")
@@ -34,6 +35,8 @@ namespace eRecipes.Service.Migrations
                     b.Property<DateTime>("DatumIzdavanja")
                         .HasColumnType("datetime2");
 =======
+=======
+>>>>>>> Stashed changes
             modelBuilder.Entity("eRecipes.Service.Database.FinansijskiLimit25062026", b =>
                 {
                     b.Property<int>("FinansijskiLimit25062026Id")
@@ -44,11 +47,15 @@ namespace eRecipes.Service.Migrations
 
                     b.Property<int>("KategorijaTransakcije25062025Id")
                         .HasColumnType("int");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
                     b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                     b.Property<bool>("Validan")
                         .HasColumnType("bit");
@@ -59,6 +66,8 @@ namespace eRecipes.Service.Migrations
 
                     b.ToTable("FitPasos");
 =======
+=======
+>>>>>>> Stashed changes
                     b.Property<decimal>("Limit")
                         .HasColumnType("decimal(18,2)");
 
@@ -69,11 +78,15 @@ namespace eRecipes.Service.Migrations
                     b.HasIndex("KorisnikId");
 
                     b.ToTable("FinansijskiLimit25062026s");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
                     b.HasData(
                         new
                         {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                             FitPasosId = 1,
                             DatumIzdavanja = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -87,6 +100,8 @@ namespace eRecipes.Service.Migrations
                             KorisnikId = 2,
                             Validan = true
 =======
+=======
+>>>>>>> Stashed changes
                             FinansijskiLimit25062026Id = 1,
                             KategorijaTransakcije25062025Id = 2,
                             KorisnikId = 2,
@@ -98,6 +113,9 @@ namespace eRecipes.Service.Migrations
                             KategorijaTransakcije25062025Id = 2,
                             KorisnikId = 1,
                             Limit = 200m
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                         });
                 });
@@ -166,7 +184,11 @@ namespace eRecipes.Service.Migrations
                         {
                             KatalogId = 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumKreiranja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6082),
+=======
+                            DatumKreiranja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5127),
+>>>>>>> Stashed changes
 =======
                             DatumKreiranja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5127),
 >>>>>>> Stashed changes
@@ -347,7 +369,11 @@ namespace eRecipes.Service.Migrations
                         {
                             KorisnikId = 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumRodjenja = new DateTime(1995, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3046),
+=======
+                            DatumRodjenja = new DateTime(1995, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1896),
+>>>>>>> Stashed changes
 =======
                             DatumRodjenja = new DateTime(1995, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1896),
 >>>>>>> Stashed changes
@@ -365,7 +391,11 @@ namespace eRecipes.Service.Migrations
                         {
                             KorisnikId = 2,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumRodjenja = new DateTime(2002, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3116),
+=======
+                            DatumRodjenja = new DateTime(2002, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1965),
+>>>>>>> Stashed changes
 =======
                             DatumRodjenja = new DateTime(2002, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1965),
 >>>>>>> Stashed changes
@@ -383,7 +413,11 @@ namespace eRecipes.Service.Migrations
                         {
                             KorisnikId = 3,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumRodjenja = new DateTime(1980, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3120),
+=======
+                            DatumRodjenja = new DateTime(1980, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1970),
+>>>>>>> Stashed changes
 =======
                             DatumRodjenja = new DateTime(1980, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1970),
 >>>>>>> Stashed changes
@@ -429,7 +463,11 @@ namespace eRecipes.Service.Migrations
                         {
                             LajkoviId = 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumLajka = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6142),
+=======
+                            DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5193),
+>>>>>>> Stashed changes
 =======
                             DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5193),
 >>>>>>> Stashed changes
@@ -440,7 +478,11 @@ namespace eRecipes.Service.Migrations
                         {
                             LajkoviId = 2,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumLajka = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6145),
+=======
+                            DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5195),
+>>>>>>> Stashed changes
 =======
                             DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5195),
 >>>>>>> Stashed changes
@@ -451,7 +493,11 @@ namespace eRecipes.Service.Migrations
                         {
                             LajkoviId = 3,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumLajka = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6148),
+=======
+                            DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5198),
+>>>>>>> Stashed changes
 =======
                             DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5198),
 >>>>>>> Stashed changes
@@ -601,7 +647,11 @@ namespace eRecipes.Service.Migrations
                         {
                             NotifikacijeId = 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumSlanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6238),
+=======
+                            DatumSlanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5298),
+>>>>>>> Stashed changes
 =======
                             DatumSlanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5298),
 >>>>>>> Stashed changes
@@ -643,7 +693,11 @@ namespace eRecipes.Service.Migrations
                         {
                             OmiljeniReceptId = 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumDodavanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6174),
+=======
+                            DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5226),
+>>>>>>> Stashed changes
 =======
                             DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5226),
 >>>>>>> Stashed changes
@@ -654,7 +708,11 @@ namespace eRecipes.Service.Migrations
                         {
                             OmiljeniReceptId = 2,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumDodavanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6176),
+=======
+                            DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5230),
+>>>>>>> Stashed changes
 =======
                             DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5230),
 >>>>>>> Stashed changes
@@ -665,7 +723,11 @@ namespace eRecipes.Service.Migrations
                         {
                             OmiljeniReceptId = 3,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumDodavanja = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(6179),
+=======
+                            DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5233),
+>>>>>>> Stashed changes
 =======
                             DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5233),
 >>>>>>> Stashed changes
@@ -779,7 +841,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3275),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2131),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2131),
 >>>>>>> Stashed changes
@@ -798,7 +864,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 2,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3433),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2373),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2373),
 >>>>>>> Stashed changes
@@ -817,7 +887,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 3,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3679),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2648),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2648),
 >>>>>>> Stashed changes
@@ -836,7 +910,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 4,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(3841),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2827),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2827),
 >>>>>>> Stashed changes
@@ -855,7 +933,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 5,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(4864),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(3886),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(3886),
 >>>>>>> Stashed changes
@@ -874,7 +956,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 6,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5124),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4025),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4025),
 >>>>>>> Stashed changes
@@ -893,7 +979,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 7,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5259),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4161),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4161),
 >>>>>>> Stashed changes
@@ -912,7 +1002,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 8,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5453),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4517),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4517),
 >>>>>>> Stashed changes
@@ -931,7 +1025,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 9,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5637),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4710),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4710),
 >>>>>>> Stashed changes
@@ -950,7 +1048,11 @@ namespace eRecipes.Service.Migrations
                         {
                             ReceptId = 10,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DatumObjave = new DateTime(2025, 6, 13, 10, 2, 22, 327, DateTimeKind.Local).AddTicks(5752),
+=======
+                            DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4830),
+>>>>>>> Stashed changes
 =======
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4830),
 >>>>>>> Stashed changes
@@ -1409,6 +1511,7 @@ namespace eRecipes.Service.Migrations
                 });
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.ToDo4924", b =>
                 {
                     b.Property<int>("ToDo4924Id")
@@ -1428,6 +1531,8 @@ namespace eRecipes.Service.Migrations
                         .HasColumnType("nvarchar(max)");
 
 =======
+=======
+>>>>>>> Stashed changes
             modelBuilder.Entity("eRecipes.Service.Database.Transakcija25062025", b =>
                 {
                     b.Property<int>("Transakcija25062025Id")
@@ -1448,6 +1553,9 @@ namespace eRecipes.Service.Migrations
                     b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                     b.Property<string>("Opis")
                         .IsRequired()
@@ -1458,12 +1566,15 @@ namespace eRecipes.Service.Migrations
                         .HasColumnType("nvarchar(max)");
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     b.HasKey("ToDo4924Id");
 
                     b.HasIndex("KorisnikId");
 
                     b.ToTable("ToDo4924s");
 =======
+=======
+>>>>>>> Stashed changes
                     b.HasKey("Transakcija25062025Id");
 
                     b.HasIndex("KategorijaTransakcije25062025Id");
@@ -1471,11 +1582,15 @@ namespace eRecipes.Service.Migrations
                     b.HasIndex("KorisnikId");
 
                     b.ToTable("Transakcija25062025s");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
                     b.HasData(
                         new
                         {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                             ToDo4924Id = 1,
                             DatumIzvrsenja = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -1496,6 +1611,8 @@ namespace eRecipes.Service.Migrations
                 });
 
 =======
+=======
+>>>>>>> Stashed changes
                             Transakcija25062025Id = 1,
                             DatumTransakcije = new DateTime(2025, 6, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Iznos = 100m,
@@ -1545,6 +1662,9 @@ namespace eRecipes.Service.Migrations
                     b.ToTable("TransakcijaLog25062025s");
                 });
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             modelBuilder.Entity("eRecipes.Service.Database.Uloga", b =>
                 {
@@ -1693,9 +1813,12 @@ namespace eRecipes.Service.Migrations
                 });
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.FitPasos", b =>
                 {
 =======
+=======
+>>>>>>> Stashed changes
             modelBuilder.Entity("eRecipes.Service.Database.FinansijskiLimit25062026", b =>
                 {
                     b.HasOne("eRecipes.Service.Database.KategorijaTransakcije25062025", "KategorijaTransakcije25062025")
@@ -1704,6 +1827,9 @@ namespace eRecipes.Service.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany()
@@ -1712,6 +1838,11 @@ namespace eRecipes.Service.Migrations
                         .IsRequired();
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+                    b.Navigation("KategorijaTransakcije25062025");
+
+>>>>>>> Stashed changes
 =======
                     b.Navigation("KategorijaTransakcije25062025");
 
@@ -1881,9 +2012,12 @@ namespace eRecipes.Service.Migrations
                 });
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             modelBuilder.Entity("eRecipes.Service.Database.RezervacijaProstora20022025", b =>
                 {
 =======
+=======
+>>>>>>> Stashed changes
             modelBuilder.Entity("eRecipes.Service.Database.Transakcija25062025", b =>
                 {
                     b.HasOne("eRecipes.Service.Database.KategorijaTransakcije25062025", "KategorijaTransakcije25062025")
@@ -1892,6 +2026,9 @@ namespace eRecipes.Service.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")
                         .WithMany()
@@ -1899,6 +2036,7 @@ namespace eRecipes.Service.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                     b.HasOne("eRecipes.Service.Database.RadniProstor", "RadniProstor")
                         .WithMany()
@@ -1913,12 +2051,17 @@ namespace eRecipes.Service.Migrations
 
             modelBuilder.Entity("eRecipes.Service.Database.ToDo4924", b =>
 =======
+=======
+>>>>>>> Stashed changes
                     b.Navigation("KategorijaTransakcije25062025");
 
                     b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("eRecipes.Service.Database.TransakcijaLog25062025", b =>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                 {
                     b.HasOne("eRecipes.Service.Database.Korisnik", "Korisnik")

@@ -12,6 +12,5 @@ namespace eRecipes.Service.Database
         public string Naziv {  get; set; }
         public string Tip { get; set; }
 
-
     }
 }

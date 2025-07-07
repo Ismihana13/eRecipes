@@ -12,8 +12,13 @@ using eRecipes.Service.Database;
 namespace eRecipes.Service.Migrations
 {
     [DbContext(typeof(ERecipesContext))]
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
     [Migration("20250702090526_a")]
     partial class a
+========
+    [Migration("20250630100602_Init")]
+    partial class Init
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,8 +44,13 @@ namespace eRecipes.Service.Migrations
                     b.Property<int>("KorisnikId")
                         .HasColumnType("int");
 
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                     b.Property<decimal>("Limit")
                         .HasColumnType("decimal(18,2)");
+========
+                    b.Property<int>("Limit")
+                        .HasColumnType("int");
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
 
                     b.HasKey("FinansijskiLimit25062026Id");
 
@@ -56,14 +66,22 @@ namespace eRecipes.Service.Migrations
                             FinansijskiLimit25062026Id = 1,
                             KategorijaTransakcije25062025Id = 2,
                             KorisnikId = 2,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             Limit = 100m
+========
+                            Limit = 100
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                         },
                         new
                         {
                             FinansijskiLimit25062026Id = 2,
                             KategorijaTransakcije25062025Id = 2,
                             KorisnikId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             Limit = 200m
+========
+                            Limit = 200
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                         });
                 });
 
@@ -130,7 +148,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KatalogId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumKreiranja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5127),
+========
+                            DatumKreiranja = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5291),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             Naziv = "Tradicionalna jela",
                             Opis = "Katalog tradicionalnih jela predstavlja zbirku recepata koji cine srz kulturne bastine, obicaja i gastronomskih tradicija iz razlicitih regiona. Svako jelo u ovom katalogu nosi pricu, jedinstvene sastojke i nacin pripreme koji su se prenosili kroz generacije, oblikujuci kulturni identitet zajednica. Bilo da je u pitanju jelo koje se priprema za posebne prilike, ili svakodnevni specijalitet, svaki recept u ovom katalogu odrazava bogatstvo ukusa i tradicije."
                         });
@@ -307,7 +329,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumRodjenja = new DateTime(1995, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1896),
+========
+                            DatumRodjenja = new DateTime(1995, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(2280),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             Email = "admin@mail.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
@@ -321,7 +347,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 2,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumRodjenja = new DateTime(2002, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1965),
+========
+                            DatumRodjenja = new DateTime(2002, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(2350),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             Email = "korisnik@mail.com",
                             Ime = "Korisnik",
                             KorisnickoIme = "korisnik",
@@ -335,7 +365,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             KorisnikId = 3,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumRodjenja = new DateTime(1980, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(1970),
+========
+                            DatumRodjenja = new DateTime(1980, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(2355),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             Email = "bajaspare@mail.com",
                             Ime = "Baja",
                             KorisnickoIme = "premium",
@@ -377,21 +411,33 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             LajkoviId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5193),
+========
+                            DatumLajka = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5345),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 2,
                             ReceptId = 2
                         },
                         new
                         {
                             LajkoviId = 2,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5195),
+========
+                            DatumLajka = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5348),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             LajkoviId = 3,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumLajka = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5198),
+========
+                            DatumLajka = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5351),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -490,7 +536,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             NotifikacijeId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumSlanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5298),
+========
+                            DatumSlanja = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5446),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 3,
                             Naslov = "Test",
                             Procitano = true,
@@ -528,21 +578,33 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             OmiljeniReceptId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5226),
+========
+                            DatumDodavanja = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5376),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 2,
                             ReceptId = 1
                         },
                         new
                         {
                             OmiljeniReceptId = 2,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5230),
+========
+                            DatumDodavanja = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5379),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 1,
                             ReceptId = 3
                         },
                         new
                         {
                             OmiljeniReceptId = 3,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumDodavanja = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(5233),
+========
+                            DatumDodavanja = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(5382),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KorisnikId = 2,
                             ReceptId = 3
                         });
@@ -606,7 +668,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 1,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2131),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(2549),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 3,
                             KorisnikId = 2,
                             Naziv = "Palačinke",
@@ -621,7 +687,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 2,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2373),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(2699),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pizza Margherita",
@@ -636,7 +706,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 3,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2648),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(2945),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Ćevapi",
@@ -651,7 +725,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 4,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(2827),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(3129),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Tiramisu",
@@ -666,7 +744,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 5,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(3886),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(4055),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pasta Carbonara",
@@ -681,7 +763,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 6,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4025),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(4238),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 1,
                             KorisnikId = 2,
                             Naziv = "Grčka salata",
@@ -696,7 +782,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 7,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4161),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(4393),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Sarma",
@@ -711,7 +801,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 8,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4517),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(4612),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Pečena piletina",
@@ -726,7 +820,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 9,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4710),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(4827),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 3,
                             KorisnikId = 3,
                             Naziv = "Čokoladni mousse",
@@ -741,7 +839,11 @@ namespace eRecipes.Service.Migrations
                         new
                         {
                             ReceptId = 10,
+<<<<<<<< Updated upstream:eRecipes/eRecipes.Service/Migrations/20250702090526_a.Designer.cs
                             DatumObjave = new DateTime(2025, 7, 2, 11, 5, 26, 36, DateTimeKind.Local).AddTicks(4830),
+========
+                            DatumObjave = new DateTime(2025, 6, 30, 12, 6, 2, 577, DateTimeKind.Local).AddTicks(4973),
+>>>>>>>> Stashed changes:eRecipes/eRecipes.Service/Migrations/20250630100602_Init.Designer.cs
                             KategorijaId = 2,
                             KorisnikId = 2,
                             Naziv = "Zapečeni krompir",
