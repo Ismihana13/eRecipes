@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eRecipes.Service.Database;
 
-public partial class Izvjestaj
+public  class Izvjestaj
 {
     public int IzvjestajId { get; set; }
     public int ReceptId { get; set; }

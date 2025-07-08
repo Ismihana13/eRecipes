@@ -7,6 +7,6 @@ namespace eRecipes.Model.Requests
     public class MjernaJedinicaUpsertRequest
     {
         public string Naziv { get; set; } = null!;
-        public string Oznaka { get; set; }
+        public string Oznaka { get; set; }= null!;
     }
 }

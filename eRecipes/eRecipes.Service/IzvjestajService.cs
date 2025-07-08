@@ -41,10 +41,10 @@ namespace eRecipes.Service
                 ReceptId = insert.ReceptId,
                 DatumIzvjestaja = DateTime.Now,
                 BrojOmiljenih = await _context.OmiljeniRecepts
-             .Where(o => o.ReceptId == insert.ReceptId)
-             .Select(o => o.KorisnikId)
-             .Distinct()
-             .CountAsync(),  
+                    .Where(o => o.ReceptId == insert.ReceptId)
+                    .Select(o => o.KorisnikId)
+                    .Distinct()
+             .      CountAsync(),  
 
                 BrojLajkova = await _context.Lajkovis
              .Where(l => l.ReceptId == insert.ReceptId)
