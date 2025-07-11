@@ -25,6 +25,10 @@ builder.Services.AddTransient<INotifikacijeService, NotifikacijeService>();
 builder.Services.AddTransient<IUplataService, UplataService>();
 builder.Services.AddTransient<IMjernaJedinicaService, MjernaJedinicaService>();
 builder.Services.AddTransient<IKatalogService, KatalogService>();
+builder.Services.AddTransient<IKategorijaTransakcije14072025Service, KategorijaTransakcije14072025Service>();
+builder.Services.AddTransient<ITransakcija14072025Service, Transakcija14072025Service>();
+builder.Services.AddTransient<ITransakcijaLog14072025Service, TransakcijaLog14072025Service>();
+builder.Services.AddTransient<IFinansijskiLimit14072025Service, FinansijskiLimit14072025Service>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -82,11 +86,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetRequiredService<ERecipesContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dataContext = scope.ServiceProvider.GetRequiredService<ERecipesContext>();
 
-    dataContext.Database.Migrate();
-}
+//    dataContext.Database.Migrate();
+//}
 
 app.Run();

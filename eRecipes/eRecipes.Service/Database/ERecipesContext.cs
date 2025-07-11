@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using eRecipes.Model;
 using eRecipes.Services.Helper;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,11 @@ public partial class ERecipesContext : DbContext
     public virtual DbSet<MjernaJedinica> MjernaJedinicas { get; set; }
     public virtual DbSet<Katalog> Katalogs { get; set; }
     public virtual DbSet<KatalogRecept> KatalogRecepts { get; set; }
+    public virtual DbSet<KategorijaTransakcije14072025> KategorijaTransakcije14072025s { get; set; }
+    public virtual DbSet<Transakcija14072025> Transakcija14072025s { get; set; }
+    public virtual DbSet<TransakcijaLog14072025> TransakcijaLog14072025s { get; set; }
+    public virtual DbSet<FinansijskiLimit14072025> FinansijskiLimit14072025s { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -198,6 +204,22 @@ public partial class ERecipesContext : DbContext
 
         modelBuilder.Entity<Notifikacije>().HasData(
            new Notifikacije { NotifikacijeId = 1, KorisnikId = 3, ReceptId = 2, Procitano = true, DatumSlanja=DateTime.Now,Naslov="Test", Sadrzaj="TEst" }
+       );
+        modelBuilder.Entity<KategorijaTransakcije14072025>().HasData(
+            new KategorijaTransakcije14072025 { KategorijaTransakcije14072025Id = 1, Naziv = "Hrana", Tip = Tip.Rashod.ToString() },
+            new KategorijaTransakcije14072025 { KategorijaTransakcije14072025Id = 2, Naziv = "Prevoz", Tip = Tip.Rashod.ToString() },
+            new KategorijaTransakcije14072025 { KategorijaTransakcije14072025Id = 3, Naziv = "Zabava", Tip = Tip.Rashod.ToString() }
+            );
+
+        modelBuilder.Entity<Transakcija14072025>().HasData(
+           new Transakcija14072025 { Transakcija14072025Id = 1, KorisnikId = 1, KategorijaTransakcije14072025Id = 3, Iznos=100, DatumTransakcije=new DateTime(2025,07,14),Opis="Test", Status=Status.Planirano.ToString()  },
+           new Transakcija14072025 { Transakcija14072025Id = 2, KorisnikId = 2, KategorijaTransakcije14072025Id = 1, Iznos = 100, DatumTransakcije = new DateTime(2025, 07, 14), Opis = "Test", Status = Status.Planirano.ToString() }
+          
+           );
+        modelBuilder.Entity<FinansijskiLimit14072025>().HasData(
+         new FinansijskiLimit14072025 { FinansijskiLimit14072025Id = 1, KorisnikId = 2, KategorijaTransakcije14072025Id = 2, Limit=300 },
+         new FinansijskiLimit14072025 { FinansijskiLimit14072025Id = 2, KorisnikId = 1, KategorijaTransakcije14072025Id = 2, Limit = 300 }
+        
        );
     }
 }

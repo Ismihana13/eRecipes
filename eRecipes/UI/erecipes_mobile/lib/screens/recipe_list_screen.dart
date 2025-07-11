@@ -9,6 +9,7 @@ import 'package:erecipes_mobile/providers/omiljeni_recept_provider.dart';
 import 'package:erecipes_mobile/providers/utils.dart';
 import 'package:erecipes_mobile/providers/vrsta_jela_provider.dart';
 import 'package:erecipes_mobile/screens/add_new_recipe_screen.dart';
+import 'package:erecipes_mobile/screens/frmTransakcije14072025.dart';
 import 'package:erecipes_mobile/screens/locked_recipe.dart';
 import 'package:erecipes_mobile/screens/omiljeni_recepti_screen.dart';
 import 'package:erecipes_mobile/screens/recipe_details_screen.dart';
@@ -151,6 +152,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         const SizedBox(height: 5),
                         _buildRecipeSearch(),
                         _buildCategoryAndDishTypeFilter(),
+                        ElevatedButton(onPressed: (){
+                          Navigator.push(context,  MaterialPageRoute(builder: (context)=> FrmTransakcije14072025()));
+                        }, child: Text("Transakcije")),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
